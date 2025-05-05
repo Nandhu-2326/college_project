@@ -2,7 +2,11 @@ import CollegeLogo from "./CollegeLogo";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle, FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { db } from "./Database.js";
+import { collection, getDocs } from "firebase/firestore";
+import Swal from "sweetalert2";
+
 const AdminLogin = () => {
   let nav = useNavigate();
   let home = () => {
@@ -10,21 +14,82 @@ const AdminLogin = () => {
   };
   const [userName, SetUserName] = useState();
   const [Password, SetPassword] = useState();
-  const dbUserName = ["Nandu", "Arun", "Yogesh"];
-  const dbPassword = ["138", "110", "162"];
-  const login = () => {
-    let dbUserNameFilter = dbUserName.filter((val) => {
-      return val == userName;
-    });
-    let dbPasswordFilter = dbPassword.filter((val) => {
-      return val == Password;
-    });
+  const [data, setData] = useState();
+  useEffect(() => {
+    let fetchData = async () => {
+      let getData = await getDocs(collection(db, "Admin"));
+      let data = getData.docs.map((val) => ({
+        id: val.id,
+        ...val.data(),
+      }));
+      setData(data);
+    };
+    fetchData();
+  }, []);
 
-    if (dbUserNameFilter == userName && dbPasswordFilter == Password) {
-      alert("Login Success");
-      nav("/AdminUserPage");
+  const loading = () => {
+    let timerInterval;
+    Swal.fire({
+      html: "Loading",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    });
+  };
+  const loginError = () => {
+    Swal.fire({
+      html: "invalid username and Password ",
+      icon: "error",
+      title: "Oops",
+      timer: 2000,
+    });
+  };
+  const loginSuccess = () => {
+    Swal.fire({
+      icon: "success",
+      title: "Login Success",
+      timer: 2000,
+    });
+  };
+  const InformationError = () => {
+    let timerInterval;
+    Swal.fire({
+      html: "Please Fill Information",
+      timer: 1000,
+      icon: "warning",
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    });
+  };
+
+  const login = async () => {
+    if (!userName || !Password) {
+      InformationError();
     } else {
-      alert("Please Valid UserName and Password");
+      try {
+        loading();
+        let filterData = data.filter((val) => {
+          return val.username == userName && val.password == Password;
+        });
+
+        if (filterData.length > 0) {
+          loginSuccess();
+          nav("/AdminUserPage");
+        } else {
+          loginError();
+        }
+      } catch (e) {
+        alert(e.message);
+      }
     }
   };
 

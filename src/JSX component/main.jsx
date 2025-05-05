@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style Component/App.css";
 import Rmain from "./Rmain";
+import "sweetalert2/dist/sweetalert2.min.css";
 // import FirstPage from "./FirstPage.jsx";
 // import LoginPage from "./LoginPage.jsx";
 // import UserSelect from "./UserSelect";
