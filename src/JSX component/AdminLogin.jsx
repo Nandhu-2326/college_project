@@ -15,6 +15,7 @@ const AdminLogin = () => {
   const [userName, SetUserName] = useState();
   const [Password, SetPassword] = useState();
   const [data, setData] = useState();
+
   useEffect(() => {
     let fetchData = async () => {
       let getData = await getDocs(collection(db, "Admin"));
@@ -26,7 +27,7 @@ const AdminLogin = () => {
     };
     fetchData();
   }, []);
-
+  
   const loading = () => {
     let timerInterval;
     Swal.fire({

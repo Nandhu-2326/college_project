@@ -14,11 +14,11 @@ const AdminUserDetails = () => {
         <div className="row d-flex justify-content-center ">
           <div className="col-12 text-primary d-flex  h1 justify-content-center align-items-center">
             {" "}
-            User Details - <FaUserTie />
+            Admin Details - <FaUserTie />
           </div>
           <div className="col-12 text-secondary text-center h6 mt-3 ">
             {" "}
-            Search User or Add New User, Delete or Edit User
+            Search Admin or Add New Admin, Delete or Edit Admin
           </div>
 
           <div className="col-3 mt-3 d-flex justify-content-center">

@@ -128,7 +128,7 @@ const MenuItems = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => nav("/AdminUserPage/AdminUserDetails")}
+              onClick={() => nav("/AdminUserPage/StaffAddorUpdatePage")}
             >
               User Details
             </Dropdown.Item>
