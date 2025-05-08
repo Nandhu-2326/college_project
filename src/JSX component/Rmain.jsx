@@ -10,6 +10,7 @@ import AdminUserDetails from "./AdminUserDetails";
 // import AdminStaff from "./AdminStaff";
 import CalculatorPage from "./CalculatorPage";
 import StaffAddorUpdatePage from "./StaffAddorUpdatePage";
+import DegPage from "./DegPage";
 
 const Rmain = () => {
   return (
@@ -19,6 +20,7 @@ const Rmain = () => {
           <Route path="/" element={<FirstPage />} />
           <Route path="/LoginPage" element={<LoginPage />} />
           <Route path="/UserSelect" element={<UserSelect />} />
+          <Route path="/DegPage" element={ <DegPage/> } />
           <Route path="/CalculatorPage" element={<CalculatorPage />} />
           <Route path="/AdminLogin" element={<AdminLogin />} />
           <Route path="/AdminUserPage" element={<AdminUserPage />}>
