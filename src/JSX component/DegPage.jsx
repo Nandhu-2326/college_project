@@ -6,8 +6,9 @@ import { SiGoogleclassroom } from "react-icons/si";
 
 const DegPage = () => {
   const location = useLocation();
-  const { rs, deg } = location.state;
+  const { rs, deg, sem } = location.state;
   const [department, setDepartment] = useState([]);
+  const [sems, setSem] = useState();
 
   const Regulardepartments = [
     "Select Department",
@@ -48,6 +49,7 @@ const DegPage = () => {
     "Department of Computer Application (M.C.A.)",
   ];
   const RegularPGdepartments = ["Select Department", "M.Com"];
+
   useEffect(() => {
     const all = () => {
       if (rs === "self" && deg === "ug") {
@@ -64,7 +66,19 @@ const DegPage = () => {
     };
 
     all();
-  }, [rs, deg]);
+    const semester = () => {
+      if (sem == 1 || sem == 2) {
+        setSem("I Year");
+      } else if (sem == 3 || sem == 4) {
+        setSem("II Year");
+      } else if (sem == 5 || sem == 6) {
+        setSem("III Year");
+      } else {
+        setSem("Invalid");
+      }
+    };
+    semester();
+  }, [rs, deg, sem]);
 
   return (
     <>
@@ -104,10 +118,7 @@ const DegPage = () => {
                 <PiStudentBold />
               </span>
               <select className="form-select">
-                <option value="">-- Select Year --</option>
-                <option value="1">I Year</option>
-                <option value="2">II Year</option>
-                <option value="3">III Year</option>
+                <option value={sems}>{sems}</option>
               </select>
             </div>
           </div>
@@ -116,7 +127,14 @@ const DegPage = () => {
               <span className="input-group-text bg-primary text-white fw-bold">
                 <PiStudentBold />
               </span>
-              <select className="form-select"></select>
+              <select className="form-select">
+                <option value="">--Select Subject</option>
+                <option value="">Tamil</option>
+                <option value="">English</option>
+                <option value="">Web Technology</option>
+                <option value="">Web Design Lab</option>
+                <option value="">Data Mining</option>
+              </select>
             </div>
           </div>
         </div>
