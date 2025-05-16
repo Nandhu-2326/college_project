@@ -67,8 +67,10 @@ const MultipleStudentCSV = () => {
           }
           UserAdd();
           console.log("Uploading:", csvfile.name);
-        };
-      } catch (e) {}
+        }
+      } catch(e) {
+        console.log(e.message);
+      }
     }
     // Handle your upload logic here
   };

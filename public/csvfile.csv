@@ -1,6 +1,8 @@
-Name,rollno,course,ugorpg,rs,internal_1 ,internal_2,Assignment,seminary,total,class
-Nanda kumar,22ucs138,computer science,pg ,self,,,,,,A
-Arun kumar,22ucs110,AI,ug,regular,,,,,,B
-Yogesh kumar,22ucs162,Tamil,ug,regular,,,,,,A
-Raman,22ucs105,computer application,pg ,self,,,,,,A
-Karthi,22ucs128,English,ug,self,,,,,,B
+Name,rollno,Department,ugorpg,rs,class,year
+Nanda kumar,22ucs138,Department of English (SF),ug,self,A,3
+Arun kumar,22ucs110,Department of Tamil ,ug,regular,B,2
+Yogesh kumar,22ucs162,Department of Hindi (SF),ug,self,A,1
+Raman,22ucs105,Department of Sanskrit ,pg ,self,B,3
+Karthi,22ucs128,Department of Computer Application (M.C.A.) (SF),pg ,self,A,2
+Kishore,22ucs129,Department of Tamil ,ug,regular,B,2
+Anbu,22ucs106,Department of Hindi (SF),ug,self,A,1
