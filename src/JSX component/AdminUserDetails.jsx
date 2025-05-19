@@ -15,6 +15,8 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import { FaRegEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const AdminUserDetails = () => {
   // State's
@@ -26,6 +28,8 @@ const AdminUserDetails = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [search, setSearch] = useState(false);
   const [user, setUser] = useState();
+  const [PasswordEye, SetPasswordEye] = useState(true);
+
   // Get Users
   const getUser = async () => {
     const getData = await getDocs(collection(db, "Admin"));
@@ -227,12 +231,27 @@ const AdminUserDetails = () => {
                   <RiLockPasswordFill />
                 </span>
                 <input
-                  type="password"
+                  type={PasswordEye ? "password" : "text"}
                   className="form-control border border-primary"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <span className="input-group-text bg-primary text-light">
+                  {PasswordEye ? (
+                    <FaEyeSlash
+                      onClick={() => {
+                        SetPasswordEye(false);
+                      }}
+                    />
+                  ) : (
+                    <FaRegEye
+                      onClick={() => {
+                        SetPasswordEye(true);
+                      }}
+                    />
+                  )}
+                </span>
               </div>
 
               <button

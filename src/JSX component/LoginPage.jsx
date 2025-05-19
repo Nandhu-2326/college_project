@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
+import { FaRegEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const LoginPage = () => {
   let nav = useNavigate();
@@ -16,6 +18,7 @@ const LoginPage = () => {
   const [userName, SetUserName] = useState();
   const [Password, SetPassword] = useState();
   const [data, setData] = useState();
+  const [PasswordEye, SetPasswordEye] = useState(true);
   useEffect(() => {
     let fetchData = async () => {
       let getData = await getDocs(collection(db, "staff"));
@@ -94,7 +97,6 @@ const LoginPage = () => {
     }
   };
 
-  
   return (
     <>
       <CollegeLogo />
@@ -142,11 +144,26 @@ const LoginPage = () => {
                   <RiLockPasswordFill />
                 </span>
                 <input
-                  type="password"
+                  type={PasswordEye ? "Password" : "text"}
                   className="form-control border border-primary"
                   placeholder="Password"
                   onChange={(e) => SetPassword(e.target.value)}
                 />
+                <span className="input-group-text bg-primary text-light">
+                  {PasswordEye ? (
+                    <FaEyeSlash
+                      onClick={() => {
+                        SetPasswordEye(false);
+                      }}
+                    />
+                  ) : (
+                    <FaRegEye
+                      onClick={() => {
+                        SetPasswordEye(true);
+                      }}
+                    />
+                  )}
+                </span>
               </div>
 
               {/* Login Button */}
