@@ -3,7 +3,7 @@ import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineSystemUpdateAlt } from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { db } from "./Database.js";
 import {
@@ -40,6 +40,12 @@ const CalculatorPage = () => {
   const [stDep, setStDep] = useState();
   const [stNumber, setStNumber] = useState();
   const [UpDataId, setUpDateId] = useState();
+  // Result Data
+  const [ResultData, setResultData] = useState();
+  const [studentResulstData, setStudentResultData] = useState([]);
+  // function's
+  const location = useLocation();
+  const { dep, sem, sub, deg, sec } = location.state;
   const handleClose = () => {
     setShow(false);
     setResult(false);
@@ -214,8 +220,6 @@ const CalculatorPage = () => {
     getFilteredStudents();
   };
 
-  const location = useLocation();
-  const { dep, sem, sub, deg, sec } = location.state;
   const getFilteredStudents = async () => {
     try {
       const getData = await getDocs(collection(db, "student"));
@@ -316,9 +320,28 @@ const CalculatorPage = () => {
     }
     handleClose();
   };
+
   const viewResult = async (id) => {
-    setResult(true);
-    // const ResultData = await doc() 
+    try {
+      setResult(true);
+      // Mark and Subject
+      const ResultData = doc(db, "student", id);
+      const DBFetch = collection(ResultData, sub);
+      const ResultDB = await getDocs(DBFetch);
+      const ResultAllData = ResultDB.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+      setResultData(ResultAllData);
+      console.log(ResultAllData);
+      // Student Details
+      const studentRef = doc(db, "student", id);
+      const studentSnap = await getDoc(studentRef);
+      const studentAllData = studentSnap.data();
+      setStudentResultData([studentAllData]);
+      console.log(studentAllData);
+    } catch (e) {
+      alert("Error", e.message);
+    }
   };
   return (
     <>
@@ -354,7 +377,7 @@ const CalculatorPage = () => {
                         <BiSolidEdit /> Enter Mark
                       </button>
                       <button
-                        className="btn d-flex align-items-center btn-outline-info btn-sm"
+                        className="btn d-flex align-items-center btn-outline-info "
                         onClick={() => {
                           viewResult(student.id);
                         }}
@@ -378,12 +401,37 @@ const CalculatorPage = () => {
         </div>
       </div>
       <Modal show={result} onHide={handleClose} centered>
-        <Modal.Header closeButton className="bg-success text-white">
+        <Modal.Header closeButton className="bg-info text-white">
           <Modal.Title className="w-100 text-center">
             Student Result
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body></Modal.Body>
+        <Modal.Body>
+          {ResultData && studentResulstData ? (
+            // <div>{ResultData.Name}</div>
+            <div>
+              {studentResulstData.map((value) => (
+                <div key={value.id}>
+                  <p
+                    className="text-primary fw-bold"
+                    style={{ letterSpacing: "3px" }}
+                  >
+                    {value.Name.toUpperCase()}{" "}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Degree </strong> :
+                    {value.ugorpg.toUpperCase()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center align-items-center text-primary">
+              No Result, Please Enter Mark After Check Result
+            </div>
+          )}
+        </Modal.Body>
       </Modal>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton className="bg-primary text-white">
