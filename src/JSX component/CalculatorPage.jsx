@@ -6,12 +6,21 @@ import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { db } from "./Database.js";
-import { addDoc, collection, doc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import Swal from "sweetalert2";
+import { GiSpellBook } from "react-icons/gi";
 
 const CalculatorPage = () => {
   const [Modals, setModal] = useState(true);
   const [show, setShow] = useState(false);
+  const [result, setResult] = useState(false);
   const [studentList, setStudentList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   // Studan Mark
@@ -27,51 +36,186 @@ const CalculatorPage = () => {
   const [Internal_3Up, setInternal_3Up] = useState();
   const [AssignmentUp, setAssignmentUp] = useState();
   const [SeminarUp, setSeminarUp] = useState();
-
+  const [stName, setStName] = useState();
+  const [stDep, setStDep] = useState();
+  const [stNumber, setStNumber] = useState();
+  const [UpDataId, setUpDateId] = useState();
   const handleClose = () => {
     setShow(false);
+    setResult(false);
     setSelectedStudent(null);
     setInternal_1Up(null);
     setInternal_2Up(null);
+    setInternal_3Up(null);
     setAssignmentUp(null);
     setSeminarUp(null);
   };
+
   const handleShow = (student) => {
     setSelectedStudent(student);
     setShow(true);
     setModal(true);
   };
+
   const UpdateStudent = async (id) => {
-    console.log(id);
-    setShow(true);
-    setModal(false);
-    const Update = doc(db, "student", id);
-    const GetCollection = collection(Update, sub);
-    const GetValue = await getDocs(GetCollection);
-    const IdCollection = GetValue.docs.map((doc) => ({
-      ...doc.data(),
-    }));
-    console.log(IdCollection);
-    console.log(GetCollection)
-    IdCollection.map((value) => {
-      if (deg == "pg") {
-        setInternal_1Up(value.InternalDB_1);
-        setInternal_2Up(value.InternalDB_2);
-        setInternal_3Up(value.InternalDB_3);
-        setAssignmentUp(value.AssignmentMark);
-        setSeminarUp(value.SeminarMark);
+    try {
+      loading();
+      setShow(true);
+      setModal(false); // Switching to Update Mode
+      setUpDateId(id);
+      const studentRef = doc(db, "student", id);
+      const studentSnap = await getDoc(studentRef);
+
+      if (studentSnap.exists()) {
+        const studentData = studentSnap.data();
+        setStName(studentData.Name);
+        setStDep(studentData.Department);
+        setStNumber(studentData.rollno.toUpperCase());
       } else {
-        setInternal_1Up(value.InternalDB_1);
-        setInternal_2Up(value.InternalDB_2);
-        setAssignmentUp(value.AssignmentMark);
-        setSeminarUp(value.SeminarMark);
+        Swal.fire("Error", "Student not found", "error");
+        return;
       }
+
+      const subjectCollection = collection(studentRef, sub);
+      const marksSnap = await getDocs(subjectCollection);
+
+      if (!marksSnap.empty) {
+        const markDoc = marksSnap.docs[0].data(); // Assuming one record per subject
+
+        // Set form values for update
+        if (deg == "pg") {
+          setInternal_1Up(markDoc.InternalDB_1);
+          setInternal_2Up(markDoc.InternalDB_2);
+          setInternal_3Up(markDoc.InternalDB_3);
+          setAssignmentUp(markDoc.AssignmentMark);
+          setSeminarUp(markDoc.SeminarMark);
+        } else {
+          {
+            setInternal_1Up(markDoc.InternalDB_1);
+            setInternal_2Up(markDoc.InternalDB_2);
+            setAssignmentUp(markDoc.AssignmentMark);
+            setSeminarUp(markDoc.SeminarMark);
+          }
+        }
+      } else {
+        Swal.fire("Info", "No mark data found for this subject", "info");
+      }
+    } catch (error) {
+      console.error("Error fetching student marks:", error);
+      Swal.fire("Error", "Failed to load marks", "error");
+    }
+  };
+
+  const warning = () => {
+    Swal.fire({
+      title: "Oops",
+      icon: "error",
+      html: "Please Enter All Field",
+      timer: 2000,
+      timerProgressBar: false,
+      didOpen: () => Swal.showLoading(),
     });
   };
 
-  const location = useLocation();
-  const { dep, sem, sub, deg } = location.state;
+  const UpDBdata = async () => {
+    if (deg == "pg") {
+      if (
+        !Internal_1Up ||
+        !Internal_2Up ||
+        !Internal_3Up ||
+        !AssignmentUp ||
+        !SeminarUp
+      ) {
+        warning();
+      } else {
+        loading();
+        const studentRef = doc(db, "student", UpDataId);
+        const subjectCollectionRef = collection(studentRef, sub);
+        const marksSnap = await getDocs(subjectCollectionRef);
 
+        if (marksSnap.empty) {
+          Swal.fire(
+            "Error",
+            "No existing mark document found to update",
+            "error"
+          );
+          return;
+        }
+        const markDoc = marksSnap.docs[0];
+        const markRef = markDoc.ref;
+
+        const array = [Internal_1Up, Internal_2Up, Internal_3Up];
+        let temp = 0;
+        for (let i = 0; i < array.length; i++) {
+          for (let j = 0; j <= array.length; j++) {
+            if (array[i] > array[j]) {
+              temp = array[i];
+              array[i] = array[j];
+              array[j] = temp;
+            }
+          }
+        }
+        const I1 = array[0] / 2;
+        const I2 = array[1] / 2;
+        const PGMark = (I1 + I2) / 2;
+        const PGTotal =
+          Number(PGMark) + Number(AssignmentUp) + Number(SeminarUp);
+
+        await updateDoc(markRef, {
+          subject: sub,
+          InternalDB_1: I1,
+          InternalDB_2: I2,
+          InternalDB_3: Internal_3Up,
+          AssignmentMark: AssignmentUp,
+          SeminarMark: SeminarUp,
+          Average: PGMark,
+          Total: Math.round(PGTotal),
+        });
+        Swal.fire("Success", "Marks updated successfully", "success");
+        handleClose();
+      }
+    } else {
+      if (!Internal_1Up || !Internal_2Up || !AssignmentUp || !SeminarUp) {
+        warning();
+      } else {
+        const studentRef = doc(db, "student", UpDataId);
+        const subjectCollectionRef = collection(studentRef, sub);
+        const marksSnap = await getDocs(subjectCollectionRef);
+
+        if (marksSnap.empty) {
+          Swal.fire(
+            "Error",
+            "No existing mark document found to update",
+            "error"
+          );
+          return;
+        }
+        const markDoc = marksSnap.docs[0];
+        const markRef = markDoc.ref;
+
+        const I1 = Number(Internal_1Up) / 2;
+        const I2 = Number(Internal_2Up) / 2;
+        const average = (I1 + I2) / 2;
+        const total = average + Number(AssignmentUp) + Number(SeminarUp);
+
+        await updateDoc(markRef, {
+          subject: sub,
+          InternalDB_1: I1,
+          InternalDB_2: I2,
+          AssignmentMark: AssignmentUp,
+          SeminarMark: SeminarUp,
+          Average: average,
+          Total: Math.round(total),
+        });
+        Swal.fire("Success", "Marks updated successfully", "success");
+        handleClose();
+      }
+    }
+    getFilteredStudents();
+  };
+
+  const location = useLocation();
+  const { dep, sem, sub, deg, sec } = location.state;
   const getFilteredStudents = async () => {
     try {
       const getData = await getDocs(collection(db, "student"));
@@ -80,7 +224,7 @@ const CalculatorPage = () => {
         ...doc.data(),
       }));
       const filter = filteredData.filter((val) => {
-        return val.Department == dep && val.year == sem;
+        return val.Department == dep && val.year == sem && val.class == sec;
       });
       setStudentList(filter);
     } catch (error) {
@@ -92,7 +236,7 @@ const CalculatorPage = () => {
   const loading = () => {
     Swal.fire({
       html: "Loading...",
-      timer: 1000,
+      timer: 2000,
       timerProgressBar: false,
       didOpen: () => Swal.showLoading(),
     });
@@ -141,8 +285,10 @@ const CalculatorPage = () => {
           AssignmentMark: Assignment,
           SeminarMark: Seminar,
           Average: PGMark,
-          Total: PGTotal,
+          Total: Math.round(PGTotal),
         });
+
+        Swal.fire("Success", "Successfully Upload Student Mark's", "Success");
       }
     } else {
       if (!Internal_1 || !Internal_2 || !Assignment || !Seminar) {
@@ -163,14 +309,17 @@ const CalculatorPage = () => {
           AssignmentMark: Assignment,
           SeminarMark: Seminar,
           Average: Mark,
-          Total: total,
+          Total: Math.round(total),
         });
-        alert("Calculation Success");
+        Swal.fire("Success", "Successfully Upload Student Mark's", "Success");
       }
     }
     handleClose();
   };
-
+  const viewResult = async (id) => {
+    setResult(true);
+    // const ResultData = await doc() 
+  };
   return (
     <>
       <CollegeLogo />
@@ -181,7 +330,7 @@ const CalculatorPage = () => {
 
         <div className="row g-4">
           {studentList.length > 0 ? (
-            studentList.map((student, index) => (
+            studentList.map((student) => (
               <div className="col-md-6 col-lg-4" key={student.id}>
                 <div className="card shadow-sm border-primary h-100">
                   <div className="card-body">
@@ -197,15 +346,23 @@ const CalculatorPage = () => {
                     <p className="card-text mb-2">
                       <strong>Subject:</strong> {sub}
                     </p>
-                    <div className="d-flex justify-content-between">
+                    <div className="d-flex justify-content-between mt-3">
                       <button
-                        className="btn btn-outline-success"
+                        className="btn btn-outline-success btn-sm"
                         onClick={() => handleShow(student)}
                       >
                         <BiSolidEdit /> Enter Mark
                       </button>
                       <button
-                        className="btn btn-outline-danger"
+                        className="btn d-flex align-items-center btn-outline-info btn-sm"
+                        onClick={() => {
+                          viewResult(student.id);
+                        }}
+                      >
+                        <GiSpellBook /> Result
+                      </button>
+                      <button
+                        className="btn btn-outline-danger btn-sm"
                         onClick={() => UpdateStudent(student.id)}
                       >
                         <MdOutlineSystemUpdateAlt /> Edit
@@ -220,230 +377,157 @@ const CalculatorPage = () => {
           )}
         </div>
       </div>
+      <Modal show={result} onHide={handleClose} centered>
+        <Modal.Header closeButton className="bg-success text-white">
+          <Modal.Title className="w-100 text-center">
+            Student Result
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body></Modal.Body>
+      </Modal>
+      <Modal show={show} onHide={handleClose} centered>
+        <Modal.Header closeButton className="bg-primary text-white">
+          <Modal.Title className="w-100 text-center">
+            {Modals ? "Fill Student Mark" : "Update Mark"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="row g-3">
+            <div className="col-12">
+              <label className="form-label fw-semibold">Student Name</label>
+              <input
+                type="text"
+                className="form-control border-primary"
+                readOnly
+                value={Modals ? selectedStudent?.Name : stName}
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fw-semibold">Roll Number</label>
+              <input
+                type="text"
+                className="form-control border-primary"
+                readOnly
+                value={
+                  Modals ? selectedStudent?.rollno.toUpperCase() : stNumber
+                }
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fw-semibold">Department</label>
+              <input
+                type="text"
+                className="form-control border-primary"
+                readOnly
+                value={Modals ? selectedStudent?.Department : stDep}
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fw-semibold">Subject</label>
+              <input
+                type="text"
+                className="form-control border-primary"
+                readOnly
+                value={sub}
+              />
+            </div>
 
-      {/* Modal */}
-      {Modals ? (
-        <Modal show={show} onHide={handleClose} centered>
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title className="w-100 text-center">
-              Fill Student Mark
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row g-3">
-              <div className="col-12">
-                <label className="form-label fw-semibold">Student Name</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  defaultValue={selectedStudent?.Name}
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Roll Number</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  defaultValue={selectedStudent?.rollno.toUpperCase()}
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Department</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  defaultValue={selectedStudent?.Department}
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Subject</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  defaultValue={sub}
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - I Mark
-                </label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - I mark"
-                  onChange={(e) => setInternal_1(e.target.value)}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - II Mark
-                </label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - II mark"
-                  onChange={(e) => setInternal_2(e.target.value)}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - III Mark
-                </label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - III mark"
-                  onChange={(e) => setInternal_3(e.target.value)}
-                  disabled={deg !== "pg"}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Assignment Mark
-                </label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  placeholder="Enter assignment mark"
-                  onChange={(e) => setAssignment(e.target.value)}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Seminar Mark</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  placeholder="Enter seminar mark"
-                  onChange={(e) => setSeminar(e.target.value)}
-                />
-              </div>
+            {/* Internal Marks */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                Internal - I Mark
+              </label>
+              <input
+                type="number"
+                className="form-control border-primary"
+                placeholder="Enter Internal - I mark"
+                value={Modals ? Internal_1 : Internal_1Up}
+                onChange={(e) =>
+                  Modals
+                    ? setInternal_1(e.target.value)
+                    : setInternal_1Up(e.target.value)
+                }
+              />
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="btn btn-outline-danger" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button
-              variant="btn btn-outline-primary"
-              onClick={() => Calculate(selectedStudent)}
-            >
-              Submit
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      ) : (
-        <Modal show={show} onHide={handleClose} centered>
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title className="w-100 text-center">Update Mark</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row g-3">
-              <div className="col-12">
-                <label className="form-label fw-semibold">Student Name</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Roll Number</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Department</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Subject</label>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  defaultValue={sub}
-                  readOnly
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - I Mark
-                </label>
-                <input
-                  type="number"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - I mark"
-                  value={Internal_1Up}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - II Mark
-                </label>
-                <input
-                  type="number"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - II mark"
-                  value={Internal_2Up}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Internal - III Mark
-                </label>
-                <input
-                  type="number"
-                  className="form-control border-primary"
-                  placeholder="Enter Internal - III mark"
-                  disabled={deg !== "pg"}
-                  value={Internal_3Up}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">
-                  Assignment Mark
-                </label>
-                <input
-                  type="number"
-                  className="form-control border-primary"
-                  placeholder="Enter assignment mark"
-                  value={AssignmentUp}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fw-semibold">Seminar Mark</label>
-                <input
-                  type="number"
-                  className="form-control border-primary"
-                  placeholder="Enter seminar mark"
-                  value={SeminarUp}
-                />
-              </div>
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                Internal - II Mark
+              </label>
+              <input
+                type="number"
+                className="form-control border-primary"
+                placeholder="Enter Internal - II mark"
+                value={Modals ? Internal_2 : Internal_2Up}
+                onChange={(e) =>
+                  Modals
+                    ? setInternal_2(e.target.value)
+                    : setInternal_2Up(e.target.value)
+                }
+              />
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="btn btn-outline-danger" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button
-              variant="btn btn-outline-success"
-              // onClick={() => }
-            >
-              Update Mark
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                Internal - III Mark
+              </label>
+              <input
+                type="number"
+                className="form-control border-primary"
+                placeholder="Enter Internal - III mark"
+                disabled={deg !== "pg"}
+                value={Modals ? Internal_3 : Internal_3Up}
+                onChange={(e) =>
+                  Modals
+                    ? setInternal_3(e.target.value)
+                    : setInternal_3Up(e.target.value)
+                }
+              />
+            </div>
+
+            {/* Assignment and Seminar */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">Assignment Mark</label>
+              <input
+                type="number"
+                className="form-control border-primary"
+                placeholder="Enter assignment mark"
+                value={Modals ? Assignment : AssignmentUp}
+                onChange={(e) =>
+                  Modals
+                    ? setAssignment(e.target.value)
+                    : setAssignmentUp(e.target.value)
+                }
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fw-semibold">Seminar Mark</label>
+              <input
+                type="number"
+                className="form-control border-primary"
+                placeholder="Enter seminar mark"
+                value={Modals ? Seminar : SeminarUp}
+                onChange={(e) =>
+                  Modals
+                    ? setSeminar(e.target.value)
+                    : setSeminarUp(e.target.value)
+                }
+              />
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="btn btn-outline-danger" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant={
+              Modals ? "btn btn-outline-primary" : "btn btn-outline-success"
+            }
+            onClick={() => (Modals ? Calculate(selectedStudent) : UpDBdata())}
+          >
+            {Modals ? "Submit" : "Update Mark"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

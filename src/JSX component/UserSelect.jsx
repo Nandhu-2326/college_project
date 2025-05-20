@@ -3,17 +3,6 @@ import CollegeLogo from "./CollegeLogo";
 import { CiLogout } from "react-icons/ci";
 import { PiStudentBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-// import { RiBook3Line } from "react-icons/ri";
-// import { SiGoogleclassroom } from "react-icons/si";
-// import { db } from "./Database.js";
-// import {
-//   collection,
-//   addDoc,
-//   getDocs,
-//   deleteDoc,
-//   doc,
-//   getDoc,
-// } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 const UserSelect = () => {
@@ -22,7 +11,7 @@ const UserSelect = () => {
   const [selectRs, setSelectRs] = useState();
   const [selectDeg, setSelectDeg] = useState();
   const [selectSem, setSelectSem] = useState();
- 
+
   const InformationError = () => {
     Swal.fire({
       html: "Please Fill Information",
@@ -68,6 +57,9 @@ const UserSelect = () => {
         <div className="row g-4 justify-content-center">
           {/* Regular/Self */}
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              UG or PG
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <PiStudentBold />
@@ -84,6 +76,9 @@ const UserSelect = () => {
             </div>
           </div>
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              Regular or Self
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 RS
@@ -100,6 +95,9 @@ const UserSelect = () => {
             </div>
           </div>
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              Semester
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 Sem
@@ -108,15 +106,13 @@ const UserSelect = () => {
                 className="form-select"
                 onChange={(e) => setSelectSem(e.target.value)}
               >
-              <option value="">--Select Semester--</option>
-               <option value="1">1</option>
-               <option value="2">2</option>
-               <option value="3">3</option>
-               <option value="4">4</option>
-               <option value="5">5</option>
-               <option value="6">6</option>
-               
-               
+                <option value="">--Select Semester--</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
               </select>
             </div>
           </div>

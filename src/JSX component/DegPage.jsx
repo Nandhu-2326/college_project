@@ -106,7 +106,7 @@ const DegPage = () => {
           sec: section,
           sub: subject,
           sem: sems,
-          deg: deg
+          deg: deg,
         },
       });
     }
@@ -117,8 +117,9 @@ const DegPage = () => {
       <CollegeLogo />
       <div className="container py-4 bg-primary mt-3"></div>
       <div className="container mt-5">
-        <div className="row g-5 justify-content-center">
+        <div className="row g-4 justify-content-center">
           <div className="col-12 col-md-5">
+            <lable htmlFor="" className="fw-semibold">Department</lable>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <FaSchool />
@@ -138,6 +139,9 @@ const DegPage = () => {
             </div>
           </div>
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              Class
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <SiGoogleclassroom />
@@ -155,6 +159,9 @@ const DegPage = () => {
             </div>
           </div>
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              Year
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <IoSchoolSharp />
@@ -165,6 +172,9 @@ const DegPage = () => {
             </div>
           </div>
           <div className="col-12 col-md-5">
+            <label htmlFor="" className="fw-semibold">
+              Subject
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <LiaSchoolSolid />
@@ -182,7 +192,7 @@ const DegPage = () => {
               </select>
             </div>
           </div>
-          <div className="d-flex justify-content-center">
+          <div className="d-flex justify-content-center mb-5">
             <button className="btn btn-primary px-5" onClick={SubmitPage}>
               Submit
             </button>
