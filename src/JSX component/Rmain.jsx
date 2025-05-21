@@ -20,7 +20,7 @@ const Rmain = () => {
           <Route path="/" element={<FirstPage />} />
           <Route path="/LoginPage" element={<LoginPage />} />
           <Route path="/UserSelect" element={<UserSelect />} />
-          <Route path="/DegPage" element={ <DegPage/> } />
+          <Route path="/DegPage" element={<DegPage />} />
           <Route path="/CalculatorPage" element={<CalculatorPage />} />
           <Route path="/AdminLogin" element={<AdminLogin />} />
           <Route path="/AdminUserPage" element={<AdminUserPage />}>

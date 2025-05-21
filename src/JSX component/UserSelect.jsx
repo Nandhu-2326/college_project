@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Footer from "./Footer";
 import CollegeLogo from "./CollegeLogo";
 import { CiLogout } from "react-icons/ci";
 import { PiStudentBold } from "react-icons/pi";
@@ -38,15 +39,7 @@ const UserSelect = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="container my-4">
-        <div className="d-flex justify-content-end bg-primary p-3 rounded shadow-sm">
-          <button
-            onClick={() => nav("/")}
-            className="btn btn-outline-light d-flex align-items-center gap-2 fw-semibold"
-          >
-            Logout <CiLogout size={20} />
-          </button>
-        </div>
+      <div className="container mb-5">
         <div className="text-center mt-5 mb-4">
           <h2 className="fw-bold text-primary">Select Student Details</h2>
           <p className="text-muted">
@@ -118,11 +111,12 @@ const UserSelect = () => {
           </div>
         </div>
         <div className="d-flex justify-content-center">
-          <button className="btn btn-primary mt-5 " onClick={next}>
+          <button className="btn btn-primary mt-5 mb-5 " onClick={next}>
             Submit
           </button>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

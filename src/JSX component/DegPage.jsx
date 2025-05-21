@@ -6,7 +6,7 @@ import { IoSchoolSharp } from "react-icons/io5";
 import { LiaSchoolSolid } from "react-icons/lia";
 import { FaSchool } from "react-icons/fa";
 import Swal from "sweetalert2";
-import CalculatorPage from "./CalculatorPage";
+import Footer from "./Footer";
 
 const DegPage = () => {
   const nav = useNavigate();
@@ -115,11 +115,13 @@ const DegPage = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="container py-4 bg-primary mt-3"></div>
+      <Footer />
       <div className="container mt-5">
         <div className="row g-4 justify-content-center">
           <div className="col-12 col-md-5">
-            <lable htmlFor="" className="fw-semibold">Department</lable>
+            <lable htmlFor="" className="fw-semibold">
+              Department
+            </lable>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <FaSchool />
@@ -166,7 +168,7 @@ const DegPage = () => {
               <span className="input-group-text bg-primary text-white fw-bold">
                 <IoSchoolSharp />
               </span>
-              <select className="form-select">
+              <select className="form-select" disabled>
                 <option value={sems}>{sems}</option>
               </select>
             </div>
@@ -193,7 +195,7 @@ const DegPage = () => {
             </div>
           </div>
           <div className="d-flex justify-content-center mb-5">
-            <button className="btn btn-primary px-5" onClick={SubmitPage}>
+            <button className="btn btn-primary px-5 mb-5" onClick={SubmitPage}>
               Submit
             </button>
           </div>

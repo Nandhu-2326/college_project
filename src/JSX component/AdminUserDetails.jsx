@@ -266,7 +266,7 @@ const AdminUserDetails = () => {
       </div>
 
       {/* User Table */}
-      <div className="container mt-4">
+      <div className="container mt-4 mb-5">
         <div className="table-responsive shadow-sm">
           <table className="table table-bordered table-hover table-striped align-middle text-center">
             <thead className="table-primary">

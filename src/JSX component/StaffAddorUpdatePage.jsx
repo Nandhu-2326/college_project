@@ -17,6 +17,7 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import Footer from "./Footer.jsx";
 
 const StaffAddorUpdatePage = () => {
   // State's
@@ -266,7 +267,7 @@ const StaffAddorUpdatePage = () => {
       </div>
 
       {/* User Table */}
-      <div className="container mt-4">
+      <div className="container mt-4 mb-5">
         <div className="table-responsive shadow-sm">
           <table className="table table-bordered table-hover table-striped align-middle text-center">
             <thead className="table-primary">
@@ -310,6 +311,7 @@ const StaffAddorUpdatePage = () => {
           </table>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

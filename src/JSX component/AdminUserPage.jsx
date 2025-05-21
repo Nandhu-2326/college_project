@@ -1,11 +1,11 @@
 import CollegeLogo from "./CollegeLogo";
+import Footer from "./Footer";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserGraduate, FaUserPlus, FaUserShield } from "react-icons/fa";
 import { useState } from "react";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Outlet, useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
 
 const AdminUserPage = () => {
   let nav = useNavigate();
@@ -21,7 +21,7 @@ const AdminUserPage = () => {
     <>
       <CollegeLogo />
       {/* Mobile Nav */}
-      <div className="container my-3">
+      <div className="container my-3 d-sm-none">
         <div className="bg-primary  d-flex justify-content-sm-between justify-content-between align-items-center  p-2 rounded">
           <span
             onClick={handleShow}
@@ -30,19 +30,6 @@ const AdminUserPage = () => {
           >
             <GiHamburgerMenu className="text-light" />
           </span>
-          <span
-            className="fs-5 text-light d-none d-sm-block"
-            onClick={home}
-            style={{ cursor: "pointer" }}
-          >
-            <FaArrowLeft />
-          </span>
-          <button
-            onClick={home}
-            className="btn btn-outline-light px-4 fw-semibold shadow-sm justify-content-start d-flex justify-content-sm-end"
-          >
-            Home
-          </button>
         </div>
       </div>
 
@@ -85,6 +72,7 @@ const AdminUserPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
@@ -94,7 +82,7 @@ const MenuItems = () => {
 
   return (
     <>
-      <div className="container d-sm-flex justify-content-around align-items-center">
+      <div className="container d-sm-flex justify-content-around mb-5 align-items-center">
         <Dropdown className=" d-flex w-25 mt-sm-3">
           <Dropdown.Toggle
             variant="light"

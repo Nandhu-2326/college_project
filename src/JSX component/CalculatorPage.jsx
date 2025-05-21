@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { GiSpellBook } from "react-icons/gi";
+import Footer from "./Footer.jsx";
 
 const CalculatorPage = () => {
   const [Modals, setModal] = useState(true);
@@ -346,17 +347,17 @@ const CalculatorPage = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="container mt-5">
+      <div className="container mt-5 ">
         <div className="text-center mb-4">
           <h2 className="fw-bold text-primary">Student Details List</h2>
         </div>
 
-        <div className="row g-4">
+        <div className="row g-4 mb-5">
           {studentList.length > 0 ? (
             studentList.map((student) => (
-              <div className="col-md-6 col-lg-4" key={student.id}>
-                <div className="card shadow-sm border-primary h-100">
-                  <div className="card-body">
+              <div className="col-md-6 col-lg-4 " key={student.id}>
+                <div className="card shadow-sm border-primary h-100 ">
+                  <div className="card-body ">
                     <h5 className="card-title fw-bold text-primary">
                       {student.Name}
                     </h5>
@@ -411,7 +412,17 @@ const CalculatorPage = () => {
             // <div>{ResultData.Name}</div>
             <div>
               {studentResulstData.map((value) => (
-                <div key={value.id}>
+                <div
+                  key={value.id}
+                  className="border border-3 border-info p-2 rounded"
+                >
+                  <p
+                    className="text-center bg-primary text-white text-uppercase"
+                    style={{ letterSpacing: "5px" }}
+                  >
+                    {" "}
+                    Student Details
+                  </p>
                   <p
                     className="text-primary fw-bold"
                     style={{ letterSpacing: "3px" }}
@@ -420,8 +431,87 @@ const CalculatorPage = () => {
                   </p>
                   <p>
                     {" "}
+                    <strong className="text-info"> Rollno </strong> :
+                    {value.rollno.toUpperCase()}
+                  </p>
+                  <p>
+                    {" "}
                     <strong className="text-info"> Degree </strong> :
                     {value.ugorpg.toUpperCase()}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Department </strong> :
+                    {value.Department}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> R / S </strong> :
+                    {value.rs.toUpperCase()}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Year </strong> :
+                    {value.year.toUpperCase()}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Class </strong> :
+                    {value.class.toUpperCase()}
+                  </p>
+                </div>
+              ))}
+              {ResultData.map((value) => (
+                <div
+                  key={value.id}
+                  className="border border-3 border-info p-2 rounded mt-2"
+                >
+                  <p
+                    className="text-center bg-primary text-white text-uppercase"
+                    style={{ letterSpacing: "5px" }}
+                  >
+                    {" "}
+                    Mark Details
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Subject </strong> :
+                    {value.subject}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Internal - I </strong> :
+                    {value.InternalDB_1}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Internal - II </strong> :
+                    {value.InternalDB_2}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Internal - III </strong> :
+                    {deg == "pg" ? value.InternalDB_3 : "---"}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Assignment </strong> :
+                    {value.AssignmentMark}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Seminar </strong> :
+                    {value.SeminarMark}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Average </strong> :
+                    {value.Average}
+                  </p>
+                  <p>
+                    {" "}
+                    <strong className="text-info"> Total </strong> :
+                    {value.Total}
                   </p>
                 </div>
               ))}
@@ -576,6 +666,7 @@ const CalculatorPage = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <Footer />
     </>
   );
 };

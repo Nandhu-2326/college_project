@@ -3,10 +3,11 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { FcDepartment } from "react-icons/fc";
 import { BsCalendar2Week } from "react-icons/bs";
 import { TbNumber } from "react-icons/tb";
+// import Footer from "./Footer";
 
 const SingleStudent = () => {
   return (
-    <div className="container py-5">
+    <div className="container py-5 mb-5">
       <div className="bg-light ">
         <h4 className="text-primary mb-4 text-center fw-bold">
           🎓 Student Information Form

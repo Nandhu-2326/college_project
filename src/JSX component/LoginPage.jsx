@@ -1,4 +1,5 @@
 import CollegeLogo from "./CollegeLogo";
+import Footer from "./Footer";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle, FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -100,22 +101,7 @@ const LoginPage = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="container my-4">
-        {/* Header */}
-        <div className="row">
-          <div className="col-12 bg-primary text-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center">
-            <span onClick={home} className="fs-5" style={{ cursor: "pointer" }}>
-              <FaArrowLeft />
-            </span>
-            <button
-              onClick={home}
-              className="btn btn-outline-light px-4 fw-semibold shadow-sm"
-            >
-              Home
-            </button>
-          </div>
-        </div>
-
+      <div className="container my-4 mb-5">
         {/* Login Form */}
         <div className="row justify-content-center mt-5">
           <div className="col-12 text-center mb-4">
@@ -179,6 +165,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

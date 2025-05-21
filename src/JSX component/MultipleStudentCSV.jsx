@@ -67,8 +67,8 @@ const MultipleStudentCSV = () => {
           }
           UserAdd();
           console.log("Uploading:", csvfile.name);
-        }
-      } catch(e) {
+        };
+      } catch (e) {
         console.log(e.message);
       }
     }
@@ -76,7 +76,7 @@ const MultipleStudentCSV = () => {
   };
 
   return (
-    <div className="d-flex  justify-content-center align-items-center bg-light">
+    <div className="d-flex  justify-content-center align-items-center bg-light mb-5">
       <div className="card p-3 shadow-lg rounded-4">
         <h3 className="text-primary text-center fw-bold mb-4">
           📄 Upload CSV File

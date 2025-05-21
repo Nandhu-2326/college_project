@@ -1,6 +1,7 @@
 import CollegeLogo from "./CollegeLogo";
+import Footer from "./Footer";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { FaUserCircle, FaArrowLeft } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
@@ -10,10 +11,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
 const AdminLogin = () => {
-  let nav = useNavigate();
-  let home = () => {
-    nav("/");
-  };
+  const nav = useNavigate();
   const [userName, SetUserName] = useState();
   const [Password, SetPassword] = useState();
   const [data, setData] = useState();
@@ -30,7 +28,7 @@ const AdminLogin = () => {
     };
     fetchData();
   }, []);
-  
+
   const loading = () => {
     let timerInterval;
     Swal.fire({
@@ -100,22 +98,8 @@ const AdminLogin = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="container my-4">
-        {/* Header */}
-        <div className="row">
-          <div className="col-12 bg-primary text-white p-2 rounded shadow-sm d-flex justify-content-between align-items-center">
-            <span className="fs-5" onClick={home} style={{ cursor: "pointer" }}>
-              <FaArrowLeft />
-            </span>
-            <button
-              onClick={home}
-              className="btn btn-outline-light px-4 fw-semibold shadow-sm"
-            >
-              Home
-            </button>
-          </div>
-        </div>
 
+      <div className="container my-4">
         {/* Login Form */}
         <div className="row justify-content-center mt-5">
           <div className="col-12 text-center mb-4">
@@ -149,7 +133,7 @@ const AdminLogin = () => {
                   placeholder="Password"
                   onChange={(e) => SetPassword(e.target.value)}
                 />
-                 <span className="input-group-text bg-primary text-light">
+                <span className="input-group-text bg-primary text-light">
                   {PasswordEye ? (
                     <FaEyeSlash
                       onClick={() => {
@@ -174,6 +158,7 @@ const AdminLogin = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
