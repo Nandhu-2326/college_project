@@ -409,7 +409,6 @@ const CalculatorPage = () => {
         </Modal.Header>
         <Modal.Body>
           {ResultData && studentResulstData ? (
-            // <div>{ResultData.Name}</div>
             <div>
               {studentResulstData.map((value) => (
                 <div
