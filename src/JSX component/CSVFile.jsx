@@ -3,6 +3,7 @@ import CollegeLogo from "./CollegeLogo";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs, doc } from "firebase/firestore";
+import { PiStudentFill } from "react-icons/pi";
 import Swal from "sweetalert2";
 
 const CSVFile = () => {
@@ -98,6 +99,11 @@ const CSVFile = () => {
           <button className="btn btn-outline-success" onClick={exportToCSV}>
             Download CSV
           </button>
+          <div>
+            <strong className="text-uppercase" style={{ fontSize: "25px" }}>
+              <PiStudentFill /> - {studentDetails.length}{" "}
+            </strong>
+          </div>
         </div>
 
         {studentDetails.length > 0 ? (
