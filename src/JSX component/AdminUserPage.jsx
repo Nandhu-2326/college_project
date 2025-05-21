@@ -9,9 +9,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const AdminUserPage = () => {
   let nav = useNavigate();
-  let home = () => {
-    nav("/");
-  };
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -137,6 +134,23 @@ const MenuItems = () => {
               onClick={() => nav("/AdminUserPage/AdminUserDetails")}
             >
               Admin Details
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <Dropdown className="w-25 mt-3">
+          <Dropdown.Toggle
+            variant="light"
+            className=" text-start d-flex align-items-center"
+          >
+            <FaUserShield className="me-2" />
+            Department
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item
+              href="#"
+              onClick={() => nav("/AdminUserPage/Departments")}
+            >
+              Department
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

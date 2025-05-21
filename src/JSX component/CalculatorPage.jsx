@@ -4,7 +4,7 @@ import { MdOutlineSystemUpdateAlt } from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { use, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { db } from "./Database.js";
 import {
   addDoc,
@@ -19,6 +19,7 @@ import { GiSpellBook } from "react-icons/gi";
 import Footer from "./Footer.jsx";
 
 const CalculatorPage = () => {
+  const nav = useNavigate();
   const [Modals, setModal] = useState(true);
   const [show, setShow] = useState(false);
   const [result, setResult] = useState(false);
@@ -348,6 +349,23 @@ const CalculatorPage = () => {
     <>
       <CollegeLogo />
       <div className="container mt-5 ">
+        <div className="d-flex justify-content-end mb-4 ">
+          <button
+            className="btn btn-outline-success btn-sm "
+            onClick={() => {
+              nav("/CSVFile", {
+                state: {
+                  dep: dep,
+                  sec: sec,
+                  sub: sub,
+                  sem: sem,
+                  deg: deg,
+                }});
+            }}
+          >
+            View Result's
+          </button>
+        </div>
         <div className="text-center mb-4">
           <h2 className="fw-bold text-primary">Student Details List</h2>
         </div>
