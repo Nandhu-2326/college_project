@@ -107,6 +107,7 @@ const CalculatorPage = () => {
         }
       } else {
         Swal.fire("Info", "No mark data found for this subject", "info");
+        handleClose();
       }
     } catch (error) {
       console.error("Error fetching student marks:", error);
@@ -360,7 +361,8 @@ const CalculatorPage = () => {
                   sub: sub,
                   sem: sem,
                   deg: deg,
-                }});
+                },
+              });
             }}
           >
             View Result's

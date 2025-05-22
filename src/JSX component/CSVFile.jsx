@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import CollegeLogo from "./CollegeLogo";
+import Footer from "./Footer";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs, doc } from "firebase/firestore";
@@ -181,6 +182,7 @@ const CSVFile = () => {
           </p>
         )}
       </div>
+      <Footer />
     </>
   );
 };

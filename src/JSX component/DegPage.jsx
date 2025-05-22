@@ -7,6 +7,8 @@ import { LiaSchoolSolid } from "react-icons/lia";
 import { FaSchool } from "react-icons/fa";
 import Swal from "sweetalert2";
 import Footer from "./Footer";
+import { db } from "./Database.js"; // Make sure this is your Firebase config
+import { collection, getDocs } from "firebase/firestore";
 
 const DegPage = () => {
   const nav = useNavigate();
@@ -18,74 +20,56 @@ const DegPage = () => {
   const [subject, setSubject] = useState();
   const [dep, setDep] = useState();
 
-  const Regulardepartments = [
-    "Department of English",
-    "Department of Tamil",
-    "Department of Hindi",
-    "Department of Sanskrit",
-    "Department of Commerce and Research Centre",
-    "Department of Business Administration",
-    "Department of Economics",
-    "Department of Mathematics",
-    "Department of Physics",
-    "Department of Chemistry",
-    "Department of Botany",
-    "Department of Corporate Secretaryship",
-    "Department of Computer Science",
-    "Department of Library",
-    "Department of Physical Education",
-  ];
-  const Selfdepartments = [
-    "Department of English (SF)",
-    "Department of Tamil (SF)",
-    "Department of Hindi (SF)",
-    "Department of Sanskrit (SF)",
-    "Department of Biochemistry (SF)",
-    "Department of Microbiology (SF)",
-    "Department of Commerce (SF)",
-    "Department of Computer Science (SF)",
-    "Department of Information Technology (SF)",
-    "Department of Computer Applications (SF)",
-    "Department of Mathematics With Computer Application (SF)",
-    "Department of Physics (SF)",
-  ];
-
-  const SelfPGdepartments = [
-    "Department of Management Studies (M.B.A.) (SF)",
-    "Department of Computer Application (M.C.A.) (SF)",
-  ];
-
-  const RegularPGdepartments = ["M.Com"];
-
   useEffect(() => {
-    const all = () => {
-      if (rs === "self" && deg === "ug") {
-        setDepartment(Selfdepartments);
-      } else if (rs === "regular" && deg === "ug") {
-        setDepartment(Regulardepartments);
-      } else if (rs === "self" && deg === "pg") {
-        setDepartment(SelfPGdepartments);
-      } else if (rs === "regular" && deg === "pg") {
-        setDepartment(RegularPGdepartments);
-      } else {
-        setDepartment([]);
+    const all = async () => {
+      let depDegree = "";
+
+      try {
+        if (rs === "self" && deg === "ug") {
+          depDegree = "SelfUG";
+        } else if (rs === "regular" && deg === "ug") {
+          depDegree = "RegularUG";
+        } else if (rs === "self" && deg === "pg") {
+          depDegree = "SelfPG";
+        } else if (rs === "regular" && deg === "pg") {
+          depDegree = "RegularPG";
+        } else {
+          setDepartment([]);
+          return;
+        }
+        const getDeps = await getDocs(collection(db, "Departments"));
+        const Datas = getDeps.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        const findData = Datas.find((item) => item.id === depDegree);
+        if (findData) {
+          const departmentNames = Object.keys(findData).filter(
+            (key) => key !== "id"
+          );
+          setDepartment(departmentNames);
+        } else {
+          setDepartment([]);
+        }
+      } catch (e) {
+        alert("Error fetching departments: " + e.message);
       }
     };
 
     all();
-    const semester = () => {
-      if (sem == 1 || sem == 2) {
-        setSem(1);
-      } else if (sem == 3 || sem == 4) {
-        setSem(2);
-      } else if (sem == 5 || sem == 6) {
-        setSem(3);
-      } else {
-        setSem("Invalid");
-      }
-    };
-    semester();
-  }, [rs, deg, sem]);
+  }, [rs, deg]);
+  useEffect(() => {
+    if (sem == 1 || sem == 2) {
+      setSem(1);
+    } else if (sem == 3 || sem == 4) {
+      setSem(2);
+    } else if (sem == 5 || sem == 6) {
+      setSem(3);
+    } else {
+      setSem("Invalid");
+    }
+  }, [sem]);
 
   const InformationError = () => {
     Swal.fire({
@@ -132,6 +116,7 @@ const DegPage = () => {
                   setDep(e.target.value);
                 }}
               >
+                <option value="">-- Select Department --</option>
                 {department.map((dep, index) => (
                   <option value={dep.trim()} key={index}>
                     {dep}

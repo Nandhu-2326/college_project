@@ -1,12 +1,25 @@
-import React, { useState } from "react";
-import { db } from "./Database.js";
-import { doc, updateDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { db } from "./Database.js"; // Make sure this is your Firebase config
+import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
-  const [rs, setRs] = useState("");
-  const [deps, setDeps] = useState("");
+  const [rs, setRs] = useState(""); // Selected category
+  const [deps, setDeps] = useState(""); // Department name input
+
+  useEffect(() => {
+    const getDep = async () => {
+      const getDeps = await getDocs(collection(db, "Departments"));
+      const Datas = getDeps.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const findData = Datas.find((id)=> id.id == "RegularUG" )
+      console.log(findData);
+    };
+    getDep();
+  }, []);
 
   const showError = () => {
     Swal.fire({
@@ -18,30 +31,37 @@ const Departments = () => {
     });
   };
 
+  const showSuccess = () => {
+    Swal.fire({
+      icon: "success",
+      title: "Department Added!",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+  };
+
   const addDep = async () => {
     if (!rs || !deps) {
       showError();
     } else {
       try {
-        const docs= doc(db, "Departments", rs)
-        await updateDoc(docs,{
-            dep: deps
-        })
-        Swal.fire({
-          icon: "success",
-          title: "Department Added!",
-          showConfirmButton: false,
-          timer: 1000,
-        });
-        setDeps("");
+        await setDoc(
+          doc(db, "Departments", rs),
+          {
+            [deps]: deps, // Add new department field
+          },
+          { merge: true } // Merge with existing fields
+        );
+        showSuccess();
+        setDeps(""); // Clear input
       } catch (error) {
-        console.error("Error adding department:", error);
+        console.error("Error adding department:", error.message);
       }
     }
   };
 
   return (
-    <div className="">
+    <div className="container mt-5 mb-3">
       <div className="row g-3 d-flex justify-content-center align-items-center flex-column">
         <div className="col-12 col-sm-4 text-start">
           <label className="fw-bold text-primary">
@@ -60,6 +80,7 @@ const Departments = () => {
             ))}
           </select>
         </div>
+
         <div className="col-12 col-sm-4 text-start">
           <label className="fw-bold text-primary">Enter Department Name</label>
           <input
@@ -70,10 +91,13 @@ const Departments = () => {
             onChange={(e) => setDeps(e.target.value)}
           />
         </div>
+
+        <div className="col-12 col-sm-4 text-center">
+          <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
+            Submit
+          </button>
+        </div>
       </div>
-      <button className="btn btn-primary px-5 mt-3 mb-5" onClick={addDep}>
-        Submit
-      </button>
     </div>
   );
 };
