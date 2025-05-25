@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { db } from "./Database.js"; // Make sure this is your Firebase config
+import { db } from "./Database.js"; 
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
-  const [rs, setRs] = useState(""); // Selected category
-  const [deps, setDeps] = useState(""); // Department name input
+  const [rs, setRs] = useState(""); 
+  const [deps, setDeps] = useState(""); 
 
   useEffect(() => {
     const getDep = async () => {
@@ -15,8 +15,7 @@ const Departments = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      const findData = Datas.find((id)=> id.id == "RegularUG" )
-      console.log(findData);
+
     };
     getDep();
   }, []);

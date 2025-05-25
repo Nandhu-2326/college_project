@@ -41,7 +41,7 @@ const AdminUserPage = () => {
           <Offcanvas.Title className="fw-bold">Admin Panel</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <MenuItems />
+          <MenuItems handleClose={handleClose} />
         </Offcanvas.Body>
       </Offcanvas>
 
@@ -74,9 +74,8 @@ const AdminUserPage = () => {
   );
 };
 
-const MenuItems = () => {
+const MenuItems = ({ handleClose }) => {
   let nav = useNavigate();
-
   return (
     <>
       <div className="container d-sm-flex justify-content-around mb-5 align-items-center">
@@ -91,12 +90,17 @@ const MenuItems = () => {
           <Dropdown.Menu className="">
             <Dropdown.Item
               href=""
-              onClick={() => nav("/AdminUserPage/SingleStudent")}
+              onClick={() => {
+                nav("/AdminUserPage/SingleStudent");
+                handleClose();
+              }}
             >
               Single Student
             </Dropdown.Item>
             <Dropdown.Item
-              onClick={() => nav("/AdminUserPage/MultipleStudentCSV")}
+              onClick={() => {
+                nav("/AdminUserPage/MultipleStudentCSV"), handleClose();
+              }}
             >
               Multiple Student
             </Dropdown.Item>
@@ -113,7 +117,9 @@ const MenuItems = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => nav("/AdminUserPage/StaffAddorUpdatePage")}
+              onClick={() => {nav("/AdminUserPage/StaffAddorUpdatePage"),
+              handleClose()
+            }}
             >
               User Details
             </Dropdown.Item>
@@ -131,7 +137,9 @@ const MenuItems = () => {
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => nav("/AdminUserPage/AdminUserDetails")}
+              onClick={() => {nav("/AdminUserPage/AdminUserDetails"),
+              handleClose()
+            }}
             >
               Admin Details
             </Dropdown.Item>
@@ -143,14 +151,24 @@ const MenuItems = () => {
             className=" text-start d-flex align-items-center"
           >
             <FaUserShield className="me-2" />
-            Department
+            Department and Subject
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => nav("/AdminUserPage/Departments")}
+              onClick={() => {nav("/AdminUserPage/Departments"), 
+              handleClose()
+            }}
             >
               Department
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={() =>{ nav("/AdminUserPage/Subject"),
+              handleClose()
+            }}
+            >
+              Subject
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

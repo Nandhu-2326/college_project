@@ -13,6 +13,7 @@ import StaffAddorUpdatePage from "./StaffAddorUpdatePage";
 import DegPage from "./DegPage";
 import CSVFile from "./CSVFile";
 import Departments from "./Departments";
+import Subject from "./Subject";
 
 const Rmain = () => {
   return (
@@ -30,7 +31,8 @@ const Rmain = () => {
             <Route path="SingleStudent" element={<SingleStudent />} />
             <Route path="MultipleStudentCSV" element={<MultipleStudentCSV />} />
             <Route path="AdminUserDetails" element={<AdminUserDetails />} />
-            <Route path="Departments" element={<Departments/>} />
+            <Route path="Departments" element={<Departments />} />
+            <Route path="Subject" element={ <Subject/> } />
             <Route
               path="StaffAddorUpdatePage"
               element={<StaffAddorUpdatePage />}

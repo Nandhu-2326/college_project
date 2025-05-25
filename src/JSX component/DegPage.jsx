@@ -17,8 +17,9 @@ const DegPage = () => {
   const [department, setDepartment] = useState([]);
   const [sems, setSem] = useState();
   const [section, setSection] = useState();
-  const [subject, setSubject] = useState();
+  const [subject, setSubject] = useState([]);
   const [dep, setDep] = useState();
+  const [selectedSubject, setSelectedSubject] = useState();
 
   useEffect(() => {
     const all = async () => {
@@ -37,6 +38,7 @@ const DegPage = () => {
           setDepartment([]);
           return;
         }
+
         const getDeps = await getDocs(collection(db, "Departments"));
         const Datas = getDeps.docs.map((doc) => ({
           id: doc.id,
@@ -52,6 +54,22 @@ const DegPage = () => {
         } else {
           setDepartment([]);
         }
+
+        const subgetDeps = await getDocs(collection(db, "Subject"));
+        const subDatas = subgetDeps.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        const subfindData = subDatas.find((item) => item.id === depDegree);
+        if (subfindData) {
+          const SubjectNames = Object.keys(subfindData).filter(
+            (key) => key !== "id"
+          );
+          setSubject(SubjectNames);
+        } else {
+          setSubject([]);
+        }
       } catch (e) {
         alert("Error fetching departments: " + e.message);
       }
@@ -59,6 +77,7 @@ const DegPage = () => {
 
     all();
   }, [rs, deg]);
+
   useEffect(() => {
     if (sem == 1 || sem == 2) {
       setSem(1);
@@ -81,14 +100,14 @@ const DegPage = () => {
   };
 
   function SubmitPage() {
-    if (!department || !section || !subject || !sems) {
+    if (!dep || !section || !selectedSubject || !sems) {
       InformationError();
     } else {
       nav("/CalculatorPage", {
         state: {
           dep: dep,
           sec: section,
-          sub: subject,
+          sub: selectedSubject,
           sem: sems,
           deg: deg,
         },
@@ -103,9 +122,9 @@ const DegPage = () => {
       <div className="container mt-5">
         <div className="row g-4 justify-content-center">
           <div className="col-12 col-md-5">
-            <lable htmlFor="" className="fw-semibold">
+            <label htmlFor="" className="fw-semibold">
               Department
-            </lable>
+            </label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <FaSchool />
@@ -168,14 +187,14 @@ const DegPage = () => {
               </span>
               <select
                 className="form-select"
-                onChange={(e) => setSubject(e.target.value)}
+                onChange={(e) => setSelectedSubject(e.target.value)}
               >
-                <option value="">--Select Subject</option>
-                <option value="Tamil">Tamil</option>
-                <option value="English">English</option>
-                <option value="Web Technology">Web Technology</option>
-                <option value="Web Design Lab">Web Design Lab</option>
-                <option value="Data Mining">Data Mining</option>
+                <option value="">-- Select Subject --</option>
+                {subject.map((subs, index) => (
+                  <option value={subs} key={index}>
+                    {subs}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
