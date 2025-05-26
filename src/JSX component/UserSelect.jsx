@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Footer from "./Footer";
 import CollegeLogo from "./CollegeLogo";
-import { CiLogout } from "react-icons/ci";
+
 import { PiStudentBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const UserSelect = () => {
-  let nav = useNavigate();
-  // state
-  const [selectRs, setSelectRs] = useState();
-  const [selectDeg, setSelectDeg] = useState();
-  const [selectSem, setSelectSem] = useState();
+  const nav = useNavigate();
+
+  // state for selections
+  const [selectRs, setSelectRs] = useState("");
+  const [selectDeg, setSelectDeg] = useState("");
+  const [selectSem, setSelectSem] = useState("");
+
+  // static list of semesters
+  const semesterList = ["1", "2", "3", "4", "5", "6"];
 
   const InformationError = () => {
     Swal.fire({
@@ -22,7 +26,6 @@ const UserSelect = () => {
     });
   };
 
-  // function's
   const next = () => {
     if (!selectDeg || !selectRs || !selectSem) {
       InformationError();
@@ -36,30 +39,27 @@ const UserSelect = () => {
       });
     }
   };
+
   return (
     <>
       <CollegeLogo />
       <div className="container mb-5">
         <div className="text-center mt-5 mb-4">
           <h2 className="fw-bold text-primary">Select Student Details</h2>
-          <p className="text-muted">
-            Please choose all the required fields below
-          </p>
+          <p className="text-muted">Please choose all the required fields below</p>
         </div>
 
         <div className="row g-4 justify-content-center">
-          {/* Regular/Self */}
+          {/* UG or PG */}
           <div className="col-12 col-md-5">
-            <label htmlFor="" className="fw-semibold">
-              UG or PG
-            </label>
+            <label className="fw-semibold">UG or PG</label>
             <div className="input-group shadow-sm">
               <span className="input-group-text bg-primary text-white fw-bold">
                 <PiStudentBold />
               </span>
-
               <select
                 className="form-select"
+                value={selectDeg}
                 onChange={(e) => setSelectDeg(e.target.value)}
               >
                 <option value="">-- Select UG or PG --</option>
@@ -68,17 +68,15 @@ const UserSelect = () => {
               </select>
             </div>
           </div>
-          <div className="col-12 col-md-5">
-            <label htmlFor="" className="fw-semibold">
-              Regular or Self
-            </label>
-            <div className="input-group shadow-sm">
-              <span className="input-group-text bg-primary text-white fw-bold">
-                RS
-              </span>
 
+          {/* Regular or Self */}
+          <div className="col-12 col-md-5">
+            <label className="fw-semibold">Regular or Self</label>
+            <div className="input-group shadow-sm">
+              <span className="input-group-text bg-primary text-white fw-bold">RS</span>
               <select
                 className="form-select"
+                value={selectRs}
                 onChange={(e) => setSelectRs(e.target.value)}
               >
                 <option value="">-- Select Regular or Self --</option>
@@ -87,31 +85,30 @@ const UserSelect = () => {
               </select>
             </div>
           </div>
+
+          {/* Semester */}
           <div className="col-12 col-md-5">
-            <label htmlFor="" className="fw-semibold">
-              Semester
-            </label>
+            <label className="fw-semibold">Semester</label>
             <div className="input-group shadow-sm">
-              <span className="input-group-text bg-primary text-white fw-bold">
-                Sem
-              </span>
+              <span className="input-group-text bg-primary text-white fw-bold">Sem</span>
               <select
                 className="form-select"
+                value={selectSem}
                 onChange={(e) => setSelectSem(e.target.value)}
               >
                 <option value="">--Select Semester--</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
+                {semesterList.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
         </div>
+
         <div className="d-flex justify-content-center">
-          <button className="btn btn-primary mt-5 mb-5 " onClick={next}>
+          <button className="btn btn-primary mt-5 mb-5" onClick={next}>
             Submit
           </button>
         </div>

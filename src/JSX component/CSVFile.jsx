@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 
 const CSVFile = () => {
   const location = useLocation();
-  const { dep, sem, sub, deg } = location.state;
+  const { dep, sem, sub, deg, year } = location.state;
   const [studentDetails, setStudentDetails] = useState([]);
 
   const loading = () => {
@@ -24,7 +24,7 @@ const CSVFile = () => {
   useEffect(() => {
     loading();
     getData();
-  }, [dep, sem, sub, deg]);
+  }, [dep, sem, sub, deg, year]);
 
   const getData = async () => {
     try {

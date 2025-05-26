@@ -27,10 +27,10 @@ const Footer = () => {
                 />
                 <p className="text-primary ">Admin</p>
               </div>
-              <div className="d-flex mt-1 mx-2 justify-content-center px-3 flex-column align-items-center">
+              <div className="d-flex mt-1 mx-2 justify-content-center px-3  flex-column align-items-center">
                 <SiHomeadvisor
                   style={{ fontSize: "35px" }}
-                  className=" text-primary"
+                  className=" text-primary "
                   onClick={() => {
                     nav("/");
                   }}

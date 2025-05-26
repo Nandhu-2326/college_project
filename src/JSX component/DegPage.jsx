@@ -15,7 +15,7 @@ const DegPage = () => {
   const location = useLocation();
   const { rs, deg, sem } = location.state;
   const [department, setDepartment] = useState([]);
-  const [sems, setSem] = useState();
+  const [year, setYear] = useState();
   const [section, setSection] = useState();
   const [subject, setSubject] = useState([]);
   const [dep, setDep] = useState();
@@ -80,13 +80,13 @@ const DegPage = () => {
 
   useEffect(() => {
     if (sem == 1 || sem == 2) {
-      setSem(1);
+      setYear(1);
     } else if (sem == 3 || sem == 4) {
-      setSem(2);
+      setYear(2);
     } else if (sem == 5 || sem == 6) {
-      setSem(3);
+      setYear(3);
     } else {
-      setSem("Invalid");
+      setYear("Invalid");
     }
   }, [sem]);
 
@@ -100,7 +100,7 @@ const DegPage = () => {
   };
 
   function SubmitPage() {
-    if (!dep || !section || !selectedSubject || !sems) {
+    if (!dep || !section || !selectedSubject || !sem) {
       InformationError();
     } else {
       nav("/CalculatorPage", {
@@ -108,8 +108,9 @@ const DegPage = () => {
           dep: dep,
           sec: section,
           sub: selectedSubject,
-          sem: sems,
+          sem: sem,
           deg: deg,
+          Year: year
         },
       });
     }
@@ -173,7 +174,7 @@ const DegPage = () => {
                 <IoSchoolSharp />
               </span>
               <select className="form-select" disabled>
-                <option value={sems}>{sems}</option>
+                <option value={year}>{year}</option>
               </select>
             </div>
           </div>

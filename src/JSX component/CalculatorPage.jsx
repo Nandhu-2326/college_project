@@ -3,8 +3,9 @@ import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineSystemUpdateAlt } from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaUserGraduate } from "react-icons/fa";
 import { db } from "./Database.js";
 import {
   addDoc,
@@ -25,12 +26,15 @@ const CalculatorPage = () => {
   const [result, setResult] = useState(false);
   const [studentList, setStudentList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchText, setSearchText] = useState("");
+
   // Studan Mark
   const [Internal_1, setInternal_1] = useState();
   const [Internal_2, setInternal_2] = useState();
   const [Internal_3, setInternal_3] = useState();
   const [Assignment, setAssignment] = useState();
   const [Seminar, setSeminar] = useState();
+  const [semesterFinal, setSemesterFinal] = useState();
 
   // Update Mark
   const [Internal_1Up, setInternal_1Up] = useState();
@@ -47,7 +51,8 @@ const CalculatorPage = () => {
   const [studentResulstData, setStudentResultData] = useState([]);
   // function's
   const location = useLocation();
-  const { dep, sem, sub, deg, sec } = location.state;
+  const { dep, sem, sub, deg, sec, Year } = location.state;
+
   const handleClose = () => {
     setShow(false);
     setResult(false);
@@ -231,8 +236,9 @@ const CalculatorPage = () => {
         ...doc.data(),
       }));
       const filter = filteredData.filter((val) => {
-        return val.Department == dep && val.year == sem && val.class == sec;
+        return val.Department == dep && val.year == Year && val.class == sec;
       });
+      console.log(filter);
       setStudentList(filter);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
@@ -249,10 +255,20 @@ const CalculatorPage = () => {
     });
   };
 
+  const semesterDetails = () => {
+    console.log(sem);
+    const semester = sem >= 1 && sem <= 6 ? `semester_${sem}` : null;
+    setSemesterFinal(semester);
+  };
+
+  console.log(semesterFinal);
+
   useEffect(() => {
     loading();
     getFilteredStudents();
-  }, [dep, sem]);
+    semesterDetails();
+  }, [dep, sem, Year]);
+  console.log(sem);
 
   const Calculate = async (selectedStudent) => {
     if (deg == "pg") {
@@ -361,6 +377,7 @@ const CalculatorPage = () => {
                   sub: sub,
                   sem: sem,
                   deg: deg,
+                  Year: Year,
                 },
               });
             }}
@@ -368,56 +385,78 @@ const CalculatorPage = () => {
             View Result's
           </button>
         </div>
+        <div className="row mb-3 d-flex justify-content-center align-items-center">
+          <div className="col-12 col-sm-5 ">
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder="Search Student"
+                className="form-control"
+                style={{ textTransform: "uppercase" }}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value.toUpperCase())}
+              />
+              <span className="input-group-text bg-primary text-light">
+                <FaUserGraduate />
+              </span>
+            </div>
+          </div>
+        </div>
         <div className="text-center mb-4">
           <h2 className="fw-bold text-primary">Student Details List</h2>
         </div>
-
         <div className="row g-4 mb-5">
-          {studentList.length > 0 ? (
-            studentList.map((student) => (
-              <div className="col-md-6 col-lg-4 " key={student.id}>
-                <div className="card shadow-sm border-primary h-100 ">
-                  <div className="card-body ">
-                    <h5 className="card-title fw-bold text-primary">
-                      {student.Name}
-                    </h5>
-                    <p className="card-text mb-1">
-                      <strong>Roll No:</strong> {student.rollno.toUpperCase()}
-                    </p>
-                    <p className="card-text mb-1">
-                      <strong>Department:</strong> {student.Department}
-                    </p>
-                    <p className="card-text mb-2">
-                      <strong>Subject:</strong> {sub}
-                    </p>
-                    <div className="d-flex justify-content-between mt-3">
-                      <button
-                        className="btn btn-outline-success btn-sm"
-                        onClick={() => handleShow(student)}
-                      >
-                        <BiSolidEdit /> Enter Mark
-                      </button>
-                      <button
-                        className="btn d-flex align-items-center btn-outline-info "
-                        onClick={() => {
-                          viewResult(student.id);
-                        }}
-                      >
-                        <GiSpellBook /> Result
-                      </button>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        onClick={() => UpdateStudent(student.id)}
-                      >
-                        <MdOutlineSystemUpdateAlt /> Edit
-                      </button>
+          {studentList.filter((student) =>
+            student.rollno.toUpperCase().includes(searchText)
+          ).length > 0 ? (
+            studentList
+              .filter((student) =>
+                student.rollno.toUpperCase().includes(searchText)
+              )
+              .map((student) => (
+                <div className="col-md-6 col-lg-4" key={student.id}>
+                  <div className="card shadow-sm border-primary h-100">
+                    <div className="card-body">
+                      <h5 className="card-title fw-bold text-primary">
+                        {student.Name}
+                      </h5>
+                      <p className="card-text mb-1">
+                        <strong>Roll No:</strong> {student.rollno.toUpperCase()}
+                      </p>
+                      <p className="card-text mb-1">
+                        <strong>Department:</strong> {student.Department}
+                      </p>
+                      <p className="card-text mb-2">
+                        <strong>Subject:</strong> {sub}
+                      </p>
+                      <div className="d-flex justify-content-between mt-3">
+                        <button
+                          className="btn btn-outline-success btn-sm"
+                          onClick={() => handleShow(student)}
+                        >
+                          <BiSolidEdit /> Enter Mark
+                        </button>
+                        <button
+                          className="btn d-flex align-items-center btn-outline-info"
+                          onClick={() => viewResult(student.id)}
+                        >
+                          <GiSpellBook /> Result
+                        </button>
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => UpdateStudent(student.id)}
+                        >
+                          <MdOutlineSystemUpdateAlt /> Edit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           ) : (
-            <div className="text-muted text-center">No students found.</div>
+            <div className="text-center text-muted mt-3">
+              No students found.
+            </div>
           )}
         </div>
       </div>
