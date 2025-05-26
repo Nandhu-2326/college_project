@@ -365,6 +365,7 @@ const CalculatorPage = () => {
   return (
     <>
       <CollegeLogo />
+
       <div className="container mt-5 ">
         <div className="d-flex justify-content-end mb-4 ">
           <button
@@ -414,7 +415,10 @@ const CalculatorPage = () => {
                 student.rollno.toUpperCase().includes(searchText)
               )
               .map((student) => (
-                <div className="col-md-6 col-lg-4" key={student.id}>
+                <div
+                  className="col-md-6 col-lg-4 mb-sm-5 mb-5"
+                  key={student.id}
+                >
                   <div className="card shadow-sm border-primary h-100">
                     <div className="card-body">
                       <h5 className="card-title fw-bold text-primary">
