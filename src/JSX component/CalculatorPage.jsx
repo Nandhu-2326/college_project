@@ -18,6 +18,7 @@ import {
 import Swal from "sweetalert2";
 import { GiSpellBook } from "react-icons/gi";
 import Footer from "./Footer.jsx";
+import { TiTick } from "react-icons/ti";
 
 const CalculatorPage = () => {
   const nav = useNavigate();
@@ -27,7 +28,7 @@ const CalculatorPage = () => {
   const [studentList, setStudentList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [searchText, setSearchText] = useState("");
-
+  const [RightSymble, setRightSymble] = useState([]);
   // Studan Mark
   const [Internal_1, setInternal_1] = useState();
   const [Internal_2, setInternal_2] = useState();
@@ -270,6 +271,26 @@ const CalculatorPage = () => {
   }, [dep, sem, Year]);
   console.log(sem);
 
+  const InformationError = () => {
+    Swal.fire({
+      html: "Please Fill All Information",
+      icon:"error",
+      timer: 1000,
+      timerProgressBar: false,
+      didOpen: () => Swal.showLoading(),
+    });
+  };
+  
+  const success = () => {
+    Swal.fire({
+      html: "Success",
+      icon:"success",
+      timer: 1000,
+      timerProgressBar: false,
+      didOpen: () => Swal.showLoading(),
+    });
+  };
+
   const Calculate = async (selectedStudent) => {
     if (deg == "pg") {
       if (
@@ -279,8 +300,7 @@ const CalculatorPage = () => {
         !Seminar ||
         !Internal_3
       ) {
-        Swal.fire("Error", "Please enter valid numeric values", "error");
-        return;
+        InformationError()
       } else {
         const array = [Internal_1, Internal_2, Internal_3];
         let temp = 0;
@@ -310,34 +330,54 @@ const CalculatorPage = () => {
           Average: PGMark,
           Total: Math.round(PGTotal),
         });
-
-        Swal.fire("Success", "Successfully Upload Student Mark's", "Success");
+        handleClose();
+        setRightSymble((prev) => [...prev, studentId]);
+        setInternal_1(" ")
+        setInternal_2(" ")
+        setInternal_3(" ")
+        setAssignment(" ")
+        setSeminar(" ")
+        success()
       }
     } else {
       if (!Internal_1 || !Internal_2 || !Assignment || !Seminar) {
-        Swal.fire("Error", "Please enter valid numeric values", "error");
-        return;
+        InformationError()
       } else {
-        const InternalMark_1 = Number(Internal_1) / 2;
-        const InternalMark_2 = Number(Internal_2) / 2;
-        const Mark = (InternalMark_1 + InternalMark_2) / 2;
-        const total = Mark + Number(Assignment) + Number(Seminar);
-        const studentId = selectedStudent.id;
-        const studentRef = doc(db, "student", studentId);
-        const resultRef = collection(studentRef, sub);
-        await addDoc(resultRef, {
-          subject: sub,
-          InternalDB_1: InternalMark_1,
-          InternalDB_2: InternalMark_2,
-          AssignmentMark: Assignment,
-          SeminarMark: Seminar,
-          Average: Mark,
-          Total: Math.round(total),
-        });
-        Swal.fire("Success", "Successfully Upload Student Mark's", "Success");
+        if (
+          Internal_1 <= 30 &&
+          Internal_2 <= 30 &&
+          Assignment <= 5 &&
+          Seminar <= 5
+        ) {
+          const InternalMark_1 = Number(Internal_1) / 2;
+          const InternalMark_2 = Number(Internal_2) / 2;
+          const Mark = (InternalMark_1 + InternalMark_2) / 2;
+          const total = Mark + Number(Assignment) + Number(Seminar);
+          const studentId = selectedStudent.id;
+          const studentRef = doc(db, "student", studentId);
+          const resultRef = collection(studentRef, sub);
+          await addDoc(resultRef, {
+            subject: sub,
+            InternalDB_1: InternalMark_1,
+            InternalDB_2: InternalMark_2,
+            AssignmentMark: Assignment,
+            SeminarMark: Seminar,
+            Average: Mark,
+            Total: Math.round(total),
+          });
+          handleClose();
+          setRightSymble((prev) => [...prev, studentId]);
+          setInternal_1(" ")
+          setInternal_2(" ")
+          setInternal_3(" ")
+          setAssignment(" ")
+          setSeminar(" ")
+          success()
+        } else {
+          alert("Please enter Below 30 or 5");
+        }
       }
     }
-    handleClose();
   };
 
   const viewResult = async (id) => {
@@ -362,6 +402,7 @@ const CalculatorPage = () => {
       alert("Error", e.message);
     }
   };
+
   return (
     <>
       <CollegeLogo />
@@ -391,7 +432,7 @@ const CalculatorPage = () => {
             <div className="input-group">
               <input
                 type="text"
-                placeholder="Search Student"
+                placeholder="roll no"
                 className="form-control"
                 style={{ textTransform: "uppercase" }}
                 value={searchText}
@@ -434,12 +475,17 @@ const CalculatorPage = () => {
                         <strong>Subject:</strong> {sub}
                       </p>
                       <div className="d-flex justify-content-between mt-3">
-                        <button
-                          className="btn btn-outline-success btn-sm"
-                          onClick={() => handleShow(student)}
-                        >
-                          <BiSolidEdit /> Enter Mark
-                        </button>
+                        {RightSymble.includes(student.id) ? (
+                          <TiTick fontSize={"30px"} color="green" />
+                        ) : (
+                          <button
+                            className="btn btn-outline-success btn-sm"
+                            onClick={() => handleShow(student)}
+                          >
+                            <BiSolidEdit /> Enter Mark
+                          </button>
+                        )}
+
                         <button
                           className="btn d-flex align-items-center btn-outline-info"
                           onClick={() => viewResult(student.id)}
