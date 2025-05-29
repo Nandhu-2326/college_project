@@ -76,6 +76,7 @@ const SingleStudent = () => {
       setYear(null)
     }
   };
+  
   return (
     <div className="container py-5 mb-5">
       <div className="bg-light ">

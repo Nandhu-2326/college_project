@@ -14,6 +14,7 @@ import {
   getDocs,
   getDoc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { GiSpellBook } from "react-icons/gi";
@@ -75,49 +76,58 @@ const CalculatorPage = () => {
     try {
       loading();
       setShow(true);
-      setModal(false); // Switching to Update Mode
+      setModal(false); // Switch to update mode
       setUpDateId(id);
+
+      if (!semesterFinal || !sub) {
+        Swal.fire("Error", "Semester or Subject not selected", "error");
+        return;
+      }
+
+      // 1. Fetch student basic info
       const studentRef = doc(db, "student", id);
       const studentSnap = await getDoc(studentRef);
-
-      if (studentSnap.exists()) {
-        const studentData = studentSnap.data();
-        setStName(studentData.Name);
-        setStDep(studentData.Department);
-        setStNumber(studentData.rollno.toUpperCase());
-      } else {
+      if (!studentSnap.exists()) {
         Swal.fire("Error", "Student not found", "error");
         return;
       }
 
-      const subjectCollection = collection(studentRef, sub);
-      const marksSnap = await getDocs(subjectCollection);
+      const studentData = studentSnap.data();
+      setStName(studentData.Name || "");
+      setStDep(studentData.Department || "");
+      setStNumber((studentData.rollno || "").toUpperCase());
 
-      if (!marksSnap.empty) {
-        const markDoc = marksSnap.docs[0].data(); // Assuming one record per subject
+      // 2. Fetch marks from /student/{id}/{semesterFinal}/{sub}
+      const subjectDoc = doc(db, "student", id);
+      const studentDetailsSnap = collection(subjectDoc, semesterFinal);
+      const getDatas = doc(studentDetailsSnap, sub);
+      const markSnap = await getDoc(getDatas);
 
-        // Set form values for update
-        if (deg == "pg") {
-          setInternal_1Up(markDoc.InternalDB_1);
-          setInternal_2Up(markDoc.InternalDB_2);
-          setInternal_3Up(markDoc.InternalDB_3);
-          setAssignmentUp(markDoc.AssignmentMark);
-          setSeminarUp(markDoc.SeminarMark);
-        } else {
-          {
-            setInternal_1Up(markDoc.InternalDB_1);
-            setInternal_2Up(markDoc.InternalDB_2);
-            setAssignmentUp(markDoc.AssignmentMark);
-            setSeminarUp(markDoc.SeminarMark);
-          }
-        }
-      } else {
+      console.log(markSnap);
+      if (markSnap.empty) {
         Swal.fire("Info", "No mark data found for this subject", "info");
         handleClose();
+        return;
+      }
+
+      // 3. Use first document (assuming one doc per subject)
+      const markDoc = markSnap.data();
+      console.log(markDoc);
+      if (deg == "pg") {
+        setInternal_1Up(markDoc.OrgId_1 || "");
+        setInternal_2Up(markDoc.OrgId_2 || "");
+        setInternal_3Up(markDoc.OrgId_3 || "");
+        setAssignmentUp(markDoc.AssignmentMark || "");
+        setSeminarUp(markDoc.SeminarMark || "");
+      } else {
+        setInternal_1Up(markDoc.OrgId_1 || "");
+        setInternal_2Up(markDoc.OrgId_2 || "");
+        setAssignmentUp(markDoc.AssignmentMark || "");
+        setSeminarUp(markDoc.SeminarMark || "");
       }
     } catch (error) {
-      console.error("Error fetching student marks:", error);
-      Swal.fire("Error", "Failed to load marks", "error");
+      handleClose();
+      Swal.fire("warning", "Please Enter Mark After Check ", "warning");
     }
   };
 
@@ -133,7 +143,7 @@ const CalculatorPage = () => {
   };
 
   const UpDBdata = async () => {
-    if (deg == "pg") {
+    if (deg === "pg") {
       if (
         !Internal_1Up ||
         !Internal_2Up ||
@@ -142,77 +152,91 @@ const CalculatorPage = () => {
         !SeminarUp
       ) {
         warning();
-      } else {
-        loading();
-        const studentRef = doc(db, "student", UpDataId);
-        const subjectCollectionRef = collection(studentRef, sub);
-        const marksSnap = await getDocs(subjectCollectionRef);
+        return;
+      }
 
-        if (marksSnap.empty) {
-          Swal.fire(
-            "Error",
-            "No existing mark document found to update",
-            "error"
-          );
-          return;
-        }
-        const markDoc = marksSnap.docs[0];
-        const markRef = markDoc.ref;
+      loading();
 
-        const array = [Internal_1Up, Internal_2Up, Internal_3Up];
-        let temp = 0;
-        for (let i = 0; i < array.length; i++) {
-          for (let j = 0; j <= array.length; j++) {
-            if (array[i] > array[j]) {
-              temp = array[i];
-              array[i] = array[j];
-              array[j] = temp;
-            }
-          }
-        }
-        const I1 = array[0] / 2;
-        const I2 = array[1] / 2;
-        const PGMark = (I1 + I2) / 2;
-        const PGTotal =
-          Number(PGMark) + Number(AssignmentUp) + Number(SeminarUp);
+      const studentRef = doc(db, "student", UpDataId);
+      const resultRef = collection(studentRef, semesterFinal);
+      const markRef = doc(resultRef, sub);
 
+      const marksSnap = await getDoc(markRef);
+      if (!marksSnap.exists()) {
+        Swal.fire(
+          "Error",
+          "No existing mark document found to update",
+          "error"
+        );
+        handleClose();
+        return;
+      }
+
+      // Sort top 2 internals
+      const array = [
+        Number(Internal_1Up),
+        Number(Internal_2Up),
+        Number(Internal_3Up),
+      ];
+      array.sort((a, b) => b - a); // Sort descending
+      const I1 = array[0] / 2;
+      const I2 = array[1] / 2;
+      const PGMark = (I1 + I2) / 2;
+      const PGTotal = PGMark + Number(AssignmentUp) + Number(SeminarUp);
+      if (
+        I1 <= 15 &&
+        I2 <= 15 &&
+        PGMark <= 15 &&
+        PGTotal <= 25 &&
+        AssignmentUp <= 5 &&
+        SeminarUp <= 5
+      ) {
         await updateDoc(markRef, {
           subject: sub,
           InternalDB_1: I1,
           InternalDB_2: I2,
-          InternalDB_3: Internal_3Up,
+          InternalDB_3: array[2],
           AssignmentMark: AssignmentUp,
           SeminarMark: SeminarUp,
           Average: PGMark,
           Total: Math.round(PGTotal),
         });
-        Swal.fire("Success", "Marks updated successfully", "success");
+        success();
         handleClose();
+      } else {
+        alert(
+          "Please Fill less than 30 and Assignment , seminary lessthan or equal 5"
+        );
       }
     } else {
       if (!Internal_1Up || !Internal_2Up || !AssignmentUp || !SeminarUp) {
         warning();
-      } else {
-        const studentRef = doc(db, "student", UpDataId);
-        const subjectCollectionRef = collection(studentRef, sub);
-        const marksSnap = await getDocs(subjectCollectionRef);
+        return;
+      }
 
-        if (marksSnap.empty) {
-          Swal.fire(
-            "Error",
-            "No existing mark document found to update",
-            "error"
-          );
-          return;
-        }
-        const markDoc = marksSnap.docs[0];
-        const markRef = markDoc.ref;
+      const studentRef = doc(db, "student", UpDataId);
+      const resultRef = collection(studentRef, semesterFinal);
+      const markRef = doc(resultRef, sub);
+      const marksSnap = await getDoc(markRef);
 
-        const I1 = Number(Internal_1Up) / 2;
-        const I2 = Number(Internal_2Up) / 2;
-        const average = (I1 + I2) / 2;
-        const total = average + Number(AssignmentUp) + Number(SeminarUp);
+      if (!marksSnap.exists()) {
+        success();
+        handleClose();
+        return;
+      }
 
+      const I1 = Number(Internal_1Up) / 2;
+      const I2 = Number(Internal_2Up) / 2;
+      const average = (I1 + I2) / 2;
+      const total = average + Number(AssignmentUp) + Number(SeminarUp);
+      if (
+        I1 <= 15 &&
+        I2 <= 15 &&
+        average <= 15 &&
+        AssignmentUp <= 5 &&
+        SeminarUp <= 5 &&
+        total <= 25
+      ) {
         await updateDoc(markRef, {
           subject: sub,
           InternalDB_1: I1,
@@ -224,8 +248,13 @@ const CalculatorPage = () => {
         });
         Swal.fire("Success", "Marks updated successfully", "success");
         handleClose();
+      } else {
+        alert(
+          "Please Fill less than 30 and Assignment , seminary lessthan or equal 5"
+        );
       }
     }
+
     getFilteredStudents();
   };
 
@@ -262,31 +291,27 @@ const CalculatorPage = () => {
     setSemesterFinal(semester);
   };
 
-  console.log(semesterFinal);
-
   useEffect(() => {
     loading();
     getFilteredStudents();
     semesterDetails();
   }, [dep, sem, Year]);
-  console.log(sem);
 
   const InformationError = () => {
     Swal.fire({
       html: "Please Fill All Information",
-      icon:"error",
+      icon: "error",
       timer: 1000,
       timerProgressBar: false,
       didOpen: () => Swal.showLoading(),
     });
   };
-  
+
   const success = () => {
     Swal.fire({
       html: "Success",
-      icon:"success",
-      timer: 1000,
-      timerProgressBar: false,
+      icon: "success",
+      timer: 1500,
       didOpen: () => Swal.showLoading(),
     });
   };
@@ -300,7 +325,7 @@ const CalculatorPage = () => {
         !Seminar ||
         !Internal_3
       ) {
-        InformationError()
+        InformationError();
       } else {
         const array = [Internal_1, Internal_2, Internal_3];
         let temp = 0;
@@ -319,9 +344,14 @@ const CalculatorPage = () => {
         const PGTotal = Number(PGMark) + Number(Assignment) + Number(Seminar);
         const studentId = selectedStudent.id;
         const studentRef = doc(db, "student", studentId);
-        const resultRef = collection(studentRef, sub);
-        await addDoc(resultRef, {
+        const resultRef = collection(studentRef, semesterFinal);
+        const subCollections = doc(resultRef, sub);
+
+        await setDoc(subCollections, {
           subject: sub,
+          OrgId_1: Internal_1,
+          OrgId_2: Internal_2,
+          OrgId_3: Internal_3,
           InternalDB_1: I1,
           InternalDB_2: I2,
           InternalDB_3: Internal_3,
@@ -332,16 +362,16 @@ const CalculatorPage = () => {
         });
         handleClose();
         setRightSymble((prev) => [...prev, studentId]);
-        setInternal_1(" ")
-        setInternal_2(" ")
-        setInternal_3(" ")
-        setAssignment(" ")
-        setSeminar(" ")
-        success()
+        setInternal_1(" ");
+        setInternal_2(" ");
+        setInternal_3(" ");
+        setAssignment(" ");
+        setSeminar(" ");
+        success();
       }
     } else {
       if (!Internal_1 || !Internal_2 || !Assignment || !Seminar) {
-        InformationError()
+        InformationError();
       } else {
         if (
           Internal_1 <= 30 &&
@@ -355,9 +385,13 @@ const CalculatorPage = () => {
           const total = Mark + Number(Assignment) + Number(Seminar);
           const studentId = selectedStudent.id;
           const studentRef = doc(db, "student", studentId);
-          const resultRef = collection(studentRef, sub);
-          await addDoc(resultRef, {
+          const resultRef = collection(studentRef, semesterFinal);
+          const subCollections = doc(resultRef, sub);
+
+          await setDoc(subCollections, {
             subject: sub,
+            OrgId_1: Internal_1,
+            OrgId_2: Internal_2,
             InternalDB_1: InternalMark_1,
             InternalDB_2: InternalMark_2,
             AssignmentMark: Assignment,
@@ -367,12 +401,12 @@ const CalculatorPage = () => {
           });
           handleClose();
           setRightSymble((prev) => [...prev, studentId]);
-          setInternal_1(" ")
-          setInternal_2(" ")
-          setInternal_3(" ")
-          setAssignment(" ")
-          setSeminar(" ")
-          success()
+          setInternal_1(" ");
+          setInternal_2(" ");
+          setInternal_3(" ");
+          setAssignment(" ");
+          setSeminar(" ");
+          success();
         } else {
           alert("Please enter Below 30 or 5");
         }
@@ -406,7 +440,6 @@ const CalculatorPage = () => {
   return (
     <>
       <CollegeLogo />
-
       <div className="container mt-5 ">
         <div className="d-flex justify-content-end mb-4 ">
           <button
@@ -427,6 +460,7 @@ const CalculatorPage = () => {
             View Result's
           </button>
         </div>
+
         <div className="row mb-3 d-flex justify-content-center align-items-center">
           <div className="col-12 col-sm-5 ">
             <div className="input-group">
@@ -444,9 +478,11 @@ const CalculatorPage = () => {
             </div>
           </div>
         </div>
+
         <div className="text-center mb-4">
           <h2 className="fw-bold text-primary">Student Details List</h2>
         </div>
+
         <div className="row g-4 mb-5">
           {studentList.filter((student) =>
             student.rollno.toUpperCase().includes(searchText)
