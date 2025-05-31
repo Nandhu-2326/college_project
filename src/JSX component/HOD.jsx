@@ -1,8 +1,7 @@
-import CollegeLogo from "./CollegeLogo";
-import Footer from "./Footer";
+import React from "react";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs } from "firebase/firestore";
@@ -10,7 +9,7 @@ import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const LoginPage = () => {
+const HOD = () => {
   let nav = useNavigate();
   // UserName & Password
   const [userName, SetUserName] = useState();
@@ -19,7 +18,7 @@ const LoginPage = () => {
   const [PasswordEye, SetPasswordEye] = useState(true);
   useEffect(() => {
     let fetchData = async () => {
-      let getData = await getDocs(collection(db, "staff"));
+      let getData = await getDocs(collection(db, "HOD"));
       let data = getData.docs.map((val) => ({
         id: val.id,
         ...val.data(),
@@ -85,7 +84,7 @@ const LoginPage = () => {
 
         if (filterData.length > 0) {
           loginSuccess();
-          nav("/UserSelect");
+          nav("/HODLayout/HODStaffs");
         } else {
           loginError();
         }
@@ -94,16 +93,14 @@ const LoginPage = () => {
       }
     }
   };
-
   return (
     <>
-      <CollegeLogo />
       <div className="container my-4 mb-5">
         {/* Login Form */}
         <div className="row justify-content-center mt-5">
           <div className="col-12 text-center mb-4">
-            <h2 className="fw-bold text-primary">User Login</h2>
-            <p className="text-muted">Enter your credentials to continue</p>
+            <h2 className="fw-bold text-primary">HOD Login</h2>
+            <p className="text-muted">Enter your Usernam and Password</p>
           </div>
 
           <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4 bg-light rounded">
@@ -162,9 +159,9 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
+
     </>
   );
 };
 
-export default LoginPage;
+export default HOD;

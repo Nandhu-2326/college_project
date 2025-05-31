@@ -1,6 +1,7 @@
 import { FaUserShield, FaUserTie } from "react-icons/fa6";
 import { SiHomeadvisor } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import { ImUserTie } from "react-icons/im";
 
 const Footer = () => {
   const nav = useNavigate();
@@ -19,6 +20,14 @@ const Footer = () => {
         <div className="row">
           <div className="col  px-5 ">
             <div className="d-flex justify-content-center align-items-center ">
+              <div className="d-flex justify-content-center mx-1 px-3 flex-column  align-items-center">
+                <ImUserTie
+                  style={{ fontSize: "35px" }}
+                  className="text-primary"
+                  onClick={()=>{ nav("/HODLayout")}}
+                />
+                <p className="text-primary ">HOD</p>
+              </div>
               <div className="d-flex justify-content-center mx-1 px-3 flex-column  align-items-center">
                 <FaUserShield
                   style={{ fontSize: "35px" }}
@@ -43,7 +52,7 @@ const Footer = () => {
                   className=" text-primary "
                   onClick={login}
                 />
-                <p className="text-primary ">User</p>
+                <p className="text-primary ">Staff</p>
               </div>
             </div>
           </div>

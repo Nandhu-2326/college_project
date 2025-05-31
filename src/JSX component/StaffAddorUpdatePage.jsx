@@ -33,7 +33,7 @@ const StaffAddorUpdatePage = () => {
 
   // Get Users
   const getUser = async () => {
-    const getData = await getDocs(collection(db, "staff"));
+    const getData = await getDocs(collection(db, "HOD"));
     const allData = getData.docs.map((val) => ({
       id: val.id,
       ...val.data(),
@@ -111,7 +111,7 @@ const StaffAddorUpdatePage = () => {
     } else {
       try {
         loading();
-        await addDoc(collection(db, "staff"), {
+        await addDoc(collection(db, "HOD"), {
           username: userName,
           password: password,
         });
@@ -130,7 +130,7 @@ const StaffAddorUpdatePage = () => {
     const result = await confirmDelete();
     if (result.isConfirmed) {
       try {
-        await deleteDoc(doc(db, "staff", id));
+        await deleteDoc(doc(db, "HOD", id));
         delSuccess();
         getUser();
       } catch (e) {
@@ -143,7 +143,7 @@ const StaffAddorUpdatePage = () => {
   const EditUser = async (id) => {
     setBtn(false);
     setCurrentId(id);
-    const getEdData = await getDoc(doc(db, "staff", id));
+    const getEdData = await getDoc(doc(db, "HOD", id));
     const EdData = getEdData.data();
     setUserName(EdData.username);
     setPassword(EdData.password);
@@ -155,7 +155,7 @@ const StaffAddorUpdatePage = () => {
     } else {
       try {
         loading();
-        await updateDoc(doc(db, "staff", currentId), {
+        await updateDoc(doc(db, "HOD", currentId), {
           username: userName,
           password: password,
         });

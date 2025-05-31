@@ -5,7 +5,7 @@ function CollegeLogo() {
         <div className="row">
           <div className="col-12 py-2">
             <img
-              src="collegeLogo.png"
+              src="/collegeLogo.png"
               alt=""
               className="img mt-3 topLogo img-fluid "
             />

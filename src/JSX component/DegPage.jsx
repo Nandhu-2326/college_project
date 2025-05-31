@@ -45,7 +45,7 @@ const DegPage = () => {
           ...doc.data(),
         }));
 
-        const findData = Datas.find((item) => item.id === depDegree);
+        const findData = Datas.find((item) => item.id == depDegree);
         if (findData) {
           const departmentNames = Object.keys(findData).filter(
             (key) => key !== "id"
