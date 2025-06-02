@@ -6,23 +6,25 @@ import { FaUserTie } from "react-icons/fa6";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
+import { FaHouseMedical } from "react-icons/fa6";
+import { PiUserSwitchFill } from "react-icons/pi";
+import { FcDepartment } from "react-icons/fc";
+import { FaBuildingUser } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import { db } from "./Database.js";
 import {
   collection,
-  addDoc,
   getDocs,
   deleteDoc,
   doc,
   getDoc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import Footer from "./Footer.jsx";
 
 const StaffAddorUpdatePage = () => {
   // State's
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
   const [btn, setBtn] = useState(true);
   const [currentId, setCurrentId] = useState(null);
@@ -30,7 +32,17 @@ const StaffAddorUpdatePage = () => {
   const [search, setSearch] = useState(false);
   const [user, setUser] = useState();
   const [PasswordEye, SetPasswordEye] = useState(true);
+  const [departmentData, setDepartmentData] = useState();
 
+  // FB Add Data
+  const [selectDepartment, setSelectDepartment] = useState("");
+  const [DepartmentCode, setDepartmentCode] = useState("");
+  const [HODName, setHODName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [rs, setrs] = useState("");
+  const [ugorpg, setugorpg] = useState("");
+  console.log(DepartmentCode);
   // Get Users
   const getUser = async () => {
     const getData = await getDocs(collection(db, "HOD"));
@@ -40,6 +52,12 @@ const StaffAddorUpdatePage = () => {
     }));
     setUser(allData.length);
     setData(allData);
+    // const depDoc = doc(db, "Departments");
+    const depGetData = await getDocs(collection(db, "Departments"));
+    const depAllData = depGetData.docs.map((val) => ({
+      ...val.data(),
+    }));
+    setDepartmentData(depAllData);
   };
 
   useEffect(() => {
@@ -106,18 +124,40 @@ const StaffAddorUpdatePage = () => {
 
   // Add User
   const AddUser = async () => {
-    if (!userName || !password) {
+    if (
+      !userName ||
+      !password ||
+      !HODName ||
+      !DepartmentCode ||
+      !selectDepartment ||
+      !rs ||
+      !ugorpg
+    ) {
       InformationError();
     } else {
       try {
         loading();
-        await addDoc(collection(db, "HOD"), {
+        const CreateCode = doc(db, "HOD", DepartmentCode);
+        await setDoc(CreateCode, {
           username: userName,
           password: password,
+          HODName: HODName,
+          DepartmentCode: DepartmentCode,
+          Department: selectDepartment,
+          rs: rs,
+          ugorpg: ugorpg,
         });
+        setDepartmentCode("");
+        setHODName(" ");
+        setSelectDepartment(" ");
+        setrs(" ");
+        setugorpg(" ");
         setUserName("");
         setPassword("");
-        UserAdd();
+        if(!currentId)
+        {
+          UserAdd();
+        }
         getUser();
       } catch (e) {
         alert("Error: ", e.message);
@@ -145,22 +185,39 @@ const StaffAddorUpdatePage = () => {
     setCurrentId(id);
     const getEdData = await getDoc(doc(db, "HOD", id));
     const EdData = getEdData.data();
+    console.log(EdData);
     setUserName(EdData.username);
     setPassword(EdData.password);
+    setDepartmentCode(EdData.DepartmentCode);
+    setSelectDepartment(EdData.Department);
+    setHODName(EdData.HODName);
+    setugorpg(EdData.ugorpg);
+    setrs(EdData.rs);
   };
 
   const UpdateUser = async () => {
-    if (!userName || !password) {
+    if (
+      !userName ||
+      !password ||
+      !HODName ||
+      !DepartmentCode ||
+      !selectDepartment ||
+      !rs ||
+      !ugorpg
+    ) {
       InformationError();
     } else {
       try {
         loading();
-        await updateDoc(doc(db, "HOD", currentId), {
-          username: userName,
-          password: password,
-        });
+        await deleteDoc(doc(db, "HOD", currentId));
+        AddUser(currentId);
         setUserName("");
         setPassword("");
+        setDepartmentCode("");
+        setHODName("");
+        setSelectDepartment("");
+        setrs("");
+        setugorpg("");
         setBtn(true);
         setCurrentId(null);
         Update();
@@ -181,11 +238,9 @@ const StaffAddorUpdatePage = () => {
       <div className="container d-flex justify-content-center mt-4">
         <div className="row d-flex justify-content-center">
           <div className="col-12 text-primary d-flex h1 justify-content-center align-items-center">
-            User Details - <FaUserTie />
+            HOD Details - <FaUserTie />
           </div>
-          <div className="col-12 text-secondary text-center h6 mt-3">
-            Search User or Add New User, Delete or Edit User
-          </div>
+          {/*  */}
 
           <div className="col-12 col-sm-5 mt-3">
             <div className="input-group">
@@ -210,10 +265,101 @@ const StaffAddorUpdatePage = () => {
 
       {/* User Form */}
       <div className="container my-4">
-        <span className="text-primary h1 ">Total User - {user} </span>
+        <span className="text-primary h1 ">Total HOD - {user} </span>
         <div className="row justify-content-center mt-5">
           <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4 bg-light rounded">
             <div className="d-flex flex-column gap-4">
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <FaHouseMedical />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border border-primary"
+                  placeholder="Department Code"
+                  value={DepartmentCode}
+                  onChange={(e) =>
+                    setDepartmentCode(e.target.value.toUpperCase())
+                  }
+                />
+              </div>
+
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <PiUserSwitchFill />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border border-primary"
+                  placeholder="HOD Name"
+                  value={HODName}
+                  onChange={(e) => setHODName(e.target.value)}
+                />
+              </div>
+
+              <div className="input-group">
+                <span className="input-group-text bg-primary">
+                  <FcDepartment />
+                </span>
+                <select
+                  value={selectDepartment}
+                  name=""
+                  id=""
+                  className="form-select"
+                  onChange={(e) => {
+                    setSelectDepartment(e.target.value);
+                  }}
+                >
+                  <option value="">--select Department--</option>
+                  {departmentData &&
+                    departmentData.flatMap((doc) =>
+                      Object.values(doc).map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))
+                    )}
+                </select>
+              </div>
+
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-light">
+                  <FaBuildingUser />
+                </span>
+                <select
+                  name=""
+                  id=""
+                  value={ugorpg}
+                  onChange={(e) => {
+                    setugorpg(e.target.value);
+                  }}
+                  className="form-select"
+                >
+                  <option value="">--select UG or PG</option>
+                  <option value="ug">UG</option>
+                  <option value="pg">PG</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <span className="input-group-text fw-bold text-light bg-primary">
+                  RS
+                </span>
+                <select
+                  name=""
+                  id=""
+                  value={rs}
+                  className="form-select"
+                  onChange={(e) => {
+                    setrs(e.target.value);
+                  }}
+                >
+                  <option value="">--select Regular or Self--</option>
+                  <option value="regular">Regular</option>
+                  <option value="self">Self</option>
+                </select>
+              </div>
+
               <div className="input-group">
                 <span className="input-group-text bg-primary text-white">
                   <FaUserTie />
@@ -221,9 +367,9 @@ const StaffAddorUpdatePage = () => {
                 <input
                   type="text"
                   className="form-control border border-primary"
-                  placeholder="Username"
+                  placeholder="New Username"
                   value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
+                  onChange={(e) => setUserName(e.target.value.toUpperCase())}
                 />
               </div>
 
@@ -234,7 +380,7 @@ const StaffAddorUpdatePage = () => {
                 <input
                   type={PasswordEye ? "password" : "text"}
                   className="form-control border border-primary"
-                  placeholder="Password"
+                  placeholder="New Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -311,7 +457,7 @@ const StaffAddorUpdatePage = () => {
           </table>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
