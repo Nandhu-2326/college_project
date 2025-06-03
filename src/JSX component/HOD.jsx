@@ -1,21 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import HODStaffs from "./HODStaffs.jsx";
+import CreateStaffContext from "./CreateStaffContext.js";
 
 const HOD = () => {
   let nav = useNavigate();
+  const { setStaffData } = useContext(CreateStaffContext);
   // UserName & Password
   const [userName, SetUserName] = useState();
   const [Password, SetPassword] = useState();
   const [data, setData] = useState();
   const [PasswordEye, SetPasswordEye] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     let fetchData = async () => {
       let getData = await getDocs(collection(db, "HOD"));
@@ -84,6 +89,8 @@ const HOD = () => {
 
         if (filterData.length > 0) {
           loginSuccess();
+          setStaffData(filterData[0]);
+          setIsLoggedIn(true);
           nav("/HODLayout/HODStaffs");
         } else {
           loginError();
@@ -95,6 +102,8 @@ const HOD = () => {
   };
   return (
     <>
+      {isLoggedIn && <HODStaffs data={data} />}
+
       <div className="container my-4 mb-5">
         {/* Login Form */}
         <div className="row justify-content-center mt-5">
@@ -159,7 +168,6 @@ const HOD = () => {
           </div>
         </div>
       </div>
-
     </>
   );
 };
