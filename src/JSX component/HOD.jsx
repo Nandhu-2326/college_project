@@ -8,7 +8,6 @@ import { collection, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import HODStaffs from "./HODStaffs.jsx";
 import CreateStaffContext from "./CreateStaffContext.js";
 
 const HOD = () => {
@@ -19,7 +18,6 @@ const HOD = () => {
   const [Password, SetPassword] = useState();
   const [data, setData] = useState();
   const [PasswordEye, SetPasswordEye] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     let fetchData = async () => {
@@ -90,7 +88,6 @@ const HOD = () => {
         if (filterData.length > 0) {
           loginSuccess();
           setStaffData(filterData[0]);
-          setIsLoggedIn(true);
           nav("/HODLayout/HODStaffs");
         } else {
           loginError();
@@ -102,7 +99,6 @@ const HOD = () => {
   };
   return (
     <>
-      {isLoggedIn && <HODStaffs data={data} />}
 
       <div className="container my-4 mb-5">
         {/* Login Form */}

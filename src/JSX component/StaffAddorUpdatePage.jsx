@@ -74,7 +74,7 @@ const StaffAddorUpdatePage = () => {
     });
   };
 
-  const loading = () => {
+   const loading = () => {
     Swal.fire({
       html: "Loading...",
       timer: 2000,

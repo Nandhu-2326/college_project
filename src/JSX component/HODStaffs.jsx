@@ -1,23 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { VscFolderOpened } from "react-icons/vsc";
 import { TiUserAdd } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
-// export const createSTaff = createContext();
+import CreateStaffContext from "./CreateStaffContext";
 
 const HODStaffs = () => {
-
+  let { staffData } = useContext(CreateStaffContext);
+  console.log(staffData);
+  let { HODName, Department } = staffData || {};
   const nav = useNavigate();
   return (
     <>
-      {/* <createSTaff.Provider value={data}>
-        {isLoggedIn && <HOD_Cstaff />}
-      </createSTaff.Provider> */}
+      <div className="container shadow mt-sm-2 p-3 d-flex justify-content-between">
+        <div>
+          <span
+            className="shadow p-2 rounded-pill fw-semibold   border  border-secondary"
+            style={{ letterSpacing: "3px" }}
+          >
+            <span className="fw-semibold bg-primary text-light rounded rounded-circle px-2 py-1 ">
+              {HODName.slice(0, 1)}
+            </span>
+            {HODName}
+          </span>
+        </div>
+        <div>
+          <span className="fw-semibold" style={{ fontSize: "11px" }}>
+            {Department.slice(14)}
+          </span>
+        </div>
+      </div>
 
       <div className=" d-flex justify-content-center mt-5 align-items-center flex-column">
         <div className="mt-5">
           <div
             onClick={() => {
-               nav("/HODLayout/HOD_Cstaff");
+              nav("/HODLayout/HOD_Cstaff");
             }}
             className="btn bg-gradient btn btn-primary d-flex px-5 btn-lg d-flex align-items-center justify-content-around "
           >
