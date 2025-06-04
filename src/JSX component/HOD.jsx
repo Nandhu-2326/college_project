@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "./Database.js";
 import { collection, getDocs } from "firebase/firestore";
-import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import CreateStaffContext from "./CreateStaffContext.js";
+import { InformationError, loading, loginError, loginSuccess } from "./SweetAlert.jsx";
 
 const HOD = () => {
   let nav = useNavigate();
@@ -31,56 +31,12 @@ const HOD = () => {
     fetchData();
   }, []);
 
-  const loading = () => {
-    let timerInterval;
-    Swal.fire({
-      html: "Loading",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    });
-  };
-  const loginError = () => {
-    Swal.fire({
-      html: "invalid username and Password ",
-      icon: "error",
-      title: "Oops",
-      timer: 2000,
-    });
-  };
-  const loginSuccess = () => {
-    Swal.fire({
-      icon: "success",
-      title: "Login Success",
-      timer: 2000,
-    });
-  };
-  const InformationError = () => {
-    let timerInterval;
-    Swal.fire({
-      html: "Please Fill Information",
-      timer: 1000,
-      icon: "warning",
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    });
-  };
-
   const login = async () => {
     if (!userName || !Password) {
-      InformationError();
+      InformationError()
     } else {
       try {
-        loading();
+        loading()
         let filterData = data.filter((val) => {
           return val.username == userName && val.password == Password;
         });
@@ -97,6 +53,7 @@ const HOD = () => {
       }
     }
   };
+  
   return (
     <>
 
