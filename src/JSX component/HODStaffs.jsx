@@ -11,21 +11,26 @@ const HODStaffs = () => {
   const nav = useNavigate();
   return (
     <>
-      <div className="container shadow mt-sm-2 p-3 d-flex justify-content-between">
+     <div className="container shadow mt-sm-2 p-3 d-flex sticky-top bg-light justify-content-between">
         <div>
           <span
-            className="shadow p-2 rounded-pill fw-semibold   border  border-secondary"
+            className="p-2 rounded-pill fw-semibold"
             style={{ letterSpacing: "3px" }}
           >
-            <span className="fw-semibold bg-primary text-light rounded rounded-circle px-2 py-1 ">
-              {HODName.slice(0, 1)}
+            <span
+              className="fw-semibold bg-primary text-light rounded-circle px-2 py-1"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={HODName}
+              style={{cursor:"pointer"}}
+            >
+              {HODName?.[0]}
             </span>
-            {HODName}
           </span>
         </div>
         <div>
           <span className="fw-semibold" style={{ fontSize: "11px" }}>
-            {Department.slice(14)}
+            {Department?.slice(14)}
           </span>
         </div>
       </div>

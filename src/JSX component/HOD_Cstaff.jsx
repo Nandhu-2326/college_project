@@ -33,10 +33,20 @@ const HOD_Cstaff = () => {
     sub3_3: "",
   };
 
-  const reducerFunction = (state, action) => ({
-    ...state,
-    [action.type]: action.value,
-  });
+  const reducerFunction = (state, action) => {
+    switch (action.type) {
+      case "SET_ALL":
+        return {
+          ...state,
+          ...action.value,
+        };
+      default:
+        return {
+          ...state,
+          [action.type]: action.value,
+        };
+    }
+  };
 
   const [state, dispatch] = useReducer(reducerFunction, initialState);
 
@@ -44,22 +54,33 @@ const HOD_Cstaff = () => {
     try {
       const getNames = await getDocs(collection(db, "staffNames"));
       const allNames = getNames.docs.map((doc) => doc.data().staffName);
-      const StaffData = doc(db, "HOD", DepartmentCode);
-
       for (let staff of allNames) {
-        const StaffCollection = collection(db, "HOD", DepartmentCode, staff); 
+        const StaffCollection = collection(db, "HOD", DepartmentCode, staff);
         const staffDocs = await getDocs(StaffCollection);
-
+        const staffDetails = staffDocs.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        console.log(staffDetails);
         staffDocs.forEach(async (docSnap) => {
           const staffDocRef = docSnap.ref;
-
           for (let year of [1, 2, 3]) {
             const yearSubCollection = collection(staffDocRef, String(year));
             const yearDocs = await getDocs(yearSubCollection);
             const YearData = yearDocs.docs.map((doc) => ({
               ...doc.data(),
             }));
-            console.log(`Year ${year} data for ${staff}:`, YearData[0]);
+            if (YearData[0]) {
+              dispatch({
+                type: "SET_ALL",
+                value: {
+                  ...YearData[0],
+                  Name: staffDetails[0]?.Name || "",
+                  username: staffDetails[0]?.username || "",
+                  password: staffDetails[0]?.password || "",
+                },
+              });
+            }
           }
         });
       }
@@ -123,16 +144,21 @@ const HOD_Cstaff = () => {
 
   return (
     <>
-      <div className="container shadow mt-sm-2 p-3 d-flex justify-content-between">
+      <div className="container shadow mt-sm-2 p-3 d-flex sticky-top bg-light justify-content-between">
         <div>
           <span
-            className="shadow p-2 rounded-pill fw-semibold border border-secondary"
+            className="p-2 rounded-pill fw-semibold"
             style={{ letterSpacing: "3px" }}
           >
-            <span className="fw-semibold bg-primary text-light rounded-circle px-2 py-1">
+            <span
+              className="fw-semibold bg-primary text-light rounded-circle px-2 py-1"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={HODName}
+              style={{ cursor: "pointer" }}
+            >
               {HODName?.[0]}
             </span>
-            {HODName}
           </span>
         </div>
         <div>
@@ -145,7 +171,6 @@ const HOD_Cstaff = () => {
       <div className="container py-5">
         <h3 className="mb-4 text-center text-primary fw-bold">CREATE STAFF</h3>
         <div className="row justify-content-center">
-          {/* Department, RS, UG/PG Selects (disabled) */}
           <div className="col-md-6">
             <span className="fw-semibold">Department</span>
             <div className="input-group mb-3">
@@ -179,42 +204,79 @@ const HOD_Cstaff = () => {
           </div>
 
           {/* Form Inputs for Staff and Subjects */}
-          {["1", "2", "3"].map((year) => (
-            <div className="col-md-4 mt-5 mb-5" key={year}>
-              <div className="row d-flex flex-column bg-light shadow">
-                <span className="fw-bold text-center">{year} - Year</span>
-                {[1, 2, 3].map((sub) => (
-                  <div className="col" key={sub}>
-                    <span className="fw-semibold">Subject - {sub}</span>
-                    <div className="input-group mb-3">
-                      <div className="input-group-text bg-primary text-light">
-                        {sub === 1 ? (
-                          <RiNumber1 />
-                        ) : sub === 2 ? (
-                          <RiNumber2 />
-                        ) : (
-                          <RiNumber3 />
-                        )}
+          {ugorpg == "ug"
+            ? ["1", "2", "3"].map((year) => (
+                <div className="col-md-4 mt-5 mb-5" key={year}>
+                  <div className="row d-flex flex-column bg-light shadow">
+                    <span className="fw-bold text-center">{year} - Year</span>
+                    {[1, 2, 3].map((sub) => (
+                      <div className="col" key={sub}>
+                        <span className="fw-semibold">Subject - {sub}</span>
+                        <div className="input-group mb-3">
+                          <div className="input-group-text bg-primary text-light">
+                            {sub === 1 ? (
+                              <RiNumber1 />
+                            ) : sub === 2 ? (
+                              <RiNumber2 />
+                            ) : (
+                              <RiNumber3 />
+                            )}
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="Subject Name"
+                            className="form-control"
+                            name={`sub${year}_${sub}`}
+                            value={state[`sub${year}_${sub}`]}
+                            onChange={(e) =>
+                              dispatch({
+                                type: e.target.name,
+                                value: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
                       </div>
-                      <input
-                        type="text"
-                        placeholder="Subject Name"
-                        className="form-control"
-                        name={`sub${year}_${sub}`}
-                        value={state[`sub${year}_${sub}`]}
-                        onChange={(e) =>
-                          dispatch({
-                            type: e.target.name,
-                            value: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                </div>
+              ))
+            : ["1", "2"].map((year) => (
+                <div className="col-md-6 mt-5 mb-5" key={year}>
+                  <div className="row d-flex flex-column bg-light shadow">
+                    <span className="fw-bold text-center">{year} - Year</span>
+                    {[1, 2, 3].map((sub) => (
+                      <div className="col" key={sub}>
+                        <span className="fw-semibold">Subject - {sub}</span>
+                        <div className="input-group mb-3">
+                          <div className="input-group-text bg-primary text-light">
+                            {sub === 1 ? (
+                              <RiNumber1 />
+                            ) : sub === 2 ? (
+                              <RiNumber2 />
+                            ) : (
+                              <RiNumber3 />
+                            )}
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="Subject Name"
+                            className="form-control"
+                            name={`sub${year}_${sub}`}
+                            value={state[`sub${year}_${sub}`]}
+                            onChange={(e) =>
+                              dispatch({
+                                type: e.target.name,
+                                value: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
           {/* Staff Info Inputs */}
           {[
