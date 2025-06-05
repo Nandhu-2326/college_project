@@ -14,31 +14,18 @@ import CSVFile from "./CSVFile";
 import Departments from "./Departments";
 import Subject from "./Subject";
 import HOD from "./HOD";
-import HODStaffs from "./HODStaffs";
 import HODLayout from "./HODLayout";
 import HOD_Cstaff from "./HOD_Cstaff";
-import CreateStaffContext from "./CreateStaffContext";
-import { useState } from "react";
 const Rmain = () => {
-  const [staffData, setStaffData] = useState({});
-
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<FirstPage />} />
           <Route path="/LoginPage" element={<LoginPage />} />
-          <Route
-            path="/HODLayout"
-            element={
-              <CreateStaffContext.Provider value={{ staffData, setStaffData }}>
-                <HODLayout />
-              </CreateStaffContext.Provider>
-            }
-          >
+          <Route path="/HODLayout" element={<HODLayout />}>
             <Route index element={<HOD />} />
-            <Route path="HODStaffs" element={<HODStaffs />} />
-            <Route path="HOD_Cstaff" element={<HOD_Cstaff />} />
+            <Route path="HOD_Cstaff" element={ <HOD_Cstaff/> } />
           </Route>
           <Route path="/UserSelect" element={<UserSelect />} />
           <Route path="/DegPage" element={<DegPage />} />

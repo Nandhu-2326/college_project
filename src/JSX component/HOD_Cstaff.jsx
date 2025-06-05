@@ -1,321 +1,143 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
-import { FaSchool } from "react-icons/fa";
-import { FaRegCircleUser } from "react-icons/fa6";
-import {
-  RiNumber1,
-  RiNumber2,
-  RiNumber3,
-  RiShieldUserFill,
-} from "react-icons/ri";
+import React, { useEffect, useReducer, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { FaClipboardUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
-import CreateStaffContext from "./CreateStaffContext";
-import { db } from "./Database.js";
-import { collection, doc, setDoc, getDocs, addDoc } from "firebase/firestore";
-import { UserAdd, loading } from "./SweetAlert.jsx";
+import { RiNumber1, RiNumber2, RiNumber3 } from "react-icons/ri";
 
 const HOD_Cstaff = () => {
-  const { staffData } = useContext(CreateStaffContext);
-  const { Department, rs, ugorpg, HODName, DepartmentCode } = staffData || {};
-  const [btn, setBtn] = useState(false);
-
-  const initialState = {
-    Name: "",
-    username: "",
-    password: "",
-    sub1_1: "",
-    sub1_2: "",
-    sub1_3: "",
-    sub2_1: "",
-    sub2_2: "",
-    sub2_3: "",
-    sub3_1: "",
-    sub3_2: "",
-    sub3_3: "",
+  const [hodData, setHOD] = useState("");
+  const reducer = (state, action) => {
+    return {
+      ...state,
+      [action.field]: action.value,
+    };
   };
-
-  const reducerFunction = (state, action) => {
-    switch (action.type) {
-      case "SET_ALL":
-        return {
-          ...state,
-          ...action.value,
-        };
-      default:
-        return {
-          ...state,
-          [action.type]: action.value,
-        };
-    }
+  const [state, dispatch] = useReducer(reducer, {});
+  const fetchData = () => {
+    const data = sessionStorage.getItem("HOD_Data");
+    const HODdata = JSON.parse(data);
+    console.log(HODdata);
+    setHOD(HODdata);
   };
-
-  const [state, dispatch] = useReducer(reducerFunction, initialState);
-
-  const GetAllData = async () => {
-    try {
-      const getNames = await getDocs(collection(db, "staffNames"));
-      const allNames = getNames.docs.map((doc) => doc.data().staffName);
-      for (let staff of allNames) {
-        const StaffCollection = collection(db, "HOD", DepartmentCode, staff);
-        const staffDocs = await getDocs(StaffCollection);
-        const staffDetails = staffDocs.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        console.log(staffDetails);
-        staffDocs.forEach(async (docSnap) => {
-          const staffDocRef = docSnap.ref;
-          for (let year of [1, 2, 3]) {
-            const yearSubCollection = collection(staffDocRef, String(year));
-            const yearDocs = await getDocs(yearSubCollection);
-            const YearData = yearDocs.docs.map((doc) => ({
-              ...doc.data(),
-            }));
-            if (YearData[0]) {
-              dispatch({
-                type: "SET_ALL",
-                value: {
-                  ...YearData[0],
-                  Name: staffDetails[0]?.Name || "",
-                  username: staffDetails[0]?.username || "",
-                  password: staffDetails[0]?.password || "",
-                },
-              });
-            }
-          }
-        });
-      }
-
-      console.log(allNames);
-    } catch (err) {
-      console.error("Error fetching staff names:", err);
-    }
-  };
+  console.log(state);
   useEffect(() => {
-    GetAllData();
+    fetchData();
   }, []);
-
-  const AddStaff = async () => {
-    try {
-      loading();
-
-      const getHOD = doc(db, "HOD", DepartmentCode);
-      const newCollection = collection(getHOD, state.Name);
-      const staffDoc = doc(newCollection);
-
-      // Add staff info
-      await setDoc(staffDoc, {
-        Name: state.Name,
-        username: state.username,
-        password: state.password,
-      });
-
-      // Add year-wise subjects
-      await setDoc(doc(collection(staffDoc, "1")), {
-        sub1_1: state.sub1_1,
-        sub1_2: state.sub1_2,
-        sub1_3: state.sub1_3,
-      });
-
-      await setDoc(doc(collection(staffDoc, "2")), {
-        sub2_1: state.sub2_1,
-        sub2_2: state.sub2_2,
-        sub2_3: state.sub2_3,
-      });
-
-      await setDoc(doc(collection(staffDoc, "3")), {
-        sub3_1: state.sub3_1,
-        sub3_2: state.sub3_2,
-        sub3_3: state.sub3_3,
-      });
-
-      // Add to staffNames collection
-      await addDoc(collection(db, "staffNames"), {
-        staffName: state.Name,
-      });
-
-      // Refresh staff name list
-      GetAllData();
-
-      UserAdd();
-    } catch (e) {
-      console.error("Error adding staff:", e.message);
-    }
-  };
 
   return (
     <>
-      <div className="container shadow mt-sm-2 p-3 d-flex sticky-top bg-light justify-content-between">
-        <div>
-          <span
-            className="p-2 rounded-pill fw-semibold"
-            style={{ letterSpacing: "3px" }}
-          >
-            <span
-              className="fw-semibold bg-primary text-light rounded-circle px-2 py-1"
-              data-toggle="tooltip"
-              data-placement="top"
-              title={HODName}
-              style={{ cursor: "pointer" }}
-            >
-              {HODName?.[0]}
-            </span>
-          </span>
-        </div>
-        <div>
-          <span className="fw-semibold" style={{ fontSize: "11px" }}>
-            {Department?.slice(14)}
-          </span>
-        </div>
+      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center ">
+        <p className="fw-semibold"> HOD : {hodData.HODName}</p>
+        <p className="fw-semibold">
+          Department : {hodData.Department?.slice(14)}
+        </p>
       </div>
 
-      <div className="container py-5">
-        <h3 className="mb-4 text-center text-primary fw-bold">CREATE STAFF</h3>
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <span className="fw-semibold">Department</span>
-            <div className="input-group mb-3">
-              <div className="input-group-text bg-primary text-light">
-                <FaSchool />
-              </div>
-              <select className="form-control" disabled>
-                <option value={Department}>{Department}</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3 col-6">
-            <span className="fw-semibold">Regular or Self</span>
-            <div className="input-group mb-3">
-              <div className="input-group-text bg-primary text-light">RS</div>
-              <select className="form-control" disabled>
-                <option value={rs}>{rs}</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3 col-6">
-            <span className="fw-semibold">UG / PG</span>
-            <div className="input-group mb-3">
-              <div className="input-group-text bg-primary text-light">
-                <FaRegCircleUser />
-              </div>
-              <select className="form-control" disabled>
-                <option value={ugorpg}>{ugorpg}</option>
-              </select>
-            </div>
-          </div>
+      <div className="container mb-5">
+        <h1
+          className="h1 text-uppercase mt-3 text-primary fw-semibold text-center"
+          style={{ letterSpacing: "2.5px" }}
+        >
+          Create New Staff
+        </h1>
 
-          {/* Form Inputs for Staff and Subjects */}
-          {ugorpg == "ug"
-            ? ["1", "2", "3"].map((year) => (
-                <div className="col-md-4 mt-5 mb-5" key={year}>
-                  <div className="row d-flex flex-column bg-light shadow">
-                    <span className="fw-bold text-center">{year} - Year</span>
-                    {[1, 2, 3].map((sub) => (
-                      <div className="col" key={sub}>
-                        <span className="fw-semibold">Subject - {sub}</span>
-                        <div className="input-group mb-3">
-                          <div className="input-group-text bg-primary text-light">
-                            {sub === 1 ? (
-                              <RiNumber1 />
-                            ) : sub === 2 ? (
-                              <RiNumber2 />
-                            ) : (
-                              <RiNumber3 />
-                            )}
-                          </div>
-                          <input
-                            type="text"
-                            placeholder="Subject Name"
-                            className="form-control"
-                            name={`sub${year}_${sub}`}
-                            value={state[`sub${year}_${sub}`]}
-                            onChange={(e) =>
-                              dispatch({
-                                type: e.target.name,
-                                value: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))
-            : ["1", "2"].map((year) => (
-                <div className="col-md-6 mt-5 mb-5" key={year}>
-                  <div className="row d-flex flex-column bg-light shadow">
-                    <span className="fw-bold text-center">{year} - Year</span>
-                    {[1, 2, 3].map((sub) => (
-                      <div className="col" key={sub}>
-                        <span className="fw-semibold">Subject - {sub}</span>
-                        <div className="input-group mb-3">
-                          <div className="input-group-text bg-primary text-light">
-                            {sub === 1 ? (
-                              <RiNumber1 />
-                            ) : sub === 2 ? (
-                              <RiNumber2 />
-                            ) : (
-                              <RiNumber3 />
-                            )}
-                          </div>
-                          <input
-                            type="text"
-                            placeholder="Subject Name"
-                            className="form-control"
-                            name={`sub${year}_${sub}`}
-                            value={state[`sub${year}_${sub}`]}
-                            onChange={(e) =>
-                              dispatch({
-                                type: e.target.name,
-                                value: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-          {/* Staff Info Inputs */}
-          {[
-            { name: "Name", icon: <FaRegCircleUser />, label: "Staff Name" },
-            {
-              name: "username",
-              icon: <RiShieldUserFill />,
-              label: "Staff User Name",
-            },
-            {
-              name: "password",
-              icon: <TbPasswordUser />,
-              label: "Staff Password",
-            },
-          ].map(({ name, icon, label }) => (
-            <div className="col-md-4" key={name}>
-              <span className="fw-semibold">{label}</span>
-              <div className="input-group mb-3">
-                <div className="input-group-text bg-primary text-light">
-                  {icon}
-                </div>
+        <div className="row p-1 ">
+          {[1, 2, 3].map((value, index) => (
+            <div className=" col-sm-4 " key={index}>
+              <div className="input-group mt-4">
+                <span className="input-group-text text-light bg-primary bg-gradient">
+                  {value == 1 ? (
+                    <FaUserCircle />
+                  ) : value == 2 ? (
+                    <FaClipboardUser />
+                  ) : (
+                    <TbPasswordUser />
+                  )}
+                </span>
                 <input
                   type="text"
-                  placeholder={label}
                   className="form-control"
-                  name={name}
-                  value={state[name]}
-                  onChange={(e) =>
-                    dispatch({ type: e.target.name, value: e.target.value })
+                  name={
+                    value == 1
+                      ? "staffName "
+                      : value == 2
+                      ? "staffUserName"
+                      : "staffPassword"
+                  }
+                  onChange={(e) => {
+                    dispatch({ field: e.target.name, value: e.target.value });
+                  }}
+                  placeholder={
+                    value == 1
+                      ? "Staff Name"
+                      : value == 2
+                      ? "Staff User Name"
+                      : "Staff Password"
                   }
                 />
               </div>
             </div>
           ))}
         </div>
+        <h1
+          className="h1 text-uppercase mt-3 text-primary fw-semibold text-center"
+          style={{ letterSpacing: "2.5px" }}
+        >
+          alert Subject
+        </h1>
+        <h6
+          className="h1 text-uppercase mt-3 text-primary fw-semibold text-center"
+          style={{ letterSpacing: "2.5px", fontSize: "12px" }}
+        >
+          for staff
+        </h6>
 
-        <div className="d-flex justify-content-center mb-5">
-          <button className="btn btn-primary fw-bold" onClick={AddStaff}>
-            {btn ? "Update" : "Submit"}
+        <div className="row mb-5">
+          {("ug" == "ug" ? [1, 2, 3] : [1, 2]).map((value) => (
+            <div
+              className={
+                "ug" == "ug" ? "col-12 col-sm-4 mt-4" : "col-12 col-sm-6 mt-4"
+              }
+            >
+              {" "}
+              <span
+                className="fw-bold text-uppercase d-flex justify-content-center"
+                style={{ letterSpacing: "5px" }}
+              >{`${value} - Year `}</span>
+              {[1, 2, 3].map((vals) => (
+                <div className="input-group mt-3">
+                  <span className="input-group-text text-light bg-primary bg-gradient">
+                    {vals == 1 ? (
+                      <RiNumber1 />
+                    ) : vals == 2 ? (
+                      <RiNumber2 />
+                    ) : (
+                      <RiNumber3 />
+                    )}
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name={` s${value}_${vals}`}
+                    onChange={(e) => {
+                      dispatch({
+                        field: e.target.name,
+                        value: e.target.value,
+                      });
+                    }}
+                    placeholder={`Subject Name ${vals}`}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="container  d-flex justify-content-center">
+          <button
+            style={{ letterSpacing: "5px" }}
+            className="btn btn-primary fw-semibold mb-5 bg-gradient text-uppercase"
+          >
+            save
           </button>
         </div>
       </div>
