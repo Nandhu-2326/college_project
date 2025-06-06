@@ -13,10 +13,12 @@ import {
   setDoc,
   getDocs,
 } from "firebase/firestore";
+import { ThreeDot } from "react-loading-indicators";
 
 const HOD_Cstaff = () => {
   const [hodData, setHOD] = useState("");
   const [staffNames, setStaffNames] = useState([]);
+  const [isLoading, setIsloading] = useState(false);
   let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
 
   const reducer = (state, action) => {
@@ -26,15 +28,22 @@ const HOD_Cstaff = () => {
     };
   };
 
-  // Initial state - always a good practice!
   const initialState = {
     staffName: "",
     staffUserName: "",
     staffPassword: "",
+    s1_1: "",
+    s1_2: "",
+    s1_3: "",
+    s2_1: "",
+    s2_2: "",
+    s2_3: "",
+    s3_1: "",
+    s3_2: "",
+    s3_3: "",
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const AddData = async () => {
     if (
       !state.staffName.trim() ||
@@ -44,15 +53,13 @@ const HOD_Cstaff = () => {
       let eror = "Please Fill StaffDetails";
       InformationError(eror);
     } else {
+      setIsloading(true);
+      // Add staff name to staffName collection
       await addDoc(collection(db, "staffName"), {
         staff_Name: state.staffName,
       });
-      const staffData_s = await getDocs(collection(db, "staffName"));
-      const staffDocs = staffData_s.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setStaffNames(staffDocs);
+
+      // Staff Details Add
       const staffAdd = doc(db, "HOD", DepartmentCode);
       const staffCol = doc(collection(staffAdd, state.staffName));
       await setDoc(staffCol, {
@@ -60,10 +67,28 @@ const HOD_Cstaff = () => {
         staffuserName: state.staffUserName,
         staffpassword: state.staffPassword,
       });
-      for (let stateClear in initialState) {
-        dispatch({ field: stateClear, value: "" });
-      }
-      alert("Add Staff");
+
+      // Staff Subject Add
+      [1, 2, 3].map(async (year) => {
+        const staffsub = collection(staffCol, `${year}`); 
+        const staffDoc = doc(staffsub); 
+        await setDoc(staffDoc, {
+          [`s${year}_1`]: state[`s${year}_1`],
+          [`s${year}_2`]: state[`s${year}_2`],
+          [`s${year}_3`]: state[`s${year}_3`],
+        });
+      });
+      
+
+      // Clear state after adding
+      stateUpdate();
+      setIsloading(false);
+    }
+  };
+
+  const stateUpdate = () => {
+    for (let stateClear in initialState) {
+      dispatch({ field: stateClear, value: "" });
     }
   };
 
@@ -181,6 +206,7 @@ const HOD_Cstaff = () => {
                     type="text"
                     className="form-control"
                     name={`s${value}_${vals}`}
+                    value={state[`s${value}_${vals}`]}
                     onChange={(e) => {
                       dispatch({
                         field: e.target.name,
@@ -195,13 +221,17 @@ const HOD_Cstaff = () => {
           ))}
         </div>
 
-        <div className="container  d-flex justify-content-center">
+        <div className="container d-flex justify-content-center">
           <button
             style={{ letterSpacing: "5px" }}
             className="btn btn-primary fw-semibold mb-5 bg-gradient text-uppercase"
             onClick={AddData}
           >
-            save
+            {isLoading ? (
+              <ThreeDot color="#ffffff" size="medium" text="" textColor="" />
+            ) : (
+              "save"
+            )}
           </button>
         </div>
       </div>
