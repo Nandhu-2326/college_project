@@ -1,25 +1,25 @@
 import Swal from "sweetalert2";
 
 export const loading = () => {
-    Swal.fire({
-      html: "Loading...",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
+  Swal.fire({
+    html: "Loading...",
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: () => Swal.showLoading(),
+  });
+};
 export const UserAdd = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Added",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  };
-export   const InformationError = () => {
+  Swal.fire({
+    icon: "success",
+    title: "User Added",
+    timer: 2000,
+    showConfirmButton: false,
+  });
+};
+export const InformationError = (eror) => {
   let timerInterval;
   Swal.fire({
-    html: "Please Fill Information",
+    html: eror,
     timer: 1000,
     icon: "warning",
     didOpen: () => {
@@ -30,6 +30,7 @@ export   const InformationError = () => {
     },
   });
 };
+
 export const loginError = () => {
   Swal.fire({
     html: "invalid username and Password ",
@@ -46,11 +47,7 @@ export const loginSuccess = () => {
   });
 };
 const SweetAlert = () => {
-  return (
-    <div>
+  return <div></div>;
+};
 
-    </div>
-  )
-}
-
-export default SweetAlert
+export default SweetAlert;
