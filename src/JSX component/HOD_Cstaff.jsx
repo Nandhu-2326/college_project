@@ -14,6 +14,7 @@ import {
   setDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import { FaUserEdit } from "react-icons/fa";
@@ -23,6 +24,10 @@ const HOD_Cstaff = () => {
   const [staffNames, setStaffNames] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [HODinsideStaffs, setHODinsideStaffs] = useState([]);
+  const [StaffAllData, setStaffAllData] = useState([]);
+  const [btn, setBtn] = useState(false);
+  const [StaffidName, setStaffidName] = useState();
+  const [Staffid, setStaffid] = useState();
   let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
 
   const reducer = (state, action) => {
@@ -83,8 +88,66 @@ const HOD_Cstaff = () => {
       });
 
       stateUpdate();
-      await getStaffNames(); // wait here so state is updated
+      await getStaffNames(); 
       await HODinsideStaff();
+      setIsloading(false);
+    }
+  };
+
+  const Up = async () => {
+    if (
+      !state.staffName.trim() ||
+      !state.staffUserName.trim() ||
+      !state.staffPassword.trim()
+    ) {
+      let eror = "Please Fill StaffDetails";
+      InformationError(eror);
+    } else {
+      setIsloading(true);
+      // const staffName = await getDocs(
+      //   collection(db, "HOD", DepartmentCode, StaffidName)
+      // );
+      // const staffNameData = staffName.docs.map((doc) => ({
+      //   ...doc.data().staffname,
+      // }));
+      // console.log(staffNameData);
+      const staffDocRef = doc(db, "HOD", DepartmentCode, StaffidName , Staffid);
+
+      await updateDoc(staffDocRef, {
+      staffname: state.staffName,
+      staffuserName: state.staffUserName,
+      staffpassword: state.staffPassword,
+    });
+    
+    await updateDoc(collection(db, "staffName", ), {
+      staff_Name: state.staffName,
+    });
+
+      // await addDoc(collection(db, "staffName"), {
+      //   staff_Name: state.staffName,
+      // });
+
+      // const staffAdd = doc(db, "HOD", DepartmentCode);
+      // const staffCol = doc(collection(staffAdd, state.staffName));
+      // await setDoc(staffCol, {
+      //   staffname: state.staffName,
+      //   staffuserName: state.staffUserName,
+      //   staffpassword: state.staffPassword,
+      // });
+
+      // (ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map(async (year) => {
+      //   const staffsub = collection(staffCol, `${year}`);
+      //   const staffDoc = doc(staffsub);
+      //   await setDoc(staffDoc, {
+      //     [`s${year}_1`]: state[`s${year}_1`],
+      //     [`s${year}_2`]: state[`s${year}_2`],
+      //     [`s${year}_3`]: state[`s${year}_3`],
+      //   });
+      // });
+
+      // stateUpdate();
+      // await getStaffNames();
+      // await HODinsideStaff();
       setIsloading(false);
     }
   };
@@ -101,7 +164,7 @@ const HOD_Cstaff = () => {
   const HODinsideStaff = async () => {
     try {
       const allStaffData = [];
-      const time = 3000
+      const time = 4000;
       loading(time);
       for (const staff of staffNames) {
         const StaffDetailsRef = collection(
@@ -141,22 +204,68 @@ const HOD_Cstaff = () => {
     setHOD(HODdata);
   };
 
-  const UpdateStaff = async (sname) => {
+  const UpdateStaff = async (sname, id) => {
     try {
-      console.log(sname);
+      if (!DepartmentCode) throw new Error("DepartmentCode is undefined");
+      if (!sname) throw new Error("sname is undefined");
+      if (!id) throw new Error("id is undefined");
+
+      setBtn(true);
+      setStaffid(id);
+      setStaffidName(sname);
+      console.log(
+        "sname:",
+        sname,
+        "id:",
+        id,
+        "DepartmentCode:",
+        DepartmentCode
+      );
+
       const StaffDetailsRef = collection(db, "HOD", DepartmentCode, sname);
       const StaffDetailsSnap = await getDocs(StaffDetailsRef);
+
       const data = StaffDetailsSnap.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
 
-      dispatch({ field: "staffName", value: data[0].staffname });
-      dispatch({ field: "staffUserName", value: data[0].staffuserName });
-      dispatch({ field: "staffPassword", value: data[0].staffpassword });
-      console.log(data);
+      console.log("Staff Main Info:", data);
+
+      dispatch({ field: "staffName", value: data[0]?.staffname || "" });
+      dispatch({ field: "staffUserName", value: data[0]?.staffuserName || "" });
+      dispatch({ field: "staffPassword", value: data[0]?.staffpassword || "" });
+
+      const allStaffDatas = [];
+      const years = ugorpg === "ug" ? [1, 2, 3] : [1, 2];
+
+      for (const year of years) {
+        const staffDocRef = doc(db, "HOD", DepartmentCode, sname, id);
+        const nextSubCollection = collection(staffDocRef, String(year));
+        const nextSubDataSnap = await getDocs(nextSubCollection);
+
+        const dataYear = nextSubDataSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        console.log(`Year ${year} Subjects:`, dataYear);
+
+        allStaffDatas.push(...dataYear);
+      }
+
+      setStaffAllData(allStaffDatas);
+
+      years.forEach((year, index) => {
+        [1, 2, 3].forEach((sub) => {
+          dispatch({
+            field: `s${year}_${sub}`,
+            value: allStaffDatas[index]?.[`s${year}_${sub}`] || "",
+          });
+        });
+      });
     } catch (e) {
-      console.log(e.message);
+      console.error("Error in UpdateStaff:", e.message);
     }
   };
 
@@ -173,28 +282,6 @@ const HOD_Cstaff = () => {
       HODinsideStaff();
     }
   }, [staffNames]);
-
-  // const DeleteHODsubStaff = async (snamed, id) => {
-  //   try {
-  //     // 1️⃣ Delete all documents inside "HOD/Department/snamed"
-  //     const staffRef = collection(db, "HOD", Department, snamed);
-  //     const staffDocsSnap = await getDocs(staffRef);
-  //     for (const docu of staffDocsSnap.docs) {
-  //       await deleteDoc(doc(db, "HOD", Department, snamed, docu.id));
-  //     }
-
-  //     // 2️⃣ Delete the staffName doc
-  //     await deleteDoc(doc(db, "staffName", id));
-
-  //     alert("Deleted Successfully");
-
-  //     // 3️⃣ Refresh UI
-  //     await HODinsideStaff();
-  //     await getStaffNames();
-  //   } catch (e) {
-  //     console.log(e.message);
-  //   }
-  // };
 
   return (
     <>
@@ -318,10 +405,20 @@ const HOD_Cstaff = () => {
           <button
             style={{ letterSpacing: "5px" }}
             className="btn btn-primary fw-semibold mb-5 bg-gradient text-uppercase"
-            onClick={AddData}
+            onClick={
+              btn
+                ? () => {
+                    Up(staffNames.id);
+                  }
+                : () => {
+                    AddData;
+                  }
+            }
           >
             {isLoading ? (
               <ThreeDot color="#ffffff" size="medium" text="" textColor="" />
+            ) : btn ? (
+              "Update"
             ) : (
               "save"
             )}
@@ -347,10 +444,10 @@ const HOD_Cstaff = () => {
                 <th> Delete </th>
               </tr>
             </thead>
-            {HODinsideStaffs ? (
-              HODinsideStaffs.map((value, index) => {
-                return (
-                  <tbody className="">
+            <tbody className="">
+              {HODinsideStaffs.length > 0 ? (
+                HODinsideStaffs.map((value, index) => {
+                  return (
                     <tr key={value.id}>
                       <td> {index + 1} </td>
                       <td> {value.staffname} </td>
@@ -360,7 +457,7 @@ const HOD_Cstaff = () => {
                           className="btn btn-outline-dark px-3 "
                           style={{ fontSize: "20px" }}
                           onClick={() => {
-                            UpdateStaff(value.staffname);
+                            UpdateStaff(value.staffname, value.id);
                           }}
                         >
                           <FaUserEdit />{" "}
@@ -379,14 +476,17 @@ const HOD_Cstaff = () => {
                         </button>{" "}
                       </td>
                     </tr>
-                  </tbody>
-                );
-              })
-            ) : (
-              <p className="p">
-                No Staff <FaClipboardUser />{" "}
-              </p>
-            )}
+                  );
+                })
+              ) : (
+                <p
+                  className=" bg-danger text-uppercase text-center text-light"
+                  style={{ letterSpacing: "5px" }}
+                >
+                  No Staff
+                </p>
+              )}
+            </tbody>
           </table>
         </div>
       </div>
