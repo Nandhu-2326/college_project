@@ -3,8 +3,9 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaClipboardUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
 import { RiNumber1, RiNumber2, RiNumber3 } from "react-icons/ri";
-import { InformationError } from "./SweetAlert";
+import { InformationError, loading } from "./SweetAlert";
 import { db } from "./Database.js";
+import { TbHttpDelete } from "react-icons/tb";
 import {
   collection,
   getDoc,
@@ -12,13 +13,16 @@ import {
   addDoc,
   setDoc,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
+import { FaUserEdit } from "react-icons/fa";
 
 const HOD_Cstaff = () => {
   const [hodData, setHOD] = useState("");
   const [staffNames, setStaffNames] = useState([]);
   const [isLoading, setIsloading] = useState(false);
+  const [HODinsideStaffs, setHODinsideStaffs] = useState([]);
   let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
 
   const reducer = (state, action) => {
@@ -44,6 +48,7 @@ const HOD_Cstaff = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
   const AddData = async () => {
     if (
       !state.staffName.trim() ||
@@ -54,12 +59,11 @@ const HOD_Cstaff = () => {
       InformationError(eror);
     } else {
       setIsloading(true);
-      // Add staff name to staffName collection
+
       await addDoc(collection(db, "staffName"), {
         staff_Name: state.staffName,
       });
 
-      // Staff Details Add
       const staffAdd = doc(db, "HOD", DepartmentCode);
       const staffCol = doc(collection(staffAdd, state.staffName));
       await setDoc(staffCol, {
@@ -68,21 +72,59 @@ const HOD_Cstaff = () => {
         staffpassword: state.staffPassword,
       });
 
-      // Staff Subject Add
-      [1, 2, 3].map(async (year) => {
-        const staffsub = collection(staffCol, `${year}`); 
-        const staffDoc = doc(staffsub); 
+      (ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map(async (year) => {
+        const staffsub = collection(staffCol, `${year}`);
+        const staffDoc = doc(staffsub);
         await setDoc(staffDoc, {
           [`s${year}_1`]: state[`s${year}_1`],
           [`s${year}_2`]: state[`s${year}_2`],
           [`s${year}_3`]: state[`s${year}_3`],
         });
       });
-      
 
-      // Clear state after adding
       stateUpdate();
+      await getStaffNames(); // wait here so state is updated
+      await HODinsideStaff();
       setIsloading(false);
+    }
+  };
+
+  const getStaffNames = async () => {
+    const getStaff = await getDocs(collection(db, "staffName"));
+    const getStaffData = getStaff.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setStaffNames(getStaffData);
+  };
+
+  const HODinsideStaff = async () => {
+    try {
+      const allStaffData = [];
+      const time = 3000
+      loading(time);
+      for (const staff of staffNames) {
+        const StaffDetailsRef = collection(
+          db,
+          "HOD",
+          DepartmentCode,
+          staff.staff_Name
+        );
+        const StaffDetailsSnap = await getDocs(StaffDetailsRef);
+        const data = StaffDetailsSnap.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+          staff_Name: staff.staff_Name,
+        }));
+
+        console.log(`Staff Name: ${staff.staff_Name}`, data);
+
+        allStaffData.push(...data);
+      }
+
+      setHODinsideStaffs(allStaffData);
+    } catch (e) {
+      console.log(e.message);
     }
   };
 
@@ -99,9 +141,60 @@ const HOD_Cstaff = () => {
     setHOD(HODdata);
   };
 
+  const UpdateStaff = async (sname) => {
+    try {
+      console.log(sname);
+      const StaffDetailsRef = collection(db, "HOD", DepartmentCode, sname);
+      const StaffDetailsSnap = await getDocs(StaffDetailsRef);
+      const data = StaffDetailsSnap.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      dispatch({ field: "staffName", value: data[0].staffname });
+      dispatch({ field: "staffUserName", value: data[0].staffuserName });
+      dispatch({ field: "staffPassword", value: data[0].staffpassword });
+      console.log(data);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    const fetchAll = async () => {
+      fetchData();
+      await getStaffNames();
+    };
+    fetchAll();
   }, []);
+
+  useEffect(() => {
+    if (staffNames.length > 0) {
+      HODinsideStaff();
+    }
+  }, [staffNames]);
+
+  // const DeleteHODsubStaff = async (snamed, id) => {
+  //   try {
+  //     // 1️⃣ Delete all documents inside "HOD/Department/snamed"
+  //     const staffRef = collection(db, "HOD", Department, snamed);
+  //     const staffDocsSnap = await getDocs(staffRef);
+  //     for (const docu of staffDocsSnap.docs) {
+  //       await deleteDoc(doc(db, "HOD", Department, snamed, docu.id));
+  //     }
+
+  //     // 2️⃣ Delete the staffName doc
+  //     await deleteDoc(doc(db, "staffName", id));
+
+  //     alert("Deleted Successfully");
+
+  //     // 3️⃣ Refresh UI
+  //     await HODinsideStaff();
+  //     await getStaffNames();
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
 
   return (
     <>
@@ -110,7 +203,7 @@ const HOD_Cstaff = () => {
         <p className="fw-semibold">Department : {Department?.slice(14)}</p>
       </div>
 
-      <div className="container mb-5">
+      <div className="container ">
         <h1
           className="h1 text-uppercase mt-3 text-primary fw-semibold text-center"
           style={{ letterSpacing: "2.5px" }}
@@ -233,6 +326,68 @@ const HOD_Cstaff = () => {
               "save"
             )}
           </button>
+        </div>
+      </div>
+
+      <div className="container text-center mb-5 ">
+        <h6
+          className="h6 text-uppercase fw-bold text-primary "
+          style={{ letterSpacing: "5px" }}
+        >
+          {" "}
+          staff list{" "}
+        </h6>
+        <div className="table-responsive mb-5 ">
+          <table className="table table-striped table-secondary table-hover mb-5">
+            <thead className="text-uppercase " style={{ letterSpacing: "1px" }}>
+              <tr>
+                <th>S.No</th>
+                <th> Staff </th>
+                <th> edit </th>
+                <th> Delete </th>
+              </tr>
+            </thead>
+            {HODinsideStaffs ? (
+              HODinsideStaffs.map((value, index) => {
+                return (
+                  <tbody className="">
+                    <tr key={value.id}>
+                      <td> {index + 1} </td>
+                      <td> {value.staffname} </td>
+                      <td>
+                        {" "}
+                        <button
+                          className="btn btn-outline-dark px-3 "
+                          style={{ fontSize: "20px" }}
+                          onClick={() => {
+                            UpdateStaff(value.staffname);
+                          }}
+                        >
+                          <FaUserEdit />{" "}
+                        </button>{" "}
+                      </td>
+                      <td>
+                        {" "}
+                        <button
+                          className="btn btn-outline-danger "
+                          style={{ fontSize: "20px" }}
+                          onClick={() => {
+                            DeleteHODsubStaff(value.staffname, value.id);
+                          }}
+                        >
+                          <TbHttpDelete />{" "}
+                        </button>{" "}
+                      </td>
+                    </tr>
+                  </tbody>
+                );
+              })
+            ) : (
+              <p className="p">
+                No Staff <FaClipboardUser />{" "}
+              </p>
+            )}
+          </table>
         </div>
       </div>
     </>

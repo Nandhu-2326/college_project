@@ -14,7 +14,7 @@ const Footer = () => {
   return (
     <>
       <div
-        className="d-flex justify-content-center align-items-center fixed-bottom shadow shadow-md border-0 border-3 border-top border-primary "
+        className="d-flex justify-content-center  align-items-center fixed-bottom shadow shadow-md border-0 border-3 border-top border-primary "
         style={{ background: "white" }}
       >
         <div className="row">
@@ -24,7 +24,9 @@ const Footer = () => {
                 <ImUserTie
                   style={{ fontSize: "35px" }}
                   className="text-primary"
-                  onClick={()=>{ nav("/HODLayout")}}
+                  onClick={() => {
+                    nav("/HODLayout");
+                  }}
                 />
                 <p className="text-primary ">HOD</p>
               </div>

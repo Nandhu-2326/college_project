@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 
-export const loading = () => {
+export const loading = (time) => {
   Swal.fire({
     html: "Loading...",
-    timer: 2000,
+    timer: time,
     timerProgressBar: true,
     didOpen: () => Swal.showLoading(),
   });
