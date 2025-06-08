@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db } from "./Database.js"; // Make sure this is your Firebase config
+import { db } from "../Database.js"; // Make sure this is your Firebase config
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 

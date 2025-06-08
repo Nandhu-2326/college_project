@@ -11,7 +11,7 @@ import { PiUserSwitchFill } from "react-icons/pi";
 import { FcDepartment } from "react-icons/fc";
 import { FaBuildingUser } from "react-icons/fa6";
 import Swal from "sweetalert2";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import {
   collection,
   getDocs,
@@ -21,7 +21,7 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-import Footer from "./Footer.jsx";
+import Footer from "../Footer.jsx";
 
 const StaffAddorUpdatePage = () => {
   // State's
@@ -74,7 +74,7 @@ const StaffAddorUpdatePage = () => {
     });
   };
 
-   const loading = () => {
+  const loading = () => {
     Swal.fire({
       html: "Loading...",
       timer: 2000,
@@ -154,8 +154,7 @@ const StaffAddorUpdatePage = () => {
         setugorpg(" ");
         setUserName("");
         setPassword("");
-        if(!currentId)
-        {
+        if (!currentId) {
           UserAdd();
         }
         getUser();

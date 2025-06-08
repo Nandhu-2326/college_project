@@ -1,10 +1,10 @@
-import CollegeLogo from "./CollegeLogo";
-import Footer from "./Footer";
+import CollegeLogo from "../CollegeLogo";
+import Footer from "../Footer";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import { collection, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";

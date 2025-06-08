@@ -8,10 +8,10 @@ export const loading = (time) => {
     didOpen: () => Swal.showLoading(),
   });
 };
-export const UserAdd = () => {
+export const UserAdd = (staff) => {
   Swal.fire({
     icon: "success",
-    title: "User Added",
+    title: staff,
     timer: 2000,
     showConfirmButton: false,
   });

@@ -4,7 +4,7 @@ import { FaClipboardUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
 import { RiNumber1, RiNumber2, RiNumber3 } from "react-icons/ri";
 import { InformationError, loading } from "./SweetAlert";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import { TbHttpDelete } from "react-icons/tb";
 import {
   collection,

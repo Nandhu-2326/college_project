@@ -1,5 +1,5 @@
-import CollegeLogo from "./CollegeLogo";
-import Footer from "./Footer";
+import CollegeLogo from "../CollegeLogo";
+import Footer from "../Footer";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserGraduate, FaUserPlus, FaUserShield } from "react-icons/fa";
 import { useState } from "react";

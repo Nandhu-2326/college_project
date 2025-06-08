@@ -5,7 +5,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import {
   collection,
   addDoc,

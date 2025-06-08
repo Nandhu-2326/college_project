@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db } from "./Database.js"; 
+import { db } from "../Database.js"; 
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 

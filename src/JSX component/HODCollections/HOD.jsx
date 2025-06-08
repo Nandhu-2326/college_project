@@ -2,7 +2,7 @@ import React from "react";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import { collection, getDocs } from "firebase/firestore";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
@@ -11,11 +11,11 @@ import {
   loading,
   loginError,
   loginSuccess,
-} from "./SweetAlert.jsx";
+} from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 
 const HOD = () => {
-  const nav = useNavigate()
+  const nav = useNavigate();
   // UserName & Password
   const [userName, SetUserName] = useState("");
   const [Password, SetPassword] = useState("");
@@ -49,7 +49,7 @@ const HOD = () => {
         if (filterData.length > 0) {
           loginSuccess();
           sessionStorage.setItem("HOD_Data", JSON.stringify(filterData[0]));
-          nav("/HODLayout/HOD_Cstaff")
+          nav("/HODLayout/StaffDetails");
         } else {
           loginError();
         }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BsUpload } from "react-icons/bs";
-import { db } from "./Database.js";
+import { db } from "../Database.js";
 import {
   collection,
   addDoc,

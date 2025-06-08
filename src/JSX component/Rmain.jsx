@@ -1,21 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AdminLogin from "./AdminLogin";
-import AdminUserPage from "./AdminUserPage";
+import AdminLogin from "./AdminCollections/AdminLogin";
+import AdminUserPage from "./AdminCollections/AdminUserPage";
 import FirstPage from "./FirstPage";
 import LoginPage from "./LoginPage";
 import UserSelect from "./UserSelect";
-import SingleStudent from "./SingleStudent";
-import MultipleStudentCSV from "./MultipleStudentCSV";
-import AdminUserDetails from "./AdminUserDetails";
+import SingleStudent from "./AdminCollections/SingleStudent";
+import MultipleStudentCSV from "./AdminCollections/MultipleStudentCSV";
+import AdminUserDetails from "./AdminCollections/AdminUserDetails";
 import CalculatorPage from "./CalculatorPage";
-import StaffAddorUpdatePage from "./StaffAddorUpdatePage";
+import StaffAddorUpdatePage from "./AdminCollections/StaffAddorUpdatePage";
 import DegPage from "./DegPage";
 import CSVFile from "./CSVFile";
-import Departments from "./Departments";
-import Subject from "./Subject";
-import HOD from "./HOD";
-import HODLayout from "./HODLayout";
-import HOD_Cstaff from "./HOD_Cstaff";
+import Departments from "./AdminCollections/Departments";
+import Subject from "./AdminCollections/Subject";
+import HOD from "./HODCollections/HOD";
+import HODLayout from "./HODCollections/HODLayout";
+import StaffDetails from "./HODCollections/StaffDetails";
+import AddStaff from "./HODCollections/AddStaff";
+import SubjectAlert from "./HODCollections/SubjectAlert";
+// import HOD_Cstaff from "./HODCollections/HOD_Cstaff";
 const Rmain = () => {
   return (
     <>
@@ -25,7 +28,9 @@ const Rmain = () => {
           <Route path="/LoginPage" element={<LoginPage />} />
           <Route path="/HODLayout" element={<HODLayout />}>
             <Route index element={<HOD />} />
-            <Route path="HOD_Cstaff" element={ <HOD_Cstaff/> } />
+            <Route path="StaffDetails" element={<StaffDetails />} />
+            <Route path="AddStaff" element={<AddStaff />} />
+            <Route path="SubjectAlert" element={<SubjectAlert/>} />
           </Route>
           <Route path="/UserSelect" element={<UserSelect />} />
           <Route path="/DegPage" element={<DegPage />} />
