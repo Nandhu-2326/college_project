@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../Database";
-import { getDocs, collection } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { CiEdit } from "react-icons/ci";
 import { FcDeleteDatabase } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 const StaffDetails = () => {
   const nav = useNavigate();
@@ -20,29 +28,42 @@ const StaffDetails = () => {
   };
 
   const getDataFromAllstaffs = async () => {
-    const staffDoc = await getDocs(collection(db, "Allstaffs"));
-    const getStaffDoc = staffDoc.docs.map((doc) => ({
-      ...doc.data(),
+    if (!DepartmentCode) return;
+    const q = query(
+      collection(db, "Allstaffs"),
+      where("DepartmentCode", "==", DepartmentCode)
+    );
+    const querySnapshot = await getDocs(q);
+    const filteredStaff = querySnapshot.docs.map((doc) => ({
       id: doc.id,
+      ...doc.data(),
     }));
-    const filterData = getStaffDoc.filter((value) => {
-      return value.DepartmentCode == DepartmentCode;
-    });
-    setStaffData(filterData);
+    setStaffData(filteredStaff);
   };
-  const BrowerStorage = (value) =>{
+  const DeleteStaff = async (staffid) => {
+    await deleteDoc(doc(db, "Allstaffs", staffid));
+    toast.success("Staff Delete", Department);
+    getDataFromAllstaffs()
+  };
+  const BrowerStorage = (value) => {
     sessionStorage.setItem("staff", JSON.stringify(value));
-  }
+  };
 
   const fetchSubject = (value) => {
-    BrowerStorage(value)
+    BrowerStorage(value);
     nav("/HODLayout/SubjectAlert");
   };
+
   const fetchEdit = (value) => {
-    BrowerStorage(value)
+    BrowerStorage(value);
+    sessionStorage.setItem("state", JSON.stringify(true));
     nav("/HODLayout/AddStaff");
   };
 
+  const AddStfun = () => {
+    sessionStorage.setItem("state", JSON.stringify(false));
+    nav("/HODLayout/AddStaff");
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -84,9 +105,7 @@ const StaffDetails = () => {
       <div className="container d-flex mt-3  justify-content-end align-items-center">
         <button
           className="btn btn-primary me-3 text-uppercase bg-gradient"
-          onClick={() => {
-            nav("/HODLayout/AddStaff");
-          }}
+          onClick={AddStfun}
         >
           Add staff
         </button>
@@ -123,12 +142,22 @@ const StaffDetails = () => {
                         </button>
                       </td>
                       <td>
-                        <button className="btn btn-outline-dark" onClick={()=>{ fetchEdit(value)}}>
+                        <button
+                          className="btn btn-outline-dark"
+                          onClick={() => {
+                            fetchEdit(value);
+                          }}
+                        >
                           <CiEdit />
                         </button>
                       </td>
                       <td>
-                        <button className="btn btn-dark">
+                        <button
+                          className="btn btn-dark"
+                          onClick={() => {
+                            DeleteStaff(value.id);
+                          }}
+                        >
                           <FcDeleteDatabase />
                         </button>
                       </td>
