@@ -17,13 +17,11 @@ const StaffDetails = () => {
   const nav = useNavigate();
   const [hodData, setHOD] = useState("");
   const [staffData, setStaffData] = useState([]);
-  let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
-  console.log(HODName);
+  let { Department, HODName, DepartmentCode } = hodData;
 
   const fetchData = () => {
     const data = sessionStorage.getItem("HOD_Data");
     const HODdata = JSON.parse(data);
-    console.log(HODdata);
     setHOD(HODdata);
   };
 
@@ -40,11 +38,13 @@ const StaffDetails = () => {
     }));
     setStaffData(filteredStaff);
   };
+
   const DeleteStaff = async (staffid) => {
     await deleteDoc(doc(db, "Allstaffs", staffid));
-    toast.success("Staff Delete", Department);
-    getDataFromAllstaffs()
+    toast.success("Staff Deleted");
+    getDataFromAllstaffs();
   };
+
   const BrowerStorage = (value) => {
     sessionStorage.setItem("staff", JSON.stringify(value));
   };
@@ -64,6 +64,7 @@ const StaffDetails = () => {
     sessionStorage.setItem("state", JSON.stringify(false));
     nav("/HODLayout/AddStaff");
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -76,100 +77,82 @@ const StaffDetails = () => {
 
   return (
     <>
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center ">
-        <p className="fw-semibold"> HOD : {HODName}</p>
-        <p className="fw-semibold">Department : {Department?.slice(14)}</p>
+      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
+        <p className="fw-semibold mb-0"> HOD : {HODName}</p>
+        <p className="fw-semibold mb-0">Department : {Department?.slice(14)}</p>
       </div>
 
-      <div className="container ">
-        <h1
-          className="h1 text-uppercase mt-3 text-primary fw-semibold text-center"
-          style={{ letterSpacing: "2.5px" }}
-        >
-          view staff
-        </h1>
-        <h6
-          className="h6 text-uppercase  text-primary fw-semibold text-center"
-          style={{ letterSpacing: "2.5px" }}
-        >
-          with
-        </h6>
-        <h4
-          className="h4 text-uppercase mt-1 text-primary fw-semibold text-center"
-          style={{ letterSpacing: "2.5px" }}
-        >
-          alert subject
-        </h4>
-      </div>
+      <div className="container mt-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h1 className="h3 text-uppercase text-primary fw-semibold mb-1">
+              View Staff
+            </h1>
+            <h6 className="text-uppercase text-primary fw-semibold mb-0">
+              with Alert Subject
+            </h6>
+          </div>
 
-      <div className="container d-flex mt-3  justify-content-end align-items-center">
-        <button
-          className="btn btn-primary me-3 text-uppercase bg-gradient"
-          onClick={AddStfun}
-        >
-          Add staff
-        </button>
-      </div>
+          <button
+            className="btn btn-primary text-uppercase bg-gradient px-4 py-2"
+            onClick={AddStfun}
+          >
+            Add Staff
+          </button>
+        </div>
 
-      <div className="container mt-4 d-flex mb-5 justify-content-center ">
-        <div className="table-responsive mb-5">
-          <table className="table table-secondary">
-            <thead className="text-uppercase ">
+        <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
+          <table className="table table-striped table-bordered mb-5">
+            <thead className="table-primary text-uppercase text-center">
               <tr>
-                <th>s.no</th>
-                <th>name</th>
-                <th>subject</th>
-                <th>edit</th>
-                <th>delete</th>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Edit</th>
+                <th>Delete</th>
               </tr>
             </thead>
 
-            <tbody className="text-center">
+            <tbody className="text-center align-middle">
               {staffData.length > 0 ? (
-                staffData.map((value, index) => {
-                  return (
-                    <tr key={value.id}>
-                      <td>{index + 1}</td>
-                      <td>{value.staffName}</td>
-                      <td>
-                        <button
-                          className="btn btn-outline-success text-uppercase"
-                          onClick={() => {
-                            fetchSubject(value);
-                          }}
-                        >
-                          subject
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-outline-dark"
-                          onClick={() => {
-                            fetchEdit(value);
-                          }}
-                        >
-                          <CiEdit />
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-dark"
-                          onClick={() => {
-                            DeleteStaff(value.id);
-                          }}
-                        >
-                          <FcDeleteDatabase />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
+                staffData.map((value, index) => (
+                  <tr key={value.id}>
+                    <td>{index + 1}</td>
+                    <td className="fw-semibold">{value.staffName}</td>
+                    <td>
+                      <button
+                        className="btn btn-outline-success text-uppercase"
+                        onClick={() => fetchSubject(value)}
+                      >
+                        Subject
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => fetchEdit(value)}
+                        title="Edit Staff"
+                      >
+                        <CiEdit size={20} />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-outline-danger"
+                        onClick={() => DeleteStaff(value.id)}
+                        title="Delete Staff"
+                      >
+                        <FcDeleteDatabase size={22} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
               ) : (
-                <tr className="bg-danger opacity-50">
+                <tr>
                   <td colSpan={5}>
-                    <p className="p text-center fw-bold text-uppercase">
-                      no staff's
-                    </p>
+                    <div className="py-4 text-danger fw-bold text-uppercase">
+                      No staff records found.
+                    </div>
                   </td>
                 </tr>
               )}

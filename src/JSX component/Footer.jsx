@@ -8,9 +8,7 @@ const Footer = () => {
   let admin = () => {
     nav("/AdminLogin");
   };
-  let login = () => {
-    nav("/LoginPage");
-  };
+
   return (
     <>
       <div
@@ -22,7 +20,7 @@ const Footer = () => {
             <div className="d-flex justify-content-center align-items-center ">
               <div className="d-flex justify-content-center mx-1 px-3 flex-column  align-items-center">
                 <ImUserTie
-                  style={{ fontSize: "35px" }}
+                  style={{ fontSize: "35px", cursor: "pointer" }}
                   className="text-primary"
                   onClick={() => {
                     nav("/HODLayout");
@@ -32,7 +30,7 @@ const Footer = () => {
               </div>
               <div className="d-flex justify-content-center mx-1 px-3 flex-column  align-items-center">
                 <FaUserShield
-                  style={{ fontSize: "35px" }}
+                  style={{ fontSize: "35px", cursor: "pointer" }}
                   className="text-primary"
                   onClick={admin}
                 />
@@ -40,7 +38,7 @@ const Footer = () => {
               </div>
               <div className="d-flex mt-1 mx-2 justify-content-center px-3  flex-column align-items-center">
                 <SiHomeadvisor
-                  style={{ fontSize: "35px" }}
+                  style={{ fontSize: "35px", cursor: "pointer" }}
                   className=" text-primary "
                   onClick={() => {
                     nav("/");
@@ -50,9 +48,11 @@ const Footer = () => {
               </div>
               <div className="d-flex justify-content-center px-3 mx-1 flex-column align-items-center">
                 <FaUserTie
-                  style={{ fontSize: "35px" }}
+                  style={{ fontSize: "35px", cursor: "pointer" }}
                   className=" text-primary "
-                  onClick={login}
+                  onClick={() => {
+                    nav("/StaffLayout");
+                  }}
                 />
                 <p className="text-primary ">Staff</p>
               </div>

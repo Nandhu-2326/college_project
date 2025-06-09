@@ -20,8 +20,11 @@ const SubjectAlert = () => {
   const [DepartmentData, setDepartmentData] = useState([]);
   const [SavedSubjects, setSavedSubjects] = useState([]);
 
-  let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
+  let { Department, HODName } = hodData;
   const { id } = StaffData;
+
+  const YEAR_OPTIONS = [1, 2, 3];
+  const CLASS_OPTIONS = ["A", "B"];
 
   const fetchDataFromBrowser = () => {
     const StaffDetails = sessionStorage.getItem("staff");
@@ -37,6 +40,7 @@ const SubjectAlert = () => {
     const getSub = await getDocs(collection(db, "Subject"));
     const getData = getSub.docs.flatMap((doc) => Object.values(doc.data()));
     setSubjectData(getData);
+
     const getDep = await getDocs(collection(db, "Departments"));
     const getDepData = getDep.docs.flatMap((doc) => Object.values(doc.data()));
     setDepartmentData(getDepData);
@@ -72,24 +76,29 @@ const SubjectAlert = () => {
     if (!state.subject || !state.year || !state.department || !state.class) {
       showWarning("Please fill all required fields!");
     } else {
-      setisLoading(true);
-      const fetchStaff = doc(db, "Allstaffs", id);
-      const CreateCollection = doc(
-        collection(fetchStaff, "subject"),
-        state.subject
-      );
-      await setDoc(CreateCollection, {
-        subject: state.subject,
-        year: state.year,
-        department: state.department,
-        class: state.class,
-      });
-      toast.success("subject save");
-      for (let staffOb in stateObject) {
-        dispatch({ field: staffOb, value: "" });
+      try {
+        setisLoading(true);
+        const fetchStaff = doc(db, "Allstaffs", id);
+        const CreateCollection = doc(
+          collection(fetchStaff, "subject"),
+          state.subject
+        );
+        await setDoc(CreateCollection, {
+          subject: state.subject,
+          year: state.year,
+          department: state.department,
+          class: state.class,
+        });
+        toast.success("Subject saved successfully!");
+        for (let staffOb in stateObject) {
+          dispatch({ field: staffOb, value: "" });
+        }
+        fetchSavedSubjects();
+      } catch (e) {
+        toast.error("Error saving subject.");
+      } finally {
+        setisLoading(false);
       }
-      setisLoading(false);
-      fetchSavedSubjects();
     }
   };
 
@@ -101,12 +110,12 @@ const SubjectAlert = () => {
     if (id) {
       fetchSavedSubjects();
     }
-  });
+  }, [id]);
 
   const DeletSubject = async (idDel) => {
     try {
       await deleteDoc(doc(db, "Allstaffs", id, "subject", idDel));
-      toast.success("Subject Deleted!");
+      toast.success("Subject deleted!");
       fetchSavedSubjects();
     } catch (e) {
       toast.error(e.message);
@@ -116,118 +125,85 @@ const SubjectAlert = () => {
   return (
     <>
       <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold m-0"> HOD : {HODName}</p>
-        <p className="fw-semibold m-0">Department : {Department?.slice(14)}</p>
+        <p className="fw-semibold m-0"> HOD: {HODName}</p>
+        <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
       </div>
 
-      <div className="container mt-5 ">
+      <div className="container mt-5">
         <div className="row mb-5 justify-content-center">
           <div className="col-lg-8">
-            <div className="card shadow border-primary ">
-              <div className="card-header bg-primary  text-light text-center text-uppercase fw-bold fs-6">
-                Subject Alert <br />
-                for <br />
+            <div className="card shadow border-primary">
+              <div className="card-header bg-primary text-light text-center text-uppercase fw-bold fs-6">
+                Subject Alert <br /> for <br />
                 {StaffData.staffName}
               </div>
 
               <div className="card-body p-4">
                 <div className="row">
                   {[1, 2, 3, 4].map((doc) => {
+                    const fieldName =
+                      doc === 1
+                        ? "subject"
+                        : doc === 2
+                        ? "year"
+                        : doc === 3
+                        ? "department"
+                        : "class";
+
+                    const fieldLabel =
+                      doc === 1
+                        ? "Select Subject"
+                        : doc === 2
+                        ? "Year"
+                        : doc === 3
+                        ? "Department"
+                        : "Class";
+
                     return (
                       <div className="col-md-6 mt-3" key={doc}>
-                        <label
-                          htmlFor=""
-                          className="text-uppercase text-primary fw-semibold mb-2"
-                        >
-                          {doc === 1
-                            ? "Select Subject"
-                            : doc === 2
-                            ? "Year"
-                            : doc === 3
-                            ? "Department"
-                            : "Class"}
+                        <label className="text-uppercase text-primary fw-semibold mb-2">
+                          {fieldLabel}
                         </label>
-
                         <select
-                          name={
-                            doc === 1
-                              ? "subject"
-                              : doc === 2
-                              ? "year"
-                              : doc === 3
-                              ? "department"
-                              : "class"
-                          }
-                          value={
-                            doc === 1
-                              ? state.subject
-                              : doc === 2
-                              ? state.year
-                              : doc === 3
-                              ? state.department
-                              : state.class
-                          }
-                          onChange={(e) => {
+                          name={fieldName}
+                          value={state[fieldName]}
+                          onChange={(e) =>
                             dispatch({
                               field: e.target.name,
                               value: e.target.value,
-                            });
-                          }}
+                            })
+                          }
                           className="form-select"
                         >
-                          <option>
-                            -- Select{" "}
-                            {doc === 1
-                              ? "Subject"
-                              : doc === 2
-                              ? "Year"
-                              : doc === 3
-                              ? "Department"
-                              : "Class"}{" "}
-                            --
-                          </option>
+                          <option value="">-- Select {fieldLabel} --</option>
 
-                          {doc === 1 ? (
-                            <>
-                              {SubjectData &&
-                                SubjectData.map((doc, index) => {
-                                  return (
-                                    <option value={doc} key={index}>
-                                      {" "}
-                                      {doc}{" "}
-                                    </option>
-                                  );
-                                })}
-                            </>
-                          ) : doc === 2 ? (
-                            <>
-                              {[1, 2, 3].map((no, index) => {
-                                return (
-                                  <option value={no} key={index}>
-                                    {" "}
-                                    {no}{" "}
-                                  </option>
-                                );
-                              })}
-                            </>
-                          ) : doc === 3 ? (
-                            <>
-                              {DepartmentData &&
-                                DepartmentData.map((doc, index) => {
-                                  return (
-                                    <option value={doc} key={index}>
-                                      {" "}
-                                      {doc}{" "}
-                                    </option>
-                                  );
-                                })}
-                            </>
-                          ) : (
-                            <>
-                              <option value="A">A</option>
-                              <option value="B">B</option>
-                            </>
-                          )}
+                          {fieldName === "subject" &&
+                            SubjectData.map((doc, index) => (
+                              <option value={doc} key={index}>
+                                {doc}
+                              </option>
+                            ))}
+
+                          {fieldName === "year" &&
+                            YEAR_OPTIONS.map((no) => (
+                              <option value={no} key={no}>
+                                {no}
+                              </option>
+                            ))}
+
+                          {fieldName === "department" &&
+                            DepartmentData.map((dep, index) => (
+                              <option value={dep} key={index}>
+                                {dep}
+                              </option>
+                            ))}
+
+                          {fieldName === "class" &&
+                            CLASS_OPTIONS.map((cls) => (
+                              <option value={cls} key={cls}>
+                                {cls}
+                              </option>
+                            ))}
                         </select>
                       </div>
                     );
@@ -235,11 +211,12 @@ const SubjectAlert = () => {
                 </div>
               </div>
 
-              <div className="card-footer  d-flex justify-content-center p-3">
+              <div className="card-footer d-flex justify-content-center p-3">
                 <button
                   className="btn btn-primary text-uppercase mb-3 px-4 py-2"
                   style={{ letterSpacing: "2px" }}
                   onClick={AddStaffData}
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <ThreeDot
@@ -249,53 +226,53 @@ const SubjectAlert = () => {
                       textColor=""
                     />
                   ) : (
-                    "save subject"
+                    "Save Subject"
                   )}
                 </button>
               </div>
 
               <div className="container mb-5">
                 <div className="table-responsive">
-                  <table className="table table-danger">
-                    <thead>
-                      <tr className="text-uppercase">
-                        <th>s.no</th>
-                        <th>subject</th>
+                  <table className="table table-striped table-bordered">
+                    <thead className="table-primary text-center text-uppercase">
+                      <tr>
+                        <th>S.No</th>
+                        <th>Subject</th>
                         <th>Department</th>
                         <th>Year</th>
-                        <th>class</th>
-                        <th>delete</th>
+                        <th>Class</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>
                       {SavedSubjects && SavedSubjects.length > 0 ? (
-                        SavedSubjects.map((value, index) => {
-                          return (
-                            <tr className="text-center ">
-                              <td> {index + 1} </td>
-                              <td> {value.subject} </td>
-                              <td> {value.department} </td>
-                              <td> {value.year} </td>
-                              <td> {value.class} </td>
-                              <td>
-                                {" "}
-                                <RiDeleteBin3Fill
-                                  onClick={() => {
-                                    DeletSubject(value.id);
-                                  }}
-                                />{" "}
-                              </td>
-                            </tr>
-                          );
-                        })
+                        SavedSubjects.map((value, index) => (
+                          <tr className="text-center" key={value.id}>
+                            <td>{index + 1}</td>
+                            <td>{value.subject}</td>
+                            <td>{value.department}</td>
+                            <td>{value.year}</td>
+                            <td>{value.class}</td>
+                            <td>
+                              <RiDeleteBin3Fill
+                                onClick={() => DeletSubject(value.id)}
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#dc3545",
+                                  fontSize: "1.3rem",
+                                }}
+                                title="Delete Subject"
+                              />
+                            </td>
+                          </tr>
+                        ))
                       ) : (
                         <tr>
                           <td
                             colSpan={6}
-                            className="fw-semibold text-uppercase text-center"
+                            className="fw-semibold text-uppercase text-center py-4"
                           >
-                            {" "}
-                            No Subject for staff{" "}
+                            No Subject Saved for this Staff
                           </td>
                         </tr>
                       )}

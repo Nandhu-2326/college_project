@@ -4,39 +4,37 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {
-  showWarning,
-} from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { showWarning } from "../SweetAlert.jsx";
 
-const HOD = () => {
+const LoginPage = () => {
   const nav = useNavigate();
-  
-  const [userName, SetUserName] = useState("");
+
+  const [UserName, SetUserName] = useState("");
   const [Password, SetPassword] = useState("");
   const [PasswordEye, SetPasswordEye] = useState(true);
-  
+
   const login = async () => {
-    if (!userName || !Password) {
+    if (!UserName || !Password) {
       showWarning("Please Fill All requirement");
     } else {
       const toastId = toast.loading("Please Wait");
-  
       try {
         const q = query(
-          collection(db, "HOD"),
-          where("username", "==", userName),
-          where("password", "==", Password)
+          collection(db, "Allstaffs"),
+          where("UserName", "==", UserName),
+          where("Password", "==", Password)
         );
-  
+
         const querySnapshot = await getDocs(q);
-  
+
         if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0].data();
+          const docSnap = querySnapshot.docs[0];
+          const userDoc = { id: docSnap.id, ...docSnap.data() };
           toast.success("Login Success", { id: toastId });
-          sessionStorage.setItem("HOD_Data", JSON.stringify(userDoc));
-          nav("/HODLayout/StaffDetails");
+          sessionStorage.setItem("staff_Data", JSON.stringify(userDoc));
+          nav("/StaffLayout/StaffSubjects");
         } else {
           toast.error("Invalid Username or Password", { id: toastId });
         }
@@ -45,14 +43,13 @@ const HOD = () => {
       }
     }
   };
-  
 
   return (
     <div className="container my-4 mb-5">
       {/* Login Form */}
       <div className="row justify-content-center mt-5">
         <div className="col-12 text-center mb-4">
-          <h2 className="fw-bold text-primary">HOD Login</h2>
+          <h2 className="fw-bold text-primary text-uppercase">staff Login</h2>
           <p className="text-muted">Enter your Username and Password</p>
         </div>
 
@@ -67,6 +64,7 @@ const HOD = () => {
                 type="text"
                 className="form-control border border-primary"
                 placeholder="Username"
+                value={UserName}
                 onChange={(e) => SetUserName(e.target.value)}
               />
             </div>
@@ -80,6 +78,7 @@ const HOD = () => {
                 type={PasswordEye ? "password" : "text"}
                 className="form-control border border-primary"
                 placeholder="Password"
+                value={Password}
                 onChange={(e) => SetPassword(e.target.value)}
               />
               <span
@@ -105,4 +104,4 @@ const HOD = () => {
   );
 };
 
-export default HOD;
+export default LoginPage;
