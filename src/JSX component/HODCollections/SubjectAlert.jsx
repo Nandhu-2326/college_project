@@ -68,12 +68,21 @@ const SubjectAlert = () => {
     year: "",
     department: "",
     class: "",
+    TorL: "",
+    ugorpg: "",
   };
 
   const [state, dispatch] = useReducer(reducer, stateObject);
 
   const AddStaffData = async () => {
-    if (!state.subject || !state.year || !state.department || !state.class) {
+    if (
+      !state.subject ||
+      !state.year ||
+      !state.department ||
+      !state.class ||
+      !state.TorL ||
+      !state.ugorpg
+    ) {
       showWarning("Please fill all required fields!");
     } else {
       try {
@@ -88,6 +97,8 @@ const SubjectAlert = () => {
           year: state.year,
           department: state.department,
           class: state.class,
+          TorL: state.TorL,
+          ugorpg: state.ugorpg,
         });
         toast.success("Subject saved successfully!");
         for (let staffOb in stateObject) {
@@ -140,7 +151,7 @@ const SubjectAlert = () => {
 
               <div className="card-body p-4">
                 <div className="row">
-                  {[1, 2, 3, 4].map((doc) => {
+                  {[1, 2, 3, 4, 5, 6].map((doc) => {
                     const fieldName =
                       doc === 1
                         ? "subject"
@@ -148,8 +159,11 @@ const SubjectAlert = () => {
                         ? "year"
                         : doc === 3
                         ? "department"
-                        : "class";
-
+                        : doc == 4
+                        ? "class"
+                        : doc == 5
+                        ? "TorL"
+                        : "ugorpg";
                     const fieldLabel =
                       doc === 1
                         ? "Select Subject"
@@ -157,8 +171,11 @@ const SubjectAlert = () => {
                         ? "Year"
                         : doc === 3
                         ? "Department"
-                        : "Class";
-
+                        : doc == 4
+                        ? "Class"
+                        : doc == 5
+                        ? "Theory or Lab"
+                        : "UG  or PG";
                     return (
                       <div className="col-md-6 mt-3" key={doc}>
                         <label className="text-uppercase text-primary fw-semibold mb-2">
@@ -202,6 +219,20 @@ const SubjectAlert = () => {
                             CLASS_OPTIONS.map((cls) => (
                               <option value={cls} key={cls}>
                                 {cls}
+                              </option>
+                            ))}
+                          {fieldName === "TorL" &&
+                            ["Theory", "Lab"].map((subs, index) => (
+                              <option value={subs} key={index}>
+                                {" "}
+                                {subs}{" "}
+                              </option>
+                            ))}
+                          {fieldName === "ugorpg" &&
+                            ["ug", "pg"].map((ugorpg) => (
+                              <option value={ugorpg}>
+                                {" "}
+                                {ugorpg.toUpperCase()}{" "}
                               </option>
                             ))}
                         </select>

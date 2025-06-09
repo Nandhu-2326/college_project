@@ -56,7 +56,7 @@ const StaffSubjects = () => {
               <th>Subject</th>
               <th>Department</th>
               <th>Year</th>
-              <th>Class</th>
+              <th>Class & Degree</th>
               <th>Enter Mark</th>
             </tr>
           </thead>
@@ -67,10 +67,20 @@ const StaffSubjects = () => {
                 return (
                   <tr key={value.id}>
                     <td>{index + 1}</td>
-                    <td className="fw-semibold">{value.subject}</td>
+                    <td className="fw-semibold">
+                      <tr className="d-flex flex-column justify-content-around">
+                        <td className="text-center">{value.subject} </td>{" "}
+                        <td className=" "> {value.TorL}</td>
+                      </tr>
+                    </td>
                     <td className="fw-semibold">{value.department}</td>
                     <td className="fw-semibold">{value.year}</td>
-                    <td className="fw-semibold">{value.class}</td>
+                    <td className="fw-semibold">
+                      <tr className="d-flex justify-content-around">
+                        <td>{value.class}</td>
+                        <td>{value.ugorpg.toUpperCase()}</td>
+                      </tr>
+                    </td>
                     <td>
                       <button className="btn btn-outline-success ">
                         <FaPenAlt />

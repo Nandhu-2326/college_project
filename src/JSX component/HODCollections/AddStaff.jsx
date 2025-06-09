@@ -32,7 +32,7 @@ const AddStaff = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   let { Department, HODName, DepartmentCode } = hodData;
-  let staffid = StaffData.id;
+  let { id } = StaffData;
 
   const fetchData = () => {
     const data = sessionStorage.getItem("HOD_Data");
@@ -64,10 +64,10 @@ const AddStaff = () => {
   }, []);
 
   useEffect(() => {
-    if (staffid) {
-      fetchStaffDetails(staffid);
+    if (id) {
+      fetchStaffDetails(id);
     }
-  }, [staffid]);
+  }, [id]);
 
   const AddStaff = async () => {
     if (!state.staffName || !state.UserName || !state.Password) {
