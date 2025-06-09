@@ -271,7 +271,7 @@ const SubjectAlert = () => {
                         <th>Subject</th>
                         <th>Department</th>
                         <th>Year</th>
-                        <th>Class</th>
+                        <th>Class & Degree</th>
                         <th>Delete</th>
                       </tr>
                     </thead>
@@ -280,10 +280,22 @@ const SubjectAlert = () => {
                         SavedSubjects.map((value, index) => (
                           <tr className="text-center" key={value.id}>
                             <td>{index + 1}</td>
-                            <td>{value.subject}</td>
-                            <td>{value.department}</td>
-                            <td>{value.year}</td>
-                            <td>{value.class}</td>
+                            <td className="fw-semibold">
+                              <tr className="d-flex flex-column justify-content-around">
+                                <td className="text-center">
+                                  {value.subject}{" "}
+                                </td>{" "}
+                                <td className=" "> {value.TorL}</td>
+                              </tr>
+                            </td>
+                            <td className="fw-semibold">{value.department}</td>
+                            <td className="fw-semibold">{value.year}</td>
+                            <td className="fw-semibold">
+                              <tr className="d-flex justify-content-around">
+                                <td>{value.class}</td>
+                                <td>{value.ugorpg.toUpperCase()}</td>
+                              </tr>
+                            </td>
                             <td>
                               <RiDeleteBin3Fill
                                 onClick={() => DeletSubject(value.id)}

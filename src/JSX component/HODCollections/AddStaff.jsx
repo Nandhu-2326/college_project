@@ -193,7 +193,7 @@ const AddStaff = () => {
               onClick={
                 isUpdate
                   ? () => {
-                      UpdateStaff(staffid);
+                      UpdateStaff(id);
                     }
                   : AddStaff
               }
