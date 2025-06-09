@@ -81,7 +81,7 @@ const StaffSubjects = () => {
               })
             ) : (
               <tr key={0}>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="py-4 text-danger fw-bold text-uppercase">
                     No subject records found.
                   </div>
