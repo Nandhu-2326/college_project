@@ -1,13 +1,27 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { db } from "../Database";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
+import { ThreeDot } from "react-loading-indicators";
+import { showWarning } from "../SweetAlert";
+import { RiDeleteBin3Fill } from "react-icons/ri";
+import { toast } from "react-hot-toast";
 
 const SubjectAlert = () => {
+  const [isLoading, setisLoading] = useState(false);
   const [StaffData, setStaffData] = useState([]);
   const [hodData, setHOD] = useState("");
   const [SubjectData, setSubjectData] = useState([]);
   const [DepartmentData, setDepartmentData] = useState([]);
+  const [SavedSubjects, setSavedSubjects] = useState([]);
+
   let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
+  const { id } = StaffData;
 
   const fetchDataFromBrowser = () => {
     const StaffDetails = sessionStorage.getItem("staff");
@@ -18,6 +32,7 @@ const SubjectAlert = () => {
     setHOD(HODdata);
     fetchSubjectDepartmentData();
   };
+
   const fetchSubjectDepartmentData = async () => {
     const getSub = await getDocs(collection(db, "Subject"));
     const getData = getSub.docs.flatMap((doc) => Object.values(doc.data()));
@@ -25,6 +40,16 @@ const SubjectAlert = () => {
     const getDep = await getDocs(collection(db, "Departments"));
     const getDepData = getDep.docs.flatMap((doc) => Object.values(doc.data()));
     setDepartmentData(getDepData);
+  };
+
+  const fetchSavedSubjects = async () => {
+    const getCollection = collection(db, "Allstaffs", id, "subject");
+    const getSubjectData = await getDocs(getCollection);
+    const fetchdata = getSubjectData.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setSavedSubjects(fetchdata);
   };
 
   const reducer = (state, action) => {
@@ -42,12 +67,51 @@ const SubjectAlert = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, stateObject);
-  const AddStaffData = () => {
-    
+
+  const AddStaffData = async () => {
+    if (!state.subject || !state.year || !state.department || !state.class) {
+      showWarning("Please fill all required fields!");
+    } else {
+      setisLoading(true);
+      const fetchStaff = doc(db, "Allstaffs", id);
+      const CreateCollection = doc(
+        collection(fetchStaff, "subject"),
+        state.subject
+      );
+      await setDoc(CreateCollection, {
+        subject: state.subject,
+        year: state.year,
+        department: state.department,
+        class: state.class,
+      });
+      toast.success("subject save");
+      for (let staffOb in stateObject) {
+        dispatch({ field: staffOb, value: "" });
+      }
+      setisLoading(false);
+      fetchSavedSubjects();
+    }
   };
+
   useEffect(() => {
     fetchDataFromBrowser();
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      fetchSavedSubjects();
+    }
+  });
+
+  const DeletSubject = async (idDel) => {
+    try {
+      await deleteDoc(doc(db, "Allstaffs", id, "subject", idDel));
+      toast.success("Subject Deleted!");
+      fetchSavedSubjects();
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
 
   return (
     <>
@@ -94,6 +158,15 @@ const SubjectAlert = () => {
                               ? "department"
                               : "class"
                           }
+                          value={
+                            doc === 1
+                              ? state.subject
+                              : doc === 2
+                              ? state.year
+                              : doc === 3
+                              ? state.department
+                              : state.class
+                          }
                           onChange={(e) => {
                             dispatch({
                               field: e.target.name,
@@ -117,21 +190,36 @@ const SubjectAlert = () => {
                           {doc === 1 ? (
                             <>
                               {SubjectData &&
-                                SubjectData.map((doc) => {
-                                  return <option value={doc}> {doc} </option>;
+                                SubjectData.map((doc, index) => {
+                                  return (
+                                    <option value={doc} key={index}>
+                                      {" "}
+                                      {doc}{" "}
+                                    </option>
+                                  );
                                 })}
                             </>
                           ) : doc === 2 ? (
                             <>
-                              {[1, 2, 3].map((no) => {
-                                return <option value={no}> {no} </option>;
+                              {[1, 2, 3].map((no, index) => {
+                                return (
+                                  <option value={no} key={index}>
+                                    {" "}
+                                    {no}{" "}
+                                  </option>
+                                );
                               })}
                             </>
                           ) : doc === 3 ? (
                             <>
                               {DepartmentData &&
-                                DepartmentData.map((doc) => {
-                                  return <option value={doc}> {doc} </option>;
+                                DepartmentData.map((doc, index) => {
+                                  return (
+                                    <option value={doc} key={index}>
+                                      {" "}
+                                      {doc}{" "}
+                                    </option>
+                                  );
                                 })}
                             </>
                           ) : (
@@ -151,8 +239,18 @@ const SubjectAlert = () => {
                 <button
                   className="btn btn-primary text-uppercase mb-3 px-4 py-2"
                   style={{ letterSpacing: "2px" }}
+                  onClick={AddStaffData}
                 >
-                  Save Subject Alert
+                  {isLoading ? (
+                    <ThreeDot
+                      color="#ffffff"
+                      size="medium"
+                      text=""
+                      textColor=""
+                    />
+                  ) : (
+                    "save subject"
+                  )}
                 </button>
               </div>
 
@@ -165,9 +263,43 @@ const SubjectAlert = () => {
                         <th>subject</th>
                         <th>Department</th>
                         <th>Year</th>
+                        <th>class</th>
                         <th>delete</th>
                       </tr>
                     </thead>
+                    <tbody>
+                      {SavedSubjects && SavedSubjects.length > 0 ? (
+                        SavedSubjects.map((value, index) => {
+                          return (
+                            <tr className="text-center ">
+                              <td> {index + 1} </td>
+                              <td> {value.subject} </td>
+                              <td> {value.department} </td>
+                              <td> {value.year} </td>
+                              <td> {value.class} </td>
+                              <td>
+                                {" "}
+                                <RiDeleteBin3Fill
+                                  onClick={() => {
+                                    DeletSubject(value.id);
+                                  }}
+                                />{" "}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            className="fw-semibold text-uppercase text-center"
+                          >
+                            {" "}
+                            No Subject for staff{" "}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
                   </table>
                 </div>
               </div>

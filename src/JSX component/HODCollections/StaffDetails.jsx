@@ -30,10 +30,17 @@ const StaffDetails = () => {
     });
     setStaffData(filterData);
   };
+  const BrowerStorage = (value) =>{
+    sessionStorage.setItem("staff", JSON.stringify(value));
+  }
 
   const fetchSubject = (value) => {
-    sessionStorage.setItem("staff", JSON.stringify(value));
+    BrowerStorage(value)
     nav("/HODLayout/SubjectAlert");
+  };
+  const fetchEdit = (value) => {
+    BrowerStorage(value)
+    nav("/HODLayout/AddStaff");
   };
 
   useEffect(() => {
@@ -116,7 +123,7 @@ const StaffDetails = () => {
                         </button>
                       </td>
                       <td>
-                        <button className="btn btn-outline-dark">
+                        <button className="btn btn-outline-dark" onClick={()=>{ fetchEdit(value)}}>
                           <CiEdit />
                         </button>
                       </td>

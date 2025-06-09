@@ -12,6 +12,7 @@ const AddStaff = () => {
   const nav = useNavigate();
   //
   const [hodData, setHOD] = useState("");
+  const [StaffData, setStaffData] = useState([]);
   const [isloading, setisloading] = useState(false);
   //
   const stateObject = {
@@ -28,15 +29,28 @@ const AddStaff = () => {
   const [state, dispatch] = useReducer(reducer, stateObject);
   //
   let { Department, HODName, ugorpg, rs, DepartmentCode } = hodData;
+  let { id } = StaffData;
   const fetchData = () => {
     const data = sessionStorage.getItem("HOD_Data");
     const HODdata = JSON.parse(data);
-    console.log(HODdata);
     setHOD(HODdata);
+    const StaffDetails = sessionStorage.getItem("staff");
+    const StaffDatas = JSON.parse(StaffDetails);
+    setStaffData(StaffDatas);
   };
+  const fetchStaffDetails = (id) =>{
+    
+  }
   useEffect(() => {
     fetchData();
   }, []);
+  useEffect(() => {
+    if(id)
+    {
+
+    }
+  }, []);
+
   //
   const AddStaff = async () => {
     if (!state.staffName || !state.UserName || !state.Password) {
