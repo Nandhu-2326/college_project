@@ -3,14 +3,16 @@ import { db } from "../Database";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { FaPenAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { useSubject } from "./SubjectContext";
 const StaffSubjects = () => {
   const nav = useNavigate();
+  const { setSelectedSubject } = useSubject();
   const [StaffData, setStaffData] = useState({});
   const [STsubject, setSTsubject] = useState([]);
   const SendValue = (value) => {
     console.log(value);
-    nav("/StaffLayout/MarkEntry");       
+    setSelectedSubject(value)
+    nav("/StaffLayout/MarkEntry");
   };
   const fetchData = () => {
     const data = sessionStorage.getItem("staff_Data");
