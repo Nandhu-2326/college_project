@@ -7,12 +7,13 @@ import { db } from "../Database";
 import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const AddStaff = () => {
   const nav = useNavigate();
 
   const [hodData, setHOD] = useState("");
-  const [StaffData, setStaffData] = useState([]);
+  const [StaffData, setStaffData] = useState("");
   const [isloading, setisloading] = useState(false);
   const [isUpdate, setisUpdate] = useState(false);
 
@@ -32,7 +33,8 @@ const AddStaff = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   let { Department, HODName, DepartmentCode } = hodData;
-  let { id } = StaffData;
+
+  const staffId = StaffData?.id;
 
   const fetchData = () => {
     const data = sessionStorage.getItem("HOD_Data");
@@ -44,7 +46,7 @@ const AddStaff = () => {
     setStaffData(StaffDatas);
 
     const States = sessionStorage.getItem("state");
-    const boolenState = JSON.parse(States);
+    const boolenState = JSON.parse(States) === true;
     setisUpdate(boolenState);
   };
 
@@ -52,9 +54,10 @@ const AddStaff = () => {
     const getStaffDetails = doc(db, "Allstaffs", staffId);
     const AfterFetch = await getDoc(getStaffDetails);
     const AllData = AfterFetch.data();
-    if (isUpdate) {
+
+    if (isUpdate && AllData) {
       for (let staffField in initialState) {
-        dispatch({ field: staffField, value: AllData[staffField] });
+        dispatch({ field: staffField, value: AllData[staffField] || "" });
       }
     }
   };
@@ -64,42 +67,54 @@ const AddStaff = () => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      fetchStaffDetails(id);
+    if (isUpdate && staffId) {
+      fetchStaffDetails(staffId);
     }
-  }, [id]);
+  }, [isUpdate, staffId]);
 
   const AddStaff = async () => {
     if (!state.staffName || !state.UserName || !state.Password) {
       showWarning("Please Fill All Fields");
     } else {
-      setisloading(true);
-      await addDoc(collection(db, "Allstaffs"), {
-        staffName: state.staffName,
-        UserName: state.UserName,
-        Password: state.Password,
-        DepartmentCode: DepartmentCode,
-      });
-      toast.success("Staff Saved");
-      setisloading(false);
-      nav("/HODLayout/StaffDetails");
+      try {
+        setisloading(true);
+        await addDoc(collection(db, "Allstaffs"), {
+          staffName: state.staffName,
+          UserName: state.UserName,
+          Password: state.Password,
+          DepartmentCode: DepartmentCode,
+        });
+        toast.success("Staff Saved");
+        setisloading(false);
+        nav("/HODLayout/StaffDetails");
+      } catch (error) {
+        setisloading(false);
+        toast.error("Error adding staff");
+        console.error(error);
+      }
     }
   };
 
-  const UpdateStaff = async (staffid) => {
+  const UpdateStaff = async (staffId) => {
     if (!state.staffName || !state.UserName || !state.Password) {
       showWarning("Please Fill All Fields");
     } else {
-      setisloading(true);
-      await updateDoc(doc(db, "Allstaffs", staffid), {
-        staffName: state.staffName,
-        UserName: state.UserName,
-        Password: state.Password,
-        DepartmentCode: DepartmentCode,
-      });
-      toast.success("Staff Updated");
-      setisloading(false);
-      nav("/HODLayout/StaffDetails");
+      try {
+        setisloading(true);
+        await updateDoc(doc(db, "Allstaffs", staffId), {
+          staffName: state.staffName,
+          UserName: state.UserName,
+          Password: state.Password,
+          DepartmentCode: DepartmentCode,
+        });
+        toast.success("Staff Updated");
+        setisloading(false);
+        nav("/HODLayout/StaffDetails");
+      } catch (error) {
+        setisloading(false);
+        toast.error("Error updating staff");
+        console.error(error);
+      }
     }
   };
 
@@ -110,7 +125,16 @@ const AddStaff = () => {
         <p className="fw-semibold m-0">HOD: {HODName}</p>
         <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
       </div>
-
+      <div className="container  d-felx  p-3 justify-content-start align-items-center">
+        <button
+          className="btn text-primary border-0 fs-3"
+          onClick={() => {
+            nav("/HODLayout/StaffDetails");
+          }}
+        >
+          <FaArrowLeftLong /> Back
+        </button>
+      </div>
       {/* Main Card */}
       <div className="d-flex mt-4 justify-content-center align-items-center mb-5">
         <div className="card shadow-lg rounded-4" style={{ width: "500px" }}>
@@ -123,7 +147,6 @@ const AddStaff = () => {
           <div className="card-body px-4 py-4">
             <div className="row g-4">
               {[1, 2, 3].map((staff, index) => {
-                // Define fieldName, placeholder, and icon based on index
                 const fieldName =
                   staff === 1
                     ? "staffName"
@@ -188,12 +211,12 @@ const AddStaff = () => {
           {/* Button */}
           <div className="card-footer bg-light d-flex justify-content-center mb-4">
             <button
-              className="btn btn-primary text-uppercase bg-gradient px-5 py-2 my-3  rounded-pill"
+              className="btn btn-primary text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
               style={{ minWidth: "180px", fontWeight: "600" }}
               onClick={
                 isUpdate
                   ? () => {
-                      UpdateStaff(id);
+                      UpdateStaff(staffId);
                     }
                   : AddStaff
               }

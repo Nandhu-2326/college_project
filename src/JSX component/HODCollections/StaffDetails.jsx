@@ -12,6 +12,7 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { FcDeleteDatabase } from "react-icons/fc";
 import toast from "react-hot-toast";
+import { IoPersonAdd } from "react-icons/io5";
 
 const StaffDetails = () => {
   const nav = useNavigate();
@@ -94,9 +95,10 @@ const StaffDetails = () => {
           </div>
 
           <button
-            className="btn btn-primary text-uppercase bg-gradient px-4 py-2"
+            className="btn btn-primary text-uppercase bg-gradient   d-flex align-items-center justify-content-between py-2"
             onClick={AddStfun}
           >
+            <IoPersonAdd className="me-2" />
             Add Staff
           </button>
         </div>

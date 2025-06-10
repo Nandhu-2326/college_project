@@ -11,6 +11,8 @@ import { ThreeDot } from "react-loading-indicators";
 import { showWarning } from "../SweetAlert";
 import { RiDeleteBin3Fill } from "react-icons/ri";
 import { toast } from "react-hot-toast";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const SubjectAlert = () => {
   const [isLoading, setisLoading] = useState(false);
@@ -20,6 +22,7 @@ const SubjectAlert = () => {
   const [DepartmentData, setDepartmentData] = useState([]);
   const [SavedSubjects, setSavedSubjects] = useState([]);
 
+  const nav = useNavigate();
   let { Department, HODName } = hodData;
   const { id } = StaffData;
 
@@ -140,7 +143,18 @@ const SubjectAlert = () => {
         <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
       </div>
 
-      <div className="container mt-5">
+      <div className="container  d-felx p-3 justify-content-start align-items-center">
+        <button
+          className="btn text-primary border-0 fs-3"
+          onClick={() => {
+            nav("/HODLayout/StaffDetails");
+          }}
+        >
+          <FaArrowLeftLong /> Back
+        </button>
+      </div>
+
+      <div className="container ">
         <div className="row mb-5 justify-content-center">
           <div className="col-lg-8">
             <div className="card shadow border-primary">
