@@ -3,15 +3,13 @@ import { db } from "../Database";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { FaPenAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useSubject } from "./SubjectContext";
 const StaffSubjects = () => {
   const nav = useNavigate();
-  const { setSelectedSubject } = useSubject();
   const [StaffData, setStaffData] = useState({});
   const [STsubject, setSTsubject] = useState([]);
   const SendValue = (value) => {
     console.log(value);
-    setSelectedSubject(value)
+    sessionStorage.setItem("Subject", JSON.stringify(value));
     nav("/StaffLayout/MarkEntry");
   };
   const fetchData = () => {
@@ -62,7 +60,7 @@ const StaffSubjects = () => {
             <tr>
               <th>S.No</th>
               <th>Subject</th>
-              <th>Department</th>
+              <th>Department & sf / regular</th>
               <th>Year</th>
               <th>Class & Degree</th>
               <th>Enter Mark</th>
@@ -76,18 +74,23 @@ const StaffSubjects = () => {
                   <tr key={value.id}>
                     <td>{index + 1}</td>
                     <td className="fw-semibold">
-                      <tr className="d-flex flex-column justify-content-around">
-                        <td className="text-center">{value.subject} </td>{" "}
-                        <td className=" "> {value.TorL}</td>
-                      </tr>
+                      <div className="d-flex flex-column justify-content-around">
+                        <div className="text-center">{value.subject}</div>
+                        <div>{value.TorL}</div>
+                      </div>
                     </td>
-                    <td className="fw-semibold">{value.department}</td>
+                    <td className="fw-semibold">
+                      <div className="d-flex justify-content-around flex-column">
+                        <div>{value.department}</div>
+                        <div>{value.rs.toUpperCase()}</div>
+                      </div>
+                    </td>
                     <td className="fw-semibold">{value.year}</td>
                     <td className="fw-semibold">
-                      <tr className="d-flex justify-content-around">
-                        <td>{value.class}</td>
-                        <td>{value.ugorpg.toUpperCase()}</td>
-                      </tr>
+                      <div className="d-flex justify-content-around">
+                        <div>{value.class}</div>
+                        <div>{value.ugorpg.toUpperCase()}</div>
+                      </div>
                     </td>
                     <td>
                       <button

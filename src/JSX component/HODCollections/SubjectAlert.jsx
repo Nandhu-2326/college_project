@@ -73,6 +73,7 @@ const SubjectAlert = () => {
     class: "",
     TorL: "",
     ugorpg: "",
+    rs: "",
   };
 
   const [state, dispatch] = useReducer(reducer, stateObject);
@@ -84,7 +85,8 @@ const SubjectAlert = () => {
       !state.department ||
       !state.class ||
       !state.TorL ||
-      !state.ugorpg
+      !state.ugorpg ||
+      !state.rs
     ) {
       showWarning("Please fill all required fields!");
     } else {
@@ -102,6 +104,7 @@ const SubjectAlert = () => {
           class: state.class,
           TorL: state.TorL,
           ugorpg: state.ugorpg,
+          rs: state.rs,
         });
         toast.success("Subject saved successfully!");
         for (let staffOb in stateObject) {
@@ -165,7 +168,7 @@ const SubjectAlert = () => {
 
               <div className="card-body p-4">
                 <div className="row">
-                  {[1, 2, 3, 4, 5, 6].map((doc) => {
+                  {[1, 2, 3, 4, 5, 6, 7].map((doc) => {
                     const fieldName =
                       doc === 1
                         ? "subject"
@@ -177,7 +180,9 @@ const SubjectAlert = () => {
                         ? "class"
                         : doc == 5
                         ? "TorL"
-                        : "ugorpg";
+                        : doc == 6
+                        ? "ugorpg"
+                        : "rs";
                     const fieldLabel =
                       doc === 1
                         ? "Select Subject"
@@ -189,7 +194,9 @@ const SubjectAlert = () => {
                         ? "Class"
                         : doc == 5
                         ? "Theory or Lab"
-                        : "UG  or PG";
+                        : doc == 6
+                        ? "UG  or PG"
+                        : "Regular or Self";
                     return (
                       <div className="col-md-6 mt-3" key={doc}>
                         <label className="text-uppercase text-primary fw-semibold mb-2">
@@ -249,6 +256,10 @@ const SubjectAlert = () => {
                                 {ugorpg.toUpperCase()}{" "}
                               </option>
                             ))}
+                          {fieldName === "rs" &&
+                            ["regular", "self"].map((rs) => (
+                              <option value={rs}> {rs.toUpperCase()} </option>
+                            ))}
                         </select>
                       </div>
                     );
@@ -283,7 +294,7 @@ const SubjectAlert = () => {
                       <tr>
                         <th>S.No</th>
                         <th>Subject</th>
-                        <th>Department</th>
+                        <th>Department & sf / regular</th>
                         <th>Year</th>
                         <th>Class & Degree</th>
                         <th>Delete</th>
@@ -293,35 +304,44 @@ const SubjectAlert = () => {
                       {SavedSubjects && SavedSubjects.length > 0 ? (
                         SavedSubjects.map((value, index) => (
                           <tr className="text-center" key={value.id}>
-                            <td>{index + 1}</td>
-                            <td className="fw-semibold">
-                              <tr className="d-flex flex-column justify-content-around">
-                                <td className="text-center">
-                                  {value.subject}{" "}
-                                </td>{" "}
-                                <td className=" "> {value.TorL}</td>
-                              </tr>
-                            </td>
-                            <td className="fw-semibold">{value.department}</td>
-                            <td className="fw-semibold">{value.year}</td>
-                            <td className="fw-semibold">
-                              <tr className="d-flex justify-content-around">
-                                <td>{value.class}</td>
-                                <td>{value.ugorpg.toUpperCase()}</td>
-                              </tr>
-                            </td>
-                            <td>
-                              <RiDeleteBin3Fill
-                                onClick={() => DeletSubject(value.id)}
-                                style={{
-                                  cursor: "pointer",
-                                  color: "#dc3545",
-                                  fontSize: "1.3rem",
-                                }}
-                                title="Delete Subject"
-                              />
-                            </td>
-                          </tr>
+                          <td>{index + 1}</td>
+                        
+                          <td className="fw-semibold">
+                            <div className="d-flex flex-column justify-content-around">
+                              <div className="text-center">{value.subject}</div>
+                              <div>{value.TorL}</div>
+                            </div>
+                          </td>
+                        
+                          <td className="fw-semibold">
+                            <div className="d-flex flex-column">
+                              <div>{value.department}</div>
+                              <div>{value.rs.toUpperCase()}</div>
+                            </div>
+                          </td>
+                        
+                          <td className="fw-semibold">{value.year}</td>
+                        
+                          <td className="fw-semibold">
+                            <div className="d-flex justify-content-around">
+                              <div>{value.class}</div>
+                              <div>{value.ugorpg.toUpperCase()}</div>
+                            </div>
+                          </td>
+                        
+                          <td>
+                            <RiDeleteBin3Fill
+                              onClick={() => DeletSubject(value.id)}
+                              style={{
+                                cursor: "pointer",
+                                color: "#dc3545",
+                                fontSize: "1.3rem",
+                              }}
+                              title="Delete Subject"
+                            />
+                          </td>
+                        </tr>
+                        
                         ))
                       ) : (
                         <tr>
