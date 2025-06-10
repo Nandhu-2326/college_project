@@ -20,6 +20,7 @@ import AddStaff from "./HODCollections/AddStaff";
 import SubjectAlert from "./HODCollections/SubjectAlert";
 import StaffLayout from "./StaffCollection/StaffLayout";
 import StaffSubjects from "./StaffCollection/StaffSubjects";
+import MarkEntry from "./StaffCollection/MarkEntry";
 const Rmain = () => {
   return (
     <>
@@ -30,6 +31,7 @@ const Rmain = () => {
           <Route path="/StaffLayout" element={<StaffLayout/> }>
             <Route index element={ <LoginPage/> } />
             <Route path="StaffSubjects" element={ <StaffSubjects /> } />
+            <Route path="MarkEntry" element={ <MarkEntry/> } />
           </Route>
 
           <Route path="/HODLayout" element={<HODLayout />}>

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../Database";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs } from "firebase/firestore";
 import { FaPenAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const StaffSubjects = () => {
+  const nav = useNavigate();
   const [StaffData, setStaffData] = useState({});
   const [STsubject, setSTsubject] = useState([]);
+  const SendValue = (value) => {
+    console.log(value);
+    nav("/StaffLayout/MarkEntry");       
+  };
   const fetchData = () => {
     const data = sessionStorage.getItem("staff_Data");
     const staffdata = JSON.parse(data);
@@ -82,7 +88,12 @@ const StaffSubjects = () => {
                       </tr>
                     </td>
                     <td>
-                      <button className="btn btn-outline-success ">
+                      <button
+                        className="btn btn-outline-success"
+                        onClick={() => {
+                          SendValue(value);
+                        }}
+                      >
                         <FaPenAlt />
                       </button>
                     </td>
