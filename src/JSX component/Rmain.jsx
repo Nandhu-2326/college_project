@@ -21,6 +21,8 @@ import SubjectAlert from "./HODCollections/SubjectAlert";
 import StaffLayout from "./StaffCollection/StaffLayout";
 import StaffSubjects from "./StaffCollection/StaffSubjects";
 import MarkEntry from "./StaffCollection/MarkEntry";
+import StudentCSV from "./HODCollections/StudentCSV";
+import SingleStudentdata from "./HODCollections/SingleStudentdata";
 const Rmain = () => {
   return (
     <>
@@ -39,6 +41,9 @@ const Rmain = () => {
             <Route path="StaffDetails" element={<StaffDetails />} />
             <Route path="AddStaff" element={<AddStaff />} />
             <Route path="SubjectAlert" element={<SubjectAlert/>} />
+            <Route path="StudentCSV" element={<StudentCSV/>} />
+            <Route path="StudentCSV" element={<StudentCSV/>} />
+            <Route path="SingleStudentdata" element={<SingleStudentdata/>} />
           </Route>
 
           <Route path="/UserSelect" element={<UserSelect />} />

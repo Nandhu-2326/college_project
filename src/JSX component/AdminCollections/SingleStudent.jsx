@@ -1,10 +1,8 @@
 import { FaUsers, FaUser, FaUserGraduate } from "react-icons/fa";
 import { SiGoogleclassroom } from "react-icons/si";
 import { FcDepartment } from "react-icons/fc";
-// import { BsCalendar2Week } from "react-icons/bs";
 import { TbNumber } from "react-icons/tb";
 import { useState } from "react";
-// import Footer from "./Footer";
 import { db } from "../Database.js";
 import { collection, addDoc } from "firebase/firestore";
 import Swal from "sweetalert2";

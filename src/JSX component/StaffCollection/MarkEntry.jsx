@@ -1,139 +1,265 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { db } from "../Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 const MarkEntry = () => {
+  // useState
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [staffData, setStaffData] = useState({});
   const [students, setStudents] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+ 
+  
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        // Fetch and parse staff and subject data
         const staff = JSON.parse(sessionStorage.getItem("staff_Data") || "{}");
         const subject = JSON.parse(sessionStorage.getItem("Subject") || "{}");
-
         setStaffData(staff);
         setSelectedSubject(subject);
-
-        if (
-          staff?.department &&
-          staff?.class &&
-          staff?.ugorpg &&
-          staff?.year &&
-          staff?.rs
-        ) {
-          const q = query(
-            collection(db, "student"),
-            where("Department", "==", staff.department),
-            where("class", "==", staff.class),
-            where("ugorpg", "==", staff.ugorpg),
-            where("year", "==", staff.year),
-            where("rs", "==", staff.rs)
-          );
-
-          const snapshot = await getDocs(q);
-          const studentList = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          console.log(studentList);
-          setStudents(studentList);
-          console.log("Fetched students:", studentList);
-        } else {
-          console.warn("Incomplete staff data for querying students.");
-        }
       } catch (error) {
         console.error("Initialization error:", error);
       }
     };
-
     loadInitialData();
   }, []);
 
+  useEffect(() => {
+    studentData();
+  }, [selectedSubject]);
+
+  const studentData = async () => {
+    if (
+      selectedSubject?.department &&
+      selectedSubject?.class &&
+      selectedSubject?.ugorpg &&
+      selectedSubject?.year &&
+      selectedSubject?.rs
+    ) {
+      const q = query(
+        collection(db, "student"),
+        where("Department", "==", selectedSubject.department),
+        where("class", "==", selectedSubject.class),
+        where("ugorpg", "==", selectedSubject.ugorpg),
+        where("year", "==", selectedSubject.year),
+        where("rs", "==", selectedSubject.rs)
+      );
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        const studentList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setStudents(studentList);
+      } else {
+        setStudents([]);
+      }
+    }
+  };
+
+  const handleShowModal = (student) => {
+    setSelectedStudent(student);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedStudent(null);
+  };
+
   return (
-    <>
+    <div className="bg-light min-vh-100">
       {/* Header */}
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold mb-0">STAFF : {staffData?.staffName || ""}</p>
-        <p className="fw-semibold mb-0">
-          D-Code : {staffData?.DepartmentCode || ""}
-        </p>
-      </div>
+      <header className="bg-primary text-light sticky-top py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 className="mb-0">STAFF: {staffData?.staffName || "N/A"}</h6>
+        <h6 className="mb-0">D-Code: {staffData?.DepartmentCode || "N/A"}</h6>
+      </header>
 
       {/* Title */}
-      <h2 className="text-center text-primary mt-4 text-uppercase">
-        Mark Entry <br /> in
-      </h2>
+      <div className="text-center my-4">
+        <h2 className="text-uppercase text-primary fw-bold">Mark Entry</h2>
+      </div>
 
       {/* Subject Info */}
-      <div className="container p-2 bg-primary rounded d-flex justify-content-center align-items-center flex-column">
-        <h6
-          className="h4 text-light text-uppercase text-center"
-          style={{ letterSpacing: "2px" }}
-        >
-          {selectedSubject?.department || "Department"}
-        </h6>
-        <strong
-          className="text-light text-uppercase"
-          style={{ letterSpacing: "2px" }}
-        >
-          Subject : {selectedSubject?.subject || "Subject"}
-        </strong>
-        <strong
-          className="text-light text-uppercase"
-          style={{ letterSpacing: "2px" }}
-        >
-          Theory / Lab : {selectedSubject?.TorL || "T/L"}
-        </strong>
-        <div className="d-flex justify-content-between mt-2 w-100 px-3">
-          <strong
-            className="me-3 text-light text-uppercase"
-            style={{ letterSpacing: "1px" }}
-          >
-            Class : {selectedSubject?.class || "Class"}
-          </strong>
-          <strong
-            className="me-3 text-light text-uppercase"
-            style={{ letterSpacing: "1px" }}
-          >
-            Year : {selectedSubject?.year || "Year"}
-          </strong>
-          <strong
-            className="text-light text-uppercase"
-            style={{ letterSpacing: "1px" }}
-          >
-            Degree : {selectedSubject?.ugorpg || "UG/PG"}
-          </strong>
+      <div className="container mb-4">
+        <div className="bg-primary text-light rounded p-3 text-center">
+          <h5 className="text-uppercase mb-2">
+            {selectedSubject?.department || "Department"}
+          </h5>
+          <p className="mb-1 fw-bold text-uppercase">
+            Subject: {selectedSubject?.subject || "Subject"}
+          </p>
+          <p className="mb-1 fw-bold text-uppercase">
+            Type: {selectedSubject?.TorL || "Theory/Lab"}
+          </p>
+          <div className="d-flex justify-content-around mt-3 flex-wrap">
+            <p className="mb-0 fw-semibold text-uppercase">
+              Class: {selectedSubject?.class || "-"}
+            </p>
+            <p className="mb-0 fw-semibold text-uppercase">
+              Year: {selectedSubject?.year || "-"}
+            </p>
+            <p className="mb-0 fw-semibold text-uppercase">
+              Degree: {selectedSubject?.ugorpg || "-"}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Student List */}
-      <div className="container mt-4 mb-5">
-        <h4 className="text-center mb-3">Students</h4>
-        {students.length > 0 ? (
-          <table className="table table-bordered">
-            <thead className="table-primary">
-              <tr>
-                <th>Roll No</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.rollno || "N/A"}</td>
-                  <td>{student.Name || "N/A"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-center text-muted">No students found.</p>
-        )}
+      <div className="container">
+        <h3 className="text-center text-primary text-uppercase mb-4">
+          Student List
+        </h3>
+        <div className="row g-4">
+          {students.length > 0 ? (
+            students.map((student) => (
+              <div className="col-12 col-md-6 col-lg-4" key={student.id}>
+                <div className="card shadow-sm border-0 h-100">
+                  <div className="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value={student.id}
+                        id={`absent-${student.id}`}
+                      />
+                      <label
+                        className="form-check-label text-danger fw-semibold"
+                        htmlFor={`absent-${student.id}`}
+                      >
+                        Long Absent
+                      </label>
+                    </div>
+                    <button className="btn btn-sm btn-outline-success">
+                      Result
+                    </button>
+                  </div>
+                  <div className="card-body">
+                    <h5 className="card-title text-primary">{student.Name}</h5>
+                    <p className="card-text fw-semibold">
+                      Roll No: {student.rollno.toUpperCase()}
+                    </p>
+                    <p className="text-muted fs-5">
+                      Subject: {selectedSubject?.subject}
+                    </p>
+                  </div>
+                  <div className="card-footer bg-white d-flex justify-content-between">
+                    <button
+                      className="btn btn-success btn-sm px-3"
+                      onClick={() => handleShowModal(student)}
+                    >
+                      Set Mark
+                    </button>
+                    <button className="btn btn-danger btn-sm px-3">Edit</button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center">
+              <h5 className="text-secondary">No students found.</h5>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+
+      {/* Modal */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header
+          closeButton
+          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+        >
+          <Modal.Title className="text-center">Set Marks</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedStudent ? (
+            <>
+              <p>
+                <strong>Name:</strong> {selectedStudent.Name}
+              </p>
+              <p>
+                <strong>Roll No:</strong> {selectedStudent.rollno.toUpperCase()}
+              </p>
+              {selectedStudent.ugorpg == "pg" ? [1, 2, 3] : [1,2].map((no) => {
+                return (
+                  <div className="mt-3 mb-4">
+                    <label htmlFor="" className="text-uppercase fw-bold">
+                      {" "}
+                      {no == 1
+                        ? "Internal - I"
+                        : no == 2
+                        ? "Internal - II"
+                        : "Internal - III"}{" "}
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder={
+                        no == 1
+                          ? "Internal - I"
+                          : no == 2
+                          ? "Internal - II"
+                          : "Internal - III"
+                      }
+                    />
+                    <input
+                      type="checkbox"
+                      id={no == 1 ? "check1" : no == 2 ? "check2" : "check3"}
+                      className="form-check-input"
+                    />
+                    <label
+                      htmlFor={
+                        no == 1 ? "check1" : no == 2 ? "check2" : "check3"
+                      }
+                      className="fw-semibold ms-2 text-danger"
+                      style={{ letterSpacing: "3px" }}
+                    >
+                      Absent
+                    </label>
+                  </div>
+                );
+              })}
+
+              {[1, 2].map((no) => {
+                return (
+                  <div className={no == 1 ? "" : "mt-4"}>
+                    <label
+                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                      className="fw-bold text-uppercase"
+                      style={{ letterSpacing: "2px" }}
+                    >
+                      {" "}
+                      {no == 1 ? "Assignment" : "Seminar"}{" "}
+                    </label>
+                    <input
+                      type="number"
+                      value={0}
+                      id={no == 1 ? "Assignment" : "Seminar"}
+                      className="form-control"
+                      placeholder={no == 1 ? "Assignment" : "Seminar"}
+                    />
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <p>Loading student data...</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleCloseModal}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
   );
 };
 

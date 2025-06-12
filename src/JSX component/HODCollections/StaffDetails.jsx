@@ -13,6 +13,7 @@ import { CiEdit } from "react-icons/ci";
 import { FcDeleteDatabase } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { IoPersonAdd } from "react-icons/io5";
+import { FaUsersGear } from "react-icons/fa6";
 
 const StaffDetails = () => {
   const nav = useNavigate();
@@ -84,23 +85,62 @@ const StaffDetails = () => {
       </div>
 
       <div className="container mt-4">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h1 className="h3 text-uppercase text-primary fw-semibold mb-1">
-              View Staff
-            </h1>
-            <h6 className="text-uppercase text-primary fw-semibold mb-0">
-              with Alert Subject
-            </h6>
-          </div>
+        <div className="d-flex flex-column align-items-center mb-2">
+          <h1 className="h3 text-uppercase text-primary fw-semibold mb-1">
+            View Staff
+          </h1>
+          <h6 className="text-uppercase text-primary fw-semibold mb-0">
+            with Alert Subject
+          </h6>
+        </div>
 
-          <button
-            className="btn btn-primary text-uppercase bg-gradient   d-flex align-items-center justify-content-between py-2"
-            onClick={AddStfun}
-          >
-            <IoPersonAdd className="me-2" />
-            Add Staff
-          </button>
+        <div className="container py-4">
+          <div className="row gy-3">
+            {/* Add Staff */}
+            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+              <button
+                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                onClick={AddStfun}
+              >
+                <IoPersonAdd />
+                Add Staff
+              </button>
+            </div>
+
+            {/* Students */}
+            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+              <button className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2">
+                <FaUsersGear />
+                Students
+              </button>
+            </div>
+
+            {/* Multiple Students */}
+            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+              <button
+                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                onClick={() => {
+                  nav("/HODLayout/StudentCSV");
+                }}
+              >
+                <FaUsersGear />
+                Multiple Students
+              </button>
+            </div>
+
+            {/* Single Student */}
+            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+              <button
+                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                onClick={() => {
+                  nav("/HODLayout/SingleStudentdata");
+                }}
+              >
+                <IoPersonAdd />
+                Single Student
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">

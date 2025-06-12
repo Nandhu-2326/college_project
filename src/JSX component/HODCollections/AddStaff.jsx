@@ -8,6 +8,8 @@ import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { IoEyeOffSharp } from "react-icons/io5";
+import { IoMdEye } from "react-icons/io";
 
 const AddStaff = () => {
   const nav = useNavigate();
@@ -16,7 +18,7 @@ const AddStaff = () => {
   const [StaffData, setStaffData] = useState("");
   const [isloading, setisloading] = useState(false);
   const [isUpdate, setisUpdate] = useState(false);
-
+  const [eyeNumber, seteyeNumber] = useState(1);
   const initialState = {
     staffName: "",
     UserName: "",
@@ -188,7 +190,7 @@ const AddStaff = () => {
                           {icon}
                         </span>
                         <input
-                          type={fieldName === "Password" ? "password" : "text"}
+                          type={fieldName === "Password" && eyeNumber == 1 ? "password" : "text"}
                           className="form-control"
                           placeholder={placeholder}
                           name={fieldName}
@@ -200,6 +202,19 @@ const AddStaff = () => {
                             });
                           }}
                         />
+                        {staff === 3
+                          ? [eyeNumber].map((nums) => {
+                              return (
+                                <button
+                                  key={nums}
+                                  className="input-group-text btn btn-primary"
+                                
+                                >
+                                  {nums === 1 ? <IoEyeOffSharp   onClick={ ()=>{ seteyeNumber(2) }}/> : <IoMdEye   onClick={ ()=>{ seteyeNumber(1) }}/>}
+                                </button>
+                              );
+                            })
+                          : ""}
                       </div>
                     </div>
                   </div>
