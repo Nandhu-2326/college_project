@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { IoPersonAdd } from "react-icons/io5";
 import { FaUsersGear } from "react-icons/fa6";
 
+
 const StaffDetails = () => {
   const nav = useNavigate();
   const [hodData, setHOD] = useState("");
@@ -109,7 +110,10 @@ const StaffDetails = () => {
 
             {/* Students */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2">
+              <button className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+               onClick={() => {
+                nav("/HODLayout/StudentList");
+              }}>
                 <FaUsersGear />
                 Students
               </button>

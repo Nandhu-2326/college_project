@@ -78,7 +78,6 @@ const SingleStudentdata = () => {
         ugorpg: ugorpg,
         year: Year,
       });
-      success();
       setRollno("");
       setDepartment("");
       setName("");
@@ -86,6 +85,7 @@ const SingleStudentdata = () => {
       setSection("");
       setUgorpg("");
       setYear("");
+      success();
     }
   };
 
@@ -120,6 +120,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setUgorpg(e.target.value);
                   }}
+                  value={ugorpg}
                 >
                   <option>-- Select UG or PG --</option>
                   <option value="ug">UG (Undergraduate)</option>
@@ -140,6 +141,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setSection(e.target.value);
                   }}
+                    value={section}
                 >
                   <option>-- Select Class --</option>
                   <option value="A">Class A</option>
@@ -160,6 +162,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setDepartment(e.target.value);
                   }}
+                  value={Departments}
                 >
                   <option>-- Select Department --</option>
                   {DepartmentData.length > 0 ? (
@@ -185,7 +188,8 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setYear(e.target.value);
                   }}
-                >
+                  value={Year}
+                  >
                   <option>-- Select Year --</option>
                   <option value="1">I Year</option>
                   <option value="2">II Year</option>
@@ -206,6 +210,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setRs(e.target.value);
                   }}
+                  value={rs}
                 >
                   <option>-- Select Self or Regular --</option>
                   <option value="self">Self (SF)</option>
@@ -228,6 +233,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
+                  value={Name}
                 />
               </div>
             </div>
@@ -246,6 +252,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setRollno(e.target.value);
                   }}
+                  value={rollno}
                 />
               </div>
             </div>
