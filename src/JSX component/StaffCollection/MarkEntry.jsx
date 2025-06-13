@@ -11,7 +11,23 @@ const MarkEntry = () => {
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const initialize = {
+    check1: false,
+    check2: false,
+    check3: false,
+    mark1: "",
+    mark2: "",
+    mark3: "",
+  };
 
+  const checkReducer = (state, action) => {
+    return {
+      ...state,
+      [action.field]: action.value,
+    };
+  };
+  const [state, dispatch] = useReducer(checkReducer, initialize);
+  console.log(state);
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -69,7 +85,9 @@ const MarkEntry = () => {
     setShowModal(false);
     setSelectedStudent(null);
   };
-
+  const checkedFunction = (checks) => {
+    console.log(checks);
+  };
   return (
     <div className="bg-light min-vh-100">
       {/* Header */}
@@ -164,7 +182,7 @@ const MarkEntry = () => {
                   </div>
                   {!student.active ? (
                     <h3 className="h3 text-uppercase text-danger text-center">
-                      Non  active Student
+                      Non active Student
                     </h3>
                   ) : (
                     <div className="card-footer bg-white d-flex justify-content-between">
@@ -191,6 +209,7 @@ const MarkEntry = () => {
       </div>
       <div className="container mt-5 py-5"></div>
       {/* Modal */}
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header
           closeButton
@@ -207,46 +226,62 @@ const MarkEntry = () => {
               <p>
                 <strong>Roll No:</strong> {selectedStudent.rollno.toUpperCase()}
               </p>
-              {selectedStudent.ugorpg == "pg"
+
+              {selectedStudent.ugorpg === "pg"
                 ? [1, 2, 3]
                 : [1, 2].map((no) => {
+                    const checkField = `check${no}`;
+                    const markField = `mark${no}`;
+
                     return (
-                      <div className="mt-3 mb-4">
+                      <div className="mt-3 mb-4" key={no}>
                         <label htmlFor="" className="text-uppercase fw-bold">
-                          {" "}
-                          {no == 1
+                          {no === 1
                             ? "Internal - I"
-                            : no == 2
+                            : no === 2
                             ? "Internal - II"
-                            : "Internal - III"}{" "}
+                            : "Internal - III"}
                         </label>
                         <input
-                          type="number"
+                          type="text"
                           className="form-control"
-                          placeholder={
-                            no == 1
-                              ? "Internal - I"
-                              : no == 2
-                              ? "Internal - II"
-                              : "Internal - III"
+                          placeholder={`Internal - ${no}`}
+                          value={state[markField]}
+                          onChange={(e) =>
+                            dispatch({
+                              field: markField,
+                              value: e.target.value,
+                            })
                           }
+                          disabled={state[checkField]}
                         />
-                        <input
-                          type="checkbox"
-                          id={
-                            no == 1 ? "check1" : no == 2 ? "check2" : "check3"
-                          }
-                          className="form-check-input"
-                        />
-                        <label
-                          htmlFor={
-                            no == 1 ? "check1" : no == 2 ? "check2" : "check3"
-                          }
-                          className="fw-semibold ms-2 text-danger"
-                          style={{ letterSpacing: "3px" }}
-                        >
-                          Absent
-                        </label>
+                        <div className="form-check mt-2">
+                          <input
+                            type="checkbox"
+                            id={checkField}
+                            className="form-check-input"
+                            name={checkField}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              dispatch({ field: checkField, value: isChecked });
+
+                              dispatch({
+                                field: markField,
+                                value: isChecked ? "Absent" : "",
+                              });
+
+                              checkedFunction(e.target.name);
+                            }}
+                            checked={state[checkField]}
+                          />
+                          <label
+                            htmlFor={checkField}
+                            className="fw-semibold ms-2 text-danger"
+                            style={{ letterSpacing: "3px" }}
+                          >
+                            Absent
+                          </label>
+                        </div>
                       </div>
                     );
                   })}
@@ -264,7 +299,6 @@ const MarkEntry = () => {
                     </label>
                     <input
                       type="number"
-                      value={0}
                       id={no == 1 ? "Assignment" : "Seminar"}
                       className="form-control"
                       placeholder={no == 1 ? "Assignment" : "Seminar"}
