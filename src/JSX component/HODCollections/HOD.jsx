@@ -38,6 +38,7 @@ const HOD = () => {
           nav("/HODLayout/StaffDetails");
         } else {
           toast.error("Invalid Username or Password", { id: toastId });
+          setisLoading(false);
         }
       } catch (e) {
         toast.error(e.message, { id: toastId });

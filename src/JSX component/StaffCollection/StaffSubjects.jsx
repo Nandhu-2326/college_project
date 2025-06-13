@@ -61,7 +61,7 @@ const StaffSubjects = () => {
               <th>S.No</th>
               <th>Subject</th>
               <th>Department & sf / regular</th>
-              <th>Year</th>
+              <th>Year & semester</th>
               <th>Class & Degree</th>
               <th>Enter Mark</th>
             </tr>
@@ -85,7 +85,14 @@ const StaffSubjects = () => {
                         <div>{value.rs.toUpperCase()}</div>
                       </div>
                     </td>
-                    <td className="fw-semibold">{value.year}</td>
+                    <td className="fw-semibold">
+                      <div className="d-flex justify-content-around flex-column">
+                        <div className="border-bottom border-3 border-secondary">
+                          {value.year}
+                        </div>
+                        <div>{value.semester}</div>
+                      </div>
+                    </td>
                     <td className="fw-semibold">
                       <div className="d-flex justify-content-around">
                         <div>{value.class}</div>

@@ -85,9 +85,7 @@ const MarkEntry = () => {
     setShowModal(false);
     setSelectedStudent(null);
   };
-  const checkedFunction = (checks) => {
-    console.log(checks);
-  };
+
   return (
     <div className="bg-light min-vh-100">
       {/* Header */}
@@ -109,6 +107,9 @@ const MarkEntry = () => {
           </h5>
           <p className="mb-1 fw-bold text-uppercase">
             Subject: {selectedSubject?.subject || "Subject"}
+          </p>
+          <p className="mb-1 fw-bold text-uppercase">
+            Semester: {selectedSubject?.semester || "--"}
           </p>
           <p className="mb-1 fw-bold text-uppercase">
             Type: {selectedSubject?.TorL || "Theory/Lab"}
@@ -264,13 +265,10 @@ const MarkEntry = () => {
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               dispatch({ field: checkField, value: isChecked });
-
                               dispatch({
                                 field: markField,
                                 value: isChecked ? "Absent" : "",
                               });
-
-                              checkedFunction(e.target.name);
                             }}
                             checked={state[checkField]}
                           />
