@@ -14,12 +14,13 @@ import { FcDeleteDatabase } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { IoPersonAdd } from "react-icons/io5";
 import { FaUsersGear } from "react-icons/fa6";
-
+import { Atom } from "react-loading-indicators";
 
 const StaffDetails = () => {
   const nav = useNavigate();
   const [hodData, setHOD] = useState("");
   const [staffData, setStaffData] = useState([]);
+  const [PageLoad, setPageLoad] = useState(true);
   let { Department, HODName, DepartmentCode } = hodData;
 
   const fetchData = () => {
@@ -68,16 +69,39 @@ const StaffDetails = () => {
     nav("/HODLayout/AddStaff");
   };
 
+  // Load HOD data initially
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Once HOD data is available, fetch staff
   useEffect(() => {
     if (DepartmentCode) {
       getDataFromAllstaffs();
     }
   }, [DepartmentCode]);
 
+  // Manage page load timeout
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoad(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show loader while loading
+  if (PageLoad) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "75vh" }}
+      >
+        <Atom color="#061bff" size="large" text="" textColor="" />
+      </div>
+    );
+  }
+
+  // Main content
   return (
     <>
       <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
@@ -110,10 +134,12 @@ const StaffDetails = () => {
 
             {/* Students */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
-               onClick={() => {
-                nav("/HODLayout/StudentList");
-              }}>
+              <button
+                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                onClick={() => {
+                  nav("/HODLayout/StudentList");
+                }}
+              >
                 <FaUsersGear />
                 Students
               </button>

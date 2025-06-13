@@ -19,7 +19,7 @@ const SingleStudentdata = () => {
   const [rs, setRs] = useState();
   const [Name, setName] = useState();
   const [DepartmentData, setDepartmentData] = useState([]);
-
+  const [Actives, setActives] = useState();
   const loading = () => {
     Swal.fire({
       html: "Loading...",
@@ -64,7 +64,8 @@ const SingleStudentdata = () => {
       !Departments &&
       !Year &&
       !rs &&
-      !Name
+      !Name &&
+      !Actives
     ) {
       InformationError();
     } else {
@@ -77,6 +78,7 @@ const SingleStudentdata = () => {
         rs: rs,
         ugorpg: ugorpg,
         year: Year,
+        active: Actives,
       });
       setRollno("");
       setDepartment("");
@@ -85,6 +87,7 @@ const SingleStudentdata = () => {
       setSection("");
       setUgorpg("");
       setYear("");
+      setActives("")
       success();
     }
   };
@@ -141,7 +144,7 @@ const SingleStudentdata = () => {
                   onChange={(e) => {
                     setSection(e.target.value);
                   }}
-                    value={section}
+                  value={section}
                 >
                   <option>-- Select Class --</option>
                   <option value="A">Class A</option>
@@ -189,7 +192,7 @@ const SingleStudentdata = () => {
                     setYear(e.target.value);
                   }}
                   value={Year}
-                  >
+                >
                   <option>-- Select Year --</option>
                   <option value="1">I Year</option>
                   <option value="2">II Year</option>
@@ -254,6 +257,26 @@ const SingleStudentdata = () => {
                   }}
                   value={rollno}
                 />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Roll Number</label>
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <TbNumber />
+                </span>
+                <select
+                  name=""
+                  id=""
+                  onChange={(e) => {
+                    setActives(e.target.value);
+                  }}
+                  className="form-select"
+                >
+                  <option value="">--select Active student --</option>
+                  <option value={true}> Active </option>
+                  <option value={false}> Non Active</option>
+                </select>
               </div>
             </div>
 

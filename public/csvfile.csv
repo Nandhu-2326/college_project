@@ -1,9 +1,9 @@
-Name,rollno,Department,ugorpg,rs,class,year
-Nanda kumar,22ucs138,Department of English (SF),ug,self,A,3
-Arun kumar,22ucs110,Department of Tamil ,ug,regular,B,2
-Yogesh kumar,22ucs162,Department of Hindi (SF),ug,self,A,1
-Raman,22ucs105,Department of Computer Application (M.C.A.) (SF),pg ,self,B,3
-Karthi,22ucs128,Department of Computer Application (M.C.A.) (SF),pg ,self,B,3
-Kishore,22ucs129,Department of Tamil ,ug,regular,B,2
-Anbu,22ucs106,Department of Hindi (SF),ug,self,A,1
-Thiru,22ucs150,Department of Tamil ,ug,regular,B,2
+Name,rollno,Department,ugorpg,rs,class,year,active
+Nanda kumar,22ucs138,Department of English (SF),ug,self,A,3,TRUE
+Arun kumar,22ucs110,Department of Tamil ,ug,regular,B,2,TRUE
+Yogesh kumar,22ucs162,Department of Hindi (SF),ug,self,A,1,TRUE
+Raman,22ucs105,Department of Computer Application (M.C.A.) (SF),pg ,self,B,3,TRUE
+Karthi,22ucs128,Department of Computer Application (M.C.A.) (SF),pg ,self,B,3,TRUE
+Kishore,22ucs129,Department of Tamil ,ug,regular,B,2,TRUE
+Anbu,22ucs106,Department of Hindi (SF),ug,self,A,1,TRUE
+Thiru,22ucs150,Department of Tamil ,ug,regular,B,2,TRUE

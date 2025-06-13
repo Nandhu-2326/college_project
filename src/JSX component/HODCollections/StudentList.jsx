@@ -62,12 +62,12 @@ const StudentList = () => {
   useEffect(() => {
     fetchStudents();
   }, [Department]);
-  const ActiveProcess = (idSt,Names, Rollno) => {
+  const ActiveProcess = (idSt, Names, Rollno) => {
     Swal.fire({
       title: "Are you sure? ",
       text: "You won't be able to revert this!",
-      text:`${Names}`,
-      text:`${Rollno}`,
+      text: `${Names}`,
+      text: `${Rollno}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -186,7 +186,11 @@ const StudentList = () => {
                           <button
                             className="btn btn-outline-danger"
                             onClick={() => {
-                              ActiveProcess(student.id, student.Name, student.rollno);
+                              ActiveProcess(
+                                student.id,
+                                student.Name,
+                                student.rollno
+                              );
                             }}
                           >
                             <FaPencilAlt />
@@ -207,11 +211,14 @@ const StudentList = () => {
                 </table>
               </div>
             ) : (
-              <p>No Students</p>
+              <p className="text-center fw-semibold">
+                No Students Year {year}{" "}
+              </p>
             );
           })}
         </div>
       </div>
+      <div className="container mt-5"></div>
     </>
   );
 };

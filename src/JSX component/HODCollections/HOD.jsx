@@ -4,34 +4,33 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {
-  showWarning,
-} from "../SweetAlert.jsx";
+import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { ThreeDot } from "react-loading-indicators";
 
 const HOD = () => {
   const nav = useNavigate();
-  
+  const [isloading, setisLoading] = useState(false);
   const [userName, SetUserName] = useState("");
   const [Password, SetPassword] = useState("");
   const [PasswordEye, SetPasswordEye] = useState(true);
-  
+
   const login = async () => {
     if (!userName || !Password) {
       showWarning("Please Fill All requirement");
     } else {
+      setisLoading(true);
       const toastId = toast.loading("Please Wait");
-  
       try {
         const q = query(
           collection(db, "HOD"),
           where("username", "==", userName),
           where("password", "==", Password)
         );
-  
+
         const querySnapshot = await getDocs(q);
-  
+
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0].data();
           toast.success("Login Success", { id: toastId });
@@ -45,7 +44,6 @@ const HOD = () => {
       }
     }
   };
-  
 
   return (
     <div className="container my-4 mb-5">
@@ -96,7 +94,11 @@ const HOD = () => {
 
             {/* Login Button */}
             <button className="btn btn-primary fw-bold py-1" onClick={login}>
-              Login
+              {isloading ? (
+                <ThreeDot color="#ffffff" size="medium" text="" textColor="" />
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
         </div>
