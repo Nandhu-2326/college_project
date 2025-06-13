@@ -89,6 +89,7 @@ const StudentList = () => {
     if (!selectedStudent) return;
 
     const studentOf = doc(db, "student", idSt);
+    
     await updateDoc(studentOf, {
       active: !selectedStudent.active,
     });
@@ -104,7 +105,7 @@ const StudentList = () => {
       </div>
 
       <div className="container mt-2">
-        <div className="card " style={{ background: "	#F5F5DC" }}>
+        <div className="card bg-light">
           <div className="card-header">
             <div
               className="card-title text-primary text-center fs-3 text-uppercase"
@@ -218,7 +219,7 @@ const StudentList = () => {
           })}
         </div>
       </div>
-      <div className="container mt-5"></div>
+      <div className="container mt-5 p-5"></div>
     </>
   );
 };

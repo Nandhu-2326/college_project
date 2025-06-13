@@ -11,8 +11,7 @@ const MarkEntry = () => {
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
- 
-  
+
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -54,6 +53,7 @@ const MarkEntry = () => {
           ...doc.data(),
         }));
         setStudents(studentList);
+        console.log(studentList);
       } else {
         setStudents([]);
       }
@@ -118,25 +118,40 @@ const MarkEntry = () => {
           {students.length > 0 ? (
             students.map((student) => (
               <div className="col-12 col-md-6 col-lg-4" key={student.id}>
-                <div className="card shadow-sm border-0 h-100">
-                  <div className="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value={student.id}
-                        id={`absent-${student.id}`}
-                      />
-                      <label
-                        className="form-check-label text-danger fw-semibold"
-                        htmlFor={`absent-${student.id}`}
-                      >
-                        Long Absent
-                      </label>
-                    </div>
-                    <button className="btn btn-sm btn-outline-success">
-                      Result
-                    </button>
+                <div
+                  className={
+                    student.active
+                      ? "card shadow-sm border-0 h-100"
+                      : "card shadow-sm border-2 border-danger opacity-50 "
+                  }
+                >
+                  <div className="card-header bg-white d-flex justify-content-center align-items-center border-bottom">
+                    {!student.active ? (
+                      <h3 className="h5 text-uppercase text-danger ">
+                        Don't Enter Mark
+                      </h3>
+                    ) : (
+                      <div className="d-flex justify-content-between align-items-center w-100">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={student.id}
+                            id={`absent-${student.id}`}
+                          />
+                          <label
+                            className="form-check-label text-danger fw-semibold"
+                            htmlFor={`absent-${student.id}`}
+                          >
+                            Long Absent
+                          </label>
+                        </div>
+
+                        <button className="btn btn-sm btn-outline-success">
+                          Result
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="card-body">
                     <h5 className="card-title text-primary">{student.Name}</h5>
@@ -147,15 +162,23 @@ const MarkEntry = () => {
                       Subject: {selectedSubject?.subject}
                     </p>
                   </div>
-                  <div className="card-footer bg-white d-flex justify-content-between">
-                    <button
-                      className="btn btn-success btn-sm px-3"
-                      onClick={() => handleShowModal(student)}
-                    >
-                      Set Mark
-                    </button>
-                    <button className="btn btn-danger btn-sm px-3">Edit</button>
-                  </div>
+                  {!student.active ? (
+                    <h3 className="h3 text-uppercase text-danger text-center">
+                      Non  active Student
+                    </h3>
+                  ) : (
+                    <div className="card-footer bg-white d-flex justify-content-between">
+                      <button
+                        className="btn btn-success btn-sm px-3"
+                        onClick={() => handleShowModal(student)}
+                      >
+                        Set Mark
+                      </button>
+                      <button className="btn btn-danger btn-sm px-3">
+                        Edit
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))
@@ -166,7 +189,7 @@ const MarkEntry = () => {
           )}
         </div>
       </div>
-
+      <div className="container mt-5 py-5"></div>
       {/* Modal */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header
@@ -184,45 +207,49 @@ const MarkEntry = () => {
               <p>
                 <strong>Roll No:</strong> {selectedStudent.rollno.toUpperCase()}
               </p>
-              {selectedStudent.ugorpg == "pg" ? [1, 2, 3] : [1,2].map((no) => {
-                return (
-                  <div className="mt-3 mb-4">
-                    <label htmlFor="" className="text-uppercase fw-bold">
-                      {" "}
-                      {no == 1
-                        ? "Internal - I"
-                        : no == 2
-                        ? "Internal - II"
-                        : "Internal - III"}{" "}
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder={
-                        no == 1
-                          ? "Internal - I"
-                          : no == 2
-                          ? "Internal - II"
-                          : "Internal - III"
-                      }
-                    />
-                    <input
-                      type="checkbox"
-                      id={no == 1 ? "check1" : no == 2 ? "check2" : "check3"}
-                      className="form-check-input"
-                    />
-                    <label
-                      htmlFor={
-                        no == 1 ? "check1" : no == 2 ? "check2" : "check3"
-                      }
-                      className="fw-semibold ms-2 text-danger"
-                      style={{ letterSpacing: "3px" }}
-                    >
-                      Absent
-                    </label>
-                  </div>
-                );
-              })}
+              {selectedStudent.ugorpg == "pg"
+                ? [1, 2, 3]
+                : [1, 2].map((no) => {
+                    return (
+                      <div className="mt-3 mb-4">
+                        <label htmlFor="" className="text-uppercase fw-bold">
+                          {" "}
+                          {no == 1
+                            ? "Internal - I"
+                            : no == 2
+                            ? "Internal - II"
+                            : "Internal - III"}{" "}
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder={
+                            no == 1
+                              ? "Internal - I"
+                              : no == 2
+                              ? "Internal - II"
+                              : "Internal - III"
+                          }
+                        />
+                        <input
+                          type="checkbox"
+                          id={
+                            no == 1 ? "check1" : no == 2 ? "check2" : "check3"
+                          }
+                          className="form-check-input"
+                        />
+                        <label
+                          htmlFor={
+                            no == 1 ? "check1" : no == 2 ? "check2" : "check3"
+                          }
+                          className="fw-semibold ms-2 text-danger"
+                          style={{ letterSpacing: "3px" }}
+                        >
+                          Absent
+                        </label>
+                      </div>
+                    );
+                  })}
 
               {[1, 2].map((no) => {
                 return (

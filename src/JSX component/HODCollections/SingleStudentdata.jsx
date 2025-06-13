@@ -8,6 +8,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { PiStudentDuotone } from "react-icons/pi";
 
 const SingleStudentdata = () => {
   const nav = useNavigate();
@@ -19,7 +20,8 @@ const SingleStudentdata = () => {
   const [rs, setRs] = useState();
   const [Name, setName] = useState();
   const [DepartmentData, setDepartmentData] = useState([]);
-  const [Actives, setActives] = useState();
+  const [Actives, setActives] = useState(true);
+  console.log(Actives);
   const loading = () => {
     Swal.fire({
       html: "Loading...",
@@ -69,6 +71,7 @@ const SingleStudentdata = () => {
     ) {
       InformationError();
     } else {
+      console.log(Actives);
       loading();
       await addDoc(collection(db, "student"), {
         Department: Departments,
@@ -78,7 +81,7 @@ const SingleStudentdata = () => {
         rs: rs,
         ugorpg: ugorpg,
         year: Year,
-        active: Actives,
+        active: Boolean(Actives),
       });
       setRollno("");
       setDepartment("");
@@ -87,7 +90,7 @@ const SingleStudentdata = () => {
       setSection("");
       setUgorpg("");
       setYear("");
-      setActives("")
+      setActives("");
       success();
     }
   };
@@ -105,7 +108,7 @@ const SingleStudentdata = () => {
         </button>
       </div>
       <div className="container py-5 mb-5">
-        <div className="bg-light ">
+        <div >
           <h4 className="text-primary mb-4 text-center fw-bold">
             🎓 Student Information Form
           </h4>
@@ -260,18 +263,19 @@ const SingleStudentdata = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Roll Number</label>
+              <label className="form-label fw-semibold">Active Or Not</label>
               <div className="input-group">
                 <span className="input-group-text bg-primary text-white">
-                  <TbNumber />
+                  <PiStudentDuotone />
                 </span>
                 <select
                   name=""
                   id=""
                   onChange={(e) => {
-                    setActives(e.target.value);
+                    setActives(e.target.value === "false");
                   }}
                   className="form-select"
+                  value={Actives}
                 >
                   <option value="">--select Active student --</option>
                   <option value={true}> Active </option>
