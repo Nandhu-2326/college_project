@@ -3,14 +3,13 @@ import AdminLogin from "./AdminCollections/AdminLogin";
 import AdminUserPage from "./AdminCollections/AdminUserPage";
 import FirstPage from "./FirstPage";
 import LoginPage from "./StaffCollection/LoginPage";
-import UserSelect from "./UserSelect";
+
 import SingleStudent from "./AdminCollections/SingleStudent";
 import MultipleStudentCSV from "./AdminCollections/MultipleStudentCSV";
 import AdminUserDetails from "./AdminCollections/AdminUserDetails";
 import CalculatorPage from "./CalculatorPage";
 import StaffAddorUpdatePage from "./AdminCollections/StaffAddorUpdatePage";
-import DegPage from "./DegPage";
-import CSVFile from "./CSVFile";
+
 import Departments from "./AdminCollections/Departments";
 import Subject from "./AdminCollections/Subject";
 import HOD from "./HODCollections/HOD";
@@ -48,10 +47,7 @@ const Rmain = () => {
             <Route path="SingleStudentdata" element={<SingleStudentdata/>} />
           </Route>
 
-          <Route path="/UserSelect" element={<UserSelect />} />
-          <Route path="/DegPage" element={<DegPage />} />
           <Route path="/CalculatorPage" element={<CalculatorPage />} />
-          <Route path="/CSVFile" element={<CSVFile />} />
 
           <Route path="/AdminLogin" element={<AdminLogin />} />
 

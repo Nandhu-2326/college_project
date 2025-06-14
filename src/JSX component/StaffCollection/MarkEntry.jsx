@@ -3,6 +3,7 @@ import { db } from "../Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import toast from "react-hot-toast";
 
 const MarkEntry = () => {
   // useState
@@ -28,6 +29,7 @@ const MarkEntry = () => {
   };
   const [state, dispatch] = useReducer(checkReducer, initialize);
   console.log(state);
+
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -86,6 +88,50 @@ const MarkEntry = () => {
     setSelectedStudent(null);
   };
 
+  const SubmiteSubjectMark = async () => {
+    if (!state.mark1 || !state.mark2 || !state.Assignment || !state.Seminar) {
+      toast.error("Please Fill All Requirements");
+      return;
+    }
+  
+    let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
+    let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
+  
+    const dbAssignment = Number(state.Assignment);
+    const dbSeminar = Number(state.Seminar);
+  
+    if (
+      (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+      (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
+    ) {
+      toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+      return;
+    }
+  
+    if (
+      dbAssignment < 0 || dbAssignment > 5 ||
+      dbSeminar < 0 || dbSeminar > 5
+    ) {
+      toast.error("Assignment and Seminar marks must be between 0 and 5");
+      return;
+    }
+  
+    try {
+      const Internal_1Og = dbmark1
+      const Internal_2Og = dbmark2
+      const Internal_1 = dbmark1 / 2
+      const Internal_2 = dbmark2 / 2
+      const BothInternal = (Internal_1 + Internal_2)
+      const TotalInternal = BothInternal / 2
+      const NeetMark = TotalInternal + dbAssignment + dbSeminar  
+      alert(NeetMark)
+      
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+  
+  
   return (
     <div className="bg-light min-vh-100">
       {/* Header */}
@@ -316,7 +362,7 @@ const MarkEntry = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={SubmiteSubjectMark}>
             Save
           </Button>
         </Modal.Footer>

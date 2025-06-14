@@ -18,6 +18,8 @@ import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const initialStudentState = [];
 const studentReducer = (state, action) => {
@@ -29,6 +31,7 @@ const studentReducer = (state, action) => {
   }
 };
 const StudentList = () => {
+  const nav = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [activeStudent, setActiveStudent] = useState([]);
   const [hodData, setHOD] = useState({});
@@ -129,7 +132,7 @@ const StudentList = () => {
           <strong>Name:</strong> ${filterData.Name || "-"}<br/>
           <strong>Roll No:</strong> ${filterData.rollno || "-"}<br/>
           <strong>Department:</strong> ${filterData.Department || "-"}<br/>
-          <strong>UG/PG:</strong> ${filterData.ugorpg || "-"}<br/>
+          <strong>UG/PG:</strong> ${filterData.ugorpg.toUpperCase() || "-"}<br/>
           <strong>Year:</strong> ${filterData.year || "-"}<br/>
           <strong>Class:</strong> ${filterData.class || "-"}<br/>
           <strong>Regular/Self:</strong> ${filterData.rs || "-"}<br/>
@@ -240,6 +243,16 @@ const StudentList = () => {
         <p className="fw-semibold mb-0">HOD : {HODName}</p>
         <p className="fw-semibold mb-0">Department : {Department?.slice(14)}</p>
       </div>
+      <div className="container  d-felx  p-3 justify-content-start align-items-center">
+        <button
+          className="btn text-primary border-0 fs-3"
+          onClick={() => {
+            nav("/HODLayout/StaffDetails");
+          }}
+        >
+          <FaArrowLeftLong /> Back
+        </button>
+      </div>
 
       <div className="container mt-2">
         <div className="card bg-light">
@@ -271,7 +284,7 @@ const StudentList = () => {
         </div>
       </div>
 
-      <div className="container mt-5 mb-5 table-responsive">
+      <div className="container mt-5 mb-5 ">
         {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
           const studentsOfYear = studentState.filter(
             (std) => std.year === year
@@ -279,69 +292,71 @@ const StudentList = () => {
           return studentsOfYear.length > 0 ? (
             <div key={year} className="mb-4">
               <h5 className="text-center fw-bold">YEAR - {year}</h5>
-              <table className="table table-bordered table-striped table-secondary shadow table-hover">
-                <thead className="text-center text-uppercase">
-                  <tr>
-                    <th>S.No</th>
-                    <th>View</th>
-                    <th>Roll No</th>
-                    <th>Name</th>
-                    <th>Class</th>
-                    <th>Year</th>
-                    <th>Update</th>
-                    <th>Change Active</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {studentsOfYear.map((student, index) => (
-                    <tr key={student.id} className="text-center">
-                      <td>{index + 1}</td>
-                      <td>
-                        <button
-                          className="btn btn-outline-primary"
-                          onClick={() => viewStudent(student.id)}
-                        >
-                          <GiSpellBook />
-                        </button>
-                      </td>
-                      <td>{student.rollno?.toUpperCase()}</td>
-                      <td>{student.Name}</td>
-                      <td>{student.class}</td>
-                      <td>{student.year}</td>
-                      <td>
-                        <button
-                          className="btn btn-outline-success"
-                          onClick={() => handleShowModal(student.id)}
-                        >
-                          <MdOutlinePublishedWithChanges />
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-outline-danger"
-                          onClick={() =>
-                            ActiveProcess(
-                              student.id,
-                              student.Name,
-                              student.rollno
-                            )
-                          }
-                        >
-                          <FaPencilAlt />
-                        </button>
-                      </td>
-                      <td>
-                        {student.active ? (
-                          <TiTickOutline className="text-success fs-1" />
-                        ) : (
-                          <HiOutlineArchiveBoxXMark className="text-danger fs-1" />
-                        )}
-                      </td>
+              <div className="table-responsive">
+                <table className="table table-responsive table-bordered table-striped table-secondary shadow table-hover">
+                  <thead className="text-center text-uppercase">
+                    <tr>
+                      <th>S.No</th>
+                      <th>View</th>
+                      <th>Roll No</th>
+                      <th>Name</th>
+                      <th>Class</th>
+                      <th>Year</th>
+                      <th>Update</th>
+                      <th>Change Active</th>
+                      <th>Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {studentsOfYear.map((student, index) => (
+                      <tr key={student.id} className="text-center">
+                        <td>{index + 1}</td>
+                        <td>
+                          <button
+                            className="btn btn-outline-primary"
+                            onClick={() => viewStudent(student.id)}
+                          >
+                            <GiSpellBook />
+                          </button>
+                        </td>
+                        <td>{student.rollno?.toUpperCase()}</td>
+                        <td>{student.Name}</td>
+                        <td>{student.class}</td>
+                        <td>{student.year}</td>
+                        <td>
+                          <button
+                            className="btn btn-outline-success"
+                            onClick={() => handleShowModal(student.id)}
+                          >
+                            <MdOutlinePublishedWithChanges />
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-outline-danger"
+                            onClick={() =>
+                              ActiveProcess(
+                                student.id,
+                                student.Name,
+                                student.rollno
+                              )
+                            }
+                          >
+                            <FaPencilAlt />
+                          </button>
+                        </td>
+                        <td>
+                          {student.active ? (
+                            <TiTickOutline className="text-success fs-1" />
+                          ) : (
+                            <HiOutlineArchiveBoxXMark className="text-danger fs-1" />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <p key={year} className="text-center fw-semibold">
@@ -399,6 +414,8 @@ const StudentList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <div className="container mt-5 py-5"></div>
     </>
   );
 };
