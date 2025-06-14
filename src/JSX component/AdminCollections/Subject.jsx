@@ -7,6 +7,7 @@ const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
   const [rs, setRs] = useState(""); // Selected category
   const [sub, setSub] = useState(""); // Department name input
+  const [subcode, setSubcode] = useState("");
 
   useEffect(() => {
     const getDep = async () => {
@@ -39,19 +40,20 @@ const Departments = () => {
   };
 
   const addDep = async () => {
-    if (!rs || !sub) {
+    if (!rs || !sub || !subcode) {
       showError();
     } else {
       try {
         await setDoc(
           doc(db, "Subject", rs),
           {
-            [sub]: sub,
+            [sub]: `${subcode} - ${sub}`,
           },
           { merge: true }
         );
         showSuccess();
         setSub("");
+        setSubcode("");
       } catch (error) {
         console.error("Error adding department:", error.message);
       }
@@ -80,17 +82,27 @@ const Departments = () => {
         </div>
 
         <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary">Enter Subject Name</label>
+          <label className="fw-bold text-primary">Subject Name</label>
           <input
             type="text"
             value={sub}
-            placeholder="Enter Subject Name"
+            placeholder="Subject Name"
             className="form-control"
             onChange={(e) => setSub(e.target.value)}
           />
         </div>
+        <div className="col-12 col-sm-4 text-start">
+          <label className="fw-bold text-primary"> Subject Code</label>
+          <input
+            type="text"
+            value={subcode}
+            placeholder="Subject Code"
+            className="form-control"
+            onChange={(e) => setSubcode(e.target.value)}
+          />
+        </div>
 
-        <div className="col-12 col-sm-4 text-center">
+        <div className="col-12 col-sm-4 text-center mb-5">
           <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
             Submit
           </button>

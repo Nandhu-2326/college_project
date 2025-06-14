@@ -150,22 +150,7 @@ const MarkEntry = () => {
                         Don't Enter Mark
                       </h3>
                     ) : (
-                      <div className="d-flex justify-content-between align-items-center w-100">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={student.id}
-                            id={`absent-${student.id}`}
-                          />
-                          <label
-                            className="form-check-label text-danger fw-semibold"
-                            htmlFor={`absent-${student.id}`}
-                          >
-                            Long Absent
-                          </label>
-                        </div>
-
+                      <div className="w-100">
                         <button className="btn btn-sm btn-outline-success">
                           Result
                         </button>
@@ -208,6 +193,7 @@ const MarkEntry = () => {
           )}
         </div>
       </div>
+
       <div className="container mt-5 py-5"></div>
       {/* Modal */}
 
@@ -221,72 +207,79 @@ const MarkEntry = () => {
         <Modal.Body>
           {selectedStudent ? (
             <>
-              <p>
-                <strong>Name:</strong> {selectedStudent.Name}
-              </p>
-              <p>
-                <strong>Roll No:</strong> {selectedStudent.rollno.toUpperCase()}
-              </p>
+              <div className="d-flex justify-content-between align-items-center ">
+                <p>
+                  {" "}
+                  <strong>Name: </strong> {selectedStudent.Name}{" "}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Roll No: </strong>{" "}
+                  {selectedStudent.rollno.toUpperCase()}{" "}
+                </p>
+              </div>
 
-              {selectedStudent.ugorpg === "pg"
-                ? [1, 2, 3]
-                : [1, 2].map((no) => {
-                    const checkField = `check${no}`;
-                    const markField = `mark${no}`;
+              {(selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
+                (no) => {
+                  const checkField = `check${no}`;
+                  const markField = `mark${no}`;
 
-                    return (
-                      <div className="mt-3 mb-4" key={no}>
-                        <label htmlFor="" className="text-uppercase fw-bold">
-                          {no === 1
-                            ? "Internal - I"
-                            : no === 2
-                            ? "Internal - II"
-                            : "Internal - III"}
-                        </label>
+                  return (
+                    <div className="mt-3 mb-4" key={no}>
+                      <label htmlFor="" className="text-uppercase fw-bold">
+                        {no === 1
+                          ? "Internal - I"
+                          : no === 2
+                          ? "Internal - II"
+                          : "Internal - III"}
+                      </label>
+                      <input
+                        type={state[checkField] ? "text" : "number"}
+                        className="form-control"
+                        placeholder={`Internal - ${no}`}
+                        value={state[markField]}
+                        onChange={(e) =>
+                          dispatch({
+                            field: markField,
+                            value: e.target.value,
+                          })
+                        }
+                        disabled={state[checkField]}
+                        min={0}
+                        max={30}
+                      />
+                      <div className="form-check mt-2">
                         <input
-                          type="text"
-                          className="form-control"
-                          placeholder={`Internal - ${no}`}
-                          value={state[markField]}
-                          onChange={(e) =>
+                          type="checkbox"
+                          id={checkField}
+                          className="form-check-input"
+                          name={checkField}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            dispatch({ field: checkField, value: isChecked });
                             dispatch({
                               field: markField,
-                              value: e.target.value,
-                            })
-                          }
-                          disabled={state[checkField]}
+                              value: isChecked ? "Absent" : "",
+                            });
+                          }}
+                          checked={state[checkField]}
                         />
-                        <div className="form-check mt-2">
-                          <input
-                            type="checkbox"
-                            id={checkField}
-                            className="form-check-input"
-                            name={checkField}
-                            onChange={(e) => {
-                              const isChecked = e.target.checked;
-                              dispatch({ field: checkField, value: isChecked });
-                              dispatch({
-                                field: markField,
-                                value: isChecked ? "Absent" : "",
-                              });
-                            }}
-                            checked={state[checkField]}
-                          />
-                          <label
-                            htmlFor={checkField}
-                            className="fw-semibold ms-2 text-danger"
-                            style={{ letterSpacing: "3px" }}
-                          >
-                            Absent
-                          </label>
-                        </div>
+                        <label
+                          htmlFor={checkField}
+                          className="fw-semibold ms-2 text-danger"
+                          style={{ letterSpacing: "3px" }}
+                        >
+                          Absent
+                        </label>
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                }
+              )}
 
               {[1, 2].map((no) => {
                 return (
-                  <div className={no == 1 ? "" : "mt-4"}>
+                  <div className={no == 1 ? "" : "mt-4"} key={no}>
                     <label
                       htmlFor={no == 1 ? "Assignment" : "Seminar"}
                       className="fw-bold text-uppercase"
@@ -300,6 +293,16 @@ const MarkEntry = () => {
                       id={no == 1 ? "Assignment" : "Seminar"}
                       className="form-control"
                       placeholder={no == 1 ? "Assignment" : "Seminar"}
+                      name={no == 1 ? "Assignment" : "Seminar"}
+                      onChange={(e) => {
+                        dispatch({
+                          field: e.target.name,
+                          value: e.target.value,
+                        });
+                      }}
+                      value={no == 1 ? state.Assignment : state.Seminar}
+                      max={5}
+                      min={0}
                     />
                   </div>
                 );
