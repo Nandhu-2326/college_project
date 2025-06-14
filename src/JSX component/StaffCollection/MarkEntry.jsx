@@ -1,6 +1,13 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { db } from "../Database";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import toast from "react-hot-toast";
@@ -19,6 +26,8 @@ const MarkEntry = () => {
     mark1: "",
     mark2: "",
     mark3: "",
+    Assignment: "",
+    Seminar: "",
   };
 
   const checkReducer = (state, action) => {
@@ -28,7 +37,7 @@ const MarkEntry = () => {
     };
   };
   const [state, dispatch] = useReducer(checkReducer, initialize);
-  console.log(state);
+  // console.log(state);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -88,18 +97,22 @@ const MarkEntry = () => {
     setSelectedStudent(null);
   };
 
-  const SubmiteSubjectMark = async () => {
+  const SubmiteSubjectMark = async (IdSt) => {
+    // console.log(IdSt);
+    if(selectedSubject.ugorpg == "ug")
+    {
+
     if (!state.mark1 || !state.mark2 || !state.Assignment || !state.Seminar) {
       toast.error("Please Fill All Requirements");
       return;
     }
-  
+
     let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
     let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
-  
+
     const dbAssignment = Number(state.Assignment);
     const dbSeminar = Number(state.Seminar);
-  
+
     if (
       (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
       (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
@@ -107,31 +120,119 @@ const MarkEntry = () => {
       toast.error("Mark1 and Mark2 must be between 0 and 30 ");
       return;
     }
-  
+
     if (
-      dbAssignment < 0 || dbAssignment > 5 ||
-      dbSeminar < 0 || dbSeminar > 5
+      dbAssignment < 0 ||
+      dbAssignment > 5 ||
+      dbSeminar < 0 ||
+      dbSeminar > 5
     ) {
       toast.error("Assignment and Seminar marks must be between 0 and 5");
       return;
     }
-  
+
     try {
-      const Internal_1Og = dbmark1
-      const Internal_2Og = dbmark2
-      const Internal_1 = dbmark1 / 2
-      const Internal_2 = dbmark2 / 2
-      const BothInternal = (Internal_1 + Internal_2)
-      const TotalInternal = BothInternal / 2
-      const NeetMark = TotalInternal + dbAssignment + dbSeminar  
-      alert(NeetMark)
-      
+      toast.loading("Uploading...");
+      const Internal_1Og = dbmark1;
+      const Internal_2Og = dbmark2;
+      const Internal_1 = dbmark1 / 2;
+      const Internal_2 = dbmark2 / 2;
+      const BothInternal = Math.round(Internal_1 + Internal_2);
+      const TotalInternal = Math.round(BothInternal / 2);
+      const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+      const dbSetMark = doc(db, "student", IdSt);
+      const dbCollection = doc(
+        collection(dbSetMark, selectedSubject.semester),
+        selectedSubject.subject
+      );
+
+      await setDoc(dbCollection, {
+        Internal_1Og: Internal_1Og,
+        Internal_2Og: Internal_2Og,
+        Internal_1: Internal_1,
+        Internal_2: Internal_2,
+        BothInternal: BothInternal,
+        TotalInternal: TotalInternal,
+        NeetMark: NeetMark,
+        Assignment: dbAssignment,
+        Seminar: dbSeminar,
+      });
+      toast.dismiss()
+      toast.success("Mark Successfully Complited");
     } catch (e) {
       toast.error(e.message);
     }
+      }
+      else{
+        
+    if (!state.mark1 || !state.mark2 || !state.mark3 || !state.Assignment || !state.Seminar) {
+      toast.error("Please Fill All Requirements");
+      return;
+    }
+
+
+    let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
+    let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
+    let dbmark3 = state.mark3 === "Absent" ? null : Number(state.mark3);
+    const dbAssignment = Number(state.Assignment);
+    const dbSeminar = Number(state.Seminar);
+    let MarkArray = [dbmark1, dbmark2, dbmark3]
+    
+
+    if (
+      (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+      (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
+    ) {
+      toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+      return;
+    }
+
+    if (
+      dbAssignment < 0 ||
+      dbAssignment > 5 ||
+      dbSeminar < 0 ||
+      dbSeminar > 5
+    ) {
+      toast.error("Assignment and Seminar marks must be between 0 and 5");
+      return;
+    }
+
+    try {
+      toast.loading("Uploading...");
+      const Internal_1Og = dbmark1;
+      const Internal_2Og = dbmark2;
+      const Internal_1 = dbmark1 / 2;
+      const Internal_2 = dbmark2 / 2;
+      const BothInternal = Math.round(Internal_1 + Internal_2);
+      const TotalInternal = Math.round(BothInternal / 2);
+      const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+      const dbSetMark = doc(db, "student", IdSt);
+      const dbCollection = doc(
+        collection(dbSetMark, selectedSubject.semester),
+        selectedSubject.subject
+      );
+
+      await setDoc(dbCollection, {
+        Internal_1Og: Internal_1Og,
+        Internal_2Og: Internal_2Og,
+        Internal_1: Internal_1,
+        Internal_2: Internal_2,
+        BothInternal: BothInternal,
+        TotalInternal: TotalInternal,
+        NeetMark: NeetMark,
+        Assignment: dbAssignment,
+        Seminar: dbSeminar,
+      });
+      toast.dismiss()
+      toast.success("Mark Successfully Complited");
+    } catch (e) {
+      toast.error(e.message);
+    }
+      }
   };
-  
-  
+
   return (
     <div className="bg-light min-vh-100">
       {/* Header */}
@@ -353,19 +454,25 @@ const MarkEntry = () => {
                   </div>
                 );
               })}
+              <div className="d-flex justify-content-around mt-3">
+                <Button variant="secondary" onClick={handleCloseModal}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    SubmiteSubjectMark(selectedStudent.id);
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
             </>
           ) : (
             <p>Loading student data...</p>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={SubmiteSubjectMark}>
-            Save
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </div>
   );
