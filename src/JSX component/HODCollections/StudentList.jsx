@@ -112,13 +112,13 @@ const StudentList = () => {
 
     setUpStudentid(idSt);
     for (const key in UpdateObject) {
-      const originalKey = key.replace("UP", "");
+      const originalKey = key.replace("UP", ""); 
       dispatch1({ field: key, value: filterData[originalKey] });
     }
   };
 
   const handleCloseModal = () => setShowModal(false);
-
+  
   const viewStudent = async (idSt) => {
     toast.loading("Please Wait");
     const STdata = doc(db, "student", idSt);

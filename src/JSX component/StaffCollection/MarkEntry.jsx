@@ -7,6 +7,7 @@ import {
   query,
   setDoc,
   where,
+  getDoc,
 } from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -18,11 +19,27 @@ const MarkEntry = () => {
   const [staffData, setStaffData] = useState({});
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalUP, setShowModalUP] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const [Edits, setEdit] = useState(false);
+  const [EditStudent, setEditStudent] = useState(null);
+
   const initialize = {
     check1: false,
     check2: false,
     check3: false,
+    mark1: "",
+    mark2: "",
+    mark3: "",
+    Assignment: "",
+    Seminar: "",
+  };
+
+  const updateObject = {
+    check1: "",
+    check2: "",
+    check3: "",
     mark1: "",
     mark2: "",
     mark3: "",
@@ -36,7 +53,16 @@ const MarkEntry = () => {
       [action.field]: action.value,
     };
   };
+
+  const updateReducer = (updatestate, action) => {
+    return {
+      ...updatestate,
+      [action.field]: action.value,
+    };
+  };
+
   const [state, dispatch] = useReducer(checkReducer, initialize);
+  const [updatestate, updateFun] = useReducer(updateReducer, updateObject);
   // console.log(state);
 
   useEffect(() => {
@@ -92,146 +118,211 @@ const MarkEntry = () => {
     setShowModal(true);
   };
 
+  const UpdateMark = async (student) => {
+    try {
+      setShowModalUP(true);
+      setEdit(true);
+      const UpdataStudent = doc(
+        db,
+        "student",
+        student.id,
+        selectedSubject.semester,
+        selectedSubject.subject
+      );
+      const FetchData = await getDoc(UpdataStudent);
+
+      if (!FetchData.exists()) {
+        console.error("No such document!");
+        return;
+      }
+      const FullData = FetchData.data();
+      updateFun({ field: "Assignment", value: FullData.Assignment ?? "" });
+      updateFun({ field: "Seminar", value: FullData.Seminar ?? "" });
+      updateFun({ field: "check1", value: FullData.mark1 == null && true });
+      updateFun({ field: "check2", value: FullData.mark2 == null && true });
+      updateFun({ field: "check3", value: FullData.mark3 == null && true });
+      updateFun({
+        field: "mark1",
+        value: FullData.mark1 == null ? "Absent" : FullData.mark1,
+      });
+      updateFun({
+        field: "mark2",
+        value: FullData.mark2 == null ? "Absent" : FullData.mark2,
+      });
+      updateFun({
+        field: "mark3",
+        value: FullData.mark3 == null ? "Absent" : FullData.mark3,
+      });
+
+      console.log("Fetched Data:", FullData);
+      setSelectedStudent(student);
+      setEditStudent(FullData);
+    } catch (error) {
+      console.error("Error fetching mark data:", error.message);
+    }
+  };
+
+  console.log(updatestate);
+
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedStudent(null);
   };
+  const handleCloseModalUP = () => {
+    setShowModalUP(false);
+    setSelectedStudent(null);
+  };
 
   const SubmiteSubjectMark = async (IdSt) => {
-    // console.log(IdSt);
-    if(selectedSubject.ugorpg == "ug")
-    {
-
-    if (!state.mark1 || !state.mark2 || !state.Assignment || !state.Seminar) {
-      toast.error("Please Fill All Requirements");
-      return;
-    }
-
-    let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
-    let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
-
-    const dbAssignment = Number(state.Assignment);
-    const dbSeminar = Number(state.Seminar);
-
-    if (
-      (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
-      (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
-    ) {
-      toast.error("Mark1 and Mark2 must be between 0 and 30 ");
-      return;
-    }
-
-    if (
-      dbAssignment < 0 ||
-      dbAssignment > 5 ||
-      dbSeminar < 0 ||
-      dbSeminar > 5
-    ) {
-      toast.error("Assignment and Seminar marks must be between 0 and 5");
-      return;
-    }
-
-    try {
-      toast.loading("Uploading...");
-      const Internal_1Og = dbmark1;
-      const Internal_2Og = dbmark2;
-      const Internal_1 = dbmark1 / 2;
-      const Internal_2 = dbmark2 / 2;
-      const BothInternal = Math.round(Internal_1 + Internal_2);
-      const TotalInternal = Math.round(BothInternal / 2);
-      const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
-
-      const dbSetMark = doc(db, "student", IdSt);
-      const dbCollection = doc(
-        collection(dbSetMark, selectedSubject.semester),
-        selectedSubject.subject
-      );
-
-      await setDoc(dbCollection, {
-        Internal_1Og: Internal_1Og,
-        Internal_2Og: Internal_2Og,
-        Internal_1: Internal_1,
-        Internal_2: Internal_2,
-        BothInternal: BothInternal,
-        TotalInternal: TotalInternal,
-        NeetMark: NeetMark,
-        Assignment: dbAssignment,
-        Seminar: dbSeminar,
-      });
-      toast.dismiss()
-      toast.success("Mark Successfully Complited");
-    } catch (e) {
-      toast.error(e.message);
-    }
+    if (selectedSubject.ugorpg == "ug") {
+      if (!state.mark1 || !state.mark2 || !state.Assignment || !state.Seminar) {
+        toast.error("Please Fill All Requirements");
+        return;
       }
-      else{
-        
-    if (!state.mark1 || !state.mark2 || !state.mark3 || !state.Assignment || !state.Seminar) {
-      toast.error("Please Fill All Requirements");
-      return;
-    }
 
+      let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
+      let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
 
-    let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
-    let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
-    let dbmark3 = state.mark3 === "Absent" ? null : Number(state.mark3);
-    const dbAssignment = Number(state.Assignment);
-    const dbSeminar = Number(state.Seminar);
-    let MarkArray = [dbmark1, dbmark2, dbmark3]
-    
+      const dbAssignment = Number(state.Assignment);
+      const dbSeminar = Number(state.Seminar);
 
-    if (
-      (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
-      (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
-    ) {
-      toast.error("Mark1 and Mark2 must be between 0 and 30 ");
-      return;
-    }
-
-    if (
-      dbAssignment < 0 ||
-      dbAssignment > 5 ||
-      dbSeminar < 0 ||
-      dbSeminar > 5
-    ) {
-      toast.error("Assignment and Seminar marks must be between 0 and 5");
-      return;
-    }
-
-    try {
-      toast.loading("Uploading...");
-      const Internal_1Og = dbmark1;
-      const Internal_2Og = dbmark2;
-      const Internal_1 = dbmark1 / 2;
-      const Internal_2 = dbmark2 / 2;
-      const BothInternal = Math.round(Internal_1 + Internal_2);
-      const TotalInternal = Math.round(BothInternal / 2);
-      const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
-
-      const dbSetMark = doc(db, "student", IdSt);
-      const dbCollection = doc(
-        collection(dbSetMark, selectedSubject.semester),
-        selectedSubject.subject
-      );
-
-      await setDoc(dbCollection, {
-        Internal_1Og: Internal_1Og,
-        Internal_2Og: Internal_2Og,
-        Internal_1: Internal_1,
-        Internal_2: Internal_2,
-        BothInternal: BothInternal,
-        TotalInternal: TotalInternal,
-        NeetMark: NeetMark,
-        Assignment: dbAssignment,
-        Seminar: dbSeminar,
-      });
-      toast.dismiss()
-      toast.success("Mark Successfully Complited");
-    } catch (e) {
-      toast.error(e.message);
-    }
+      if (
+        (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+        (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
+      ) {
+        toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+        return;
       }
+
+      if (
+        dbAssignment < 0 ||
+        dbAssignment > 5 ||
+        dbSeminar < 0 ||
+        dbSeminar > 5
+      ) {
+        toast.error("Assignment and Seminar marks must be between 0 and 5");
+        return;
+      }
+
+      try {
+        toast.loading("Uploading...");
+        const Internal_1Og = dbmark1;
+        const Internal_2Og = dbmark2;
+        const Internal_1 = dbmark1 / 2;
+        const Internal_2 = dbmark2 / 2;
+        const BothInternal = Math.round(Internal_1 + Internal_2);
+        const TotalInternal = Math.round(BothInternal / 2);
+        const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+        const dbSetMark = doc(db, "student", IdSt);
+        const dbCollection = doc(
+          collection(dbSetMark, selectedSubject.semester),
+          selectedSubject.subject
+        );
+
+        await setDoc(dbCollection, {
+          Internal_1Og: Internal_1Og,
+          Internal_2Og: Internal_2Og,
+          Internal_1: Internal_1,
+          Internal_2: Internal_2,
+          BothInternal: BothInternal,
+          TotalInternal: TotalInternal,
+          NeetMark: NeetMark,
+          Assignment: dbAssignment,
+          Seminar: dbSeminar,
+        });
+        toast.dismiss();
+        toast.success("Mark Successfully Complited");
+      } catch (e) {
+        toast.error(e.message);
+      }
+    } else {
+      if (
+        !state.mark1 ||
+        !state.mark2 ||
+        !state.mark3 ||
+        !state.Assignment ||
+        !state.Seminar
+      ) {
+        toast.error("Please Fill All Requirements");
+        return;
+      }
+
+      let dbmark1 = state.mark1 === "Absent" ? null : Number(state.mark1);
+      let dbmark2 = state.mark2 === "Absent" ? null : Number(state.mark2);
+      let dbmark3 = state.mark3 === "Absent" ? null : Number(state.mark3);
+      const dbAssignment = Number(state.Assignment);
+      const dbSeminar = Number(state.Seminar);
+
+      if (
+        (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+        (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30)) ||
+        (dbmark3 !== null && (dbmark3 < 0 || dbmark3 > 30))
+      ) {
+        toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+        return;
+      }
+
+      let MarkArray = [dbmark1, dbmark2, dbmark3];
+      MarkArray.sort((a, b) => b - a);
+      console.log(MarkArray);
+      let dbMark1 = MarkArray[0];
+      let dbMark2 = MarkArray[1];
+      console.log(dbMark1, dbMark2);
+
+      if (
+        dbAssignment < 0 ||
+        dbAssignment > 5 ||
+        dbSeminar < 0 ||
+        dbSeminar > 5
+      ) {
+        toast.error("Assignment and Seminar marks must be between 0 and 5");
+        return;
+      }
+
+      try {
+        toast.loading("Uploading...");
+        const Internal_1Og = dbMark1;
+        const Internal_2Og = dbMark2;
+        const Internal_1 = dbMark1 / 2;
+        const Internal_2 = dbMark2 / 2;
+        const BothInternal = Math.round(Internal_1 + Internal_2);
+        const TotalInternal = Math.round(BothInternal / 2);
+        const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+        const dbSetMark = doc(db, "student", IdSt);
+        const dbCollection = doc(
+          collection(dbSetMark, selectedSubject.semester),
+          selectedSubject.subject
+        );
+
+        await setDoc(dbCollection, {
+          mark1: dbmark1,
+          mark2: dbmark2,
+          mark3: dbmark3,
+          Internal_1Og: Internal_1Og,
+          Internal_2Og: Internal_2Og,
+          Internal_1: Internal_1,
+          Internal_2: Internal_2,
+          BothInternal: BothInternal,
+          TotalInternal: TotalInternal,
+          NeetMark: NeetMark,
+          Assignment: dbAssignment,
+          Seminar: dbSeminar,
+        });
+        toast.dismiss();
+        for (let ObjectRender in initialize) {
+          dispatch({ field: ObjectRender, value: "" });
+        }
+        toast.success("Mark Successfully Complited");
+        setShowModal(false);
+      } catch (e) {
+        toast.error(e.message);
+      }
+    }
+    setSelectedStudent("");
   };
+
 
   return (
     <div className="bg-light min-vh-100">
@@ -325,7 +416,10 @@ const MarkEntry = () => {
                       >
                         Set Mark
                       </button>
-                      <button className="btn btn-danger btn-sm px-3">
+                      <button
+                        className="btn btn-danger btn-sm px-3"
+                        onClick={() => UpdateMark(student)}
+                      >
                         Edit
                       </button>
                     </div>
@@ -349,7 +443,10 @@ const MarkEntry = () => {
           closeButton
           className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
         >
-          <Modal.Title className="text-center">Set Marks</Modal.Title>
+          <Modal.Title className="text-center text-uppercase">
+            {" "}
+            set mark
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedStudent ? (
@@ -366,63 +463,64 @@ const MarkEntry = () => {
                 </p>
               </div>
 
-              {(selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
-                (no) => {
-                  const checkField = `check${no}`;
-                  const markField = `mark${no}`;
+              {selectedStudent &&
+                (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
+                  (no) => {
+                    const checkField = `check${no}`;
+                    const markField = `mark${no}`;
 
-                  return (
-                    <div className="mt-3 mb-4" key={no}>
-                      <label htmlFor="" className="text-uppercase fw-bold">
-                        {no === 1
-                          ? "Internal - I"
-                          : no === 2
-                          ? "Internal - II"
-                          : "Internal - III"}
-                      </label>
-                      <input
-                        type={state[checkField] ? "text" : "number"}
-                        className="form-control"
-                        placeholder={`Internal - ${no}`}
-                        value={state[markField]}
-                        onChange={(e) =>
-                          dispatch({
-                            field: markField,
-                            value: e.target.value,
-                          })
-                        }
-                        disabled={state[checkField]}
-                        min={0}
-                        max={30}
-                      />
-                      <div className="form-check mt-2">
+                    return (
+                      <div className="mt-3 mb-4" key={no}>
+                        <label htmlFor="" className="text-uppercase fw-bold">
+                          {no === 1
+                            ? "Internal - I"
+                            : no === 2
+                            ? "Internal - II"
+                            : "Internal - III"}
+                        </label>
                         <input
-                          type="checkbox"
-                          id={checkField}
-                          className="form-check-input"
-                          name={checkField}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            dispatch({ field: checkField, value: isChecked });
+                          type={state[checkField] ? "text" : "number"}
+                          className="form-control"
+                          placeholder={`Internal - ${no}`}
+                          value={state[markField]}
+                          onChange={(e) =>
                             dispatch({
                               field: markField,
-                              value: isChecked ? "Absent" : "",
-                            });
-                          }}
-                          checked={state[checkField]}
+                              value: e.target.value,
+                            })
+                          }
+                          disabled={state[checkField]}
+                          min={0}
+                          max={30}
                         />
-                        <label
-                          htmlFor={checkField}
-                          className="fw-semibold ms-2 text-danger"
-                          style={{ letterSpacing: "3px" }}
-                        >
-                          Absent
-                        </label>
+                        <div className="form-check mt-2">
+                          <input
+                            type="checkbox"
+                            id={checkField}
+                            className="form-check-input"
+                            name={checkField}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              dispatch({ field: checkField, value: isChecked });
+                              dispatch({
+                                field: markField,
+                                value: isChecked ? "Absent" : "",
+                              });
+                            }}
+                            checked={state[checkField]}
+                          />
+                          <label
+                            htmlFor={checkField}
+                            className="fw-semibold ms-2 text-danger"
+                            style={{ letterSpacing: "3px" }}
+                          >
+                            Absent
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-              )}
+                    );
+                  }
+                )}
 
               {[1, 2].map((no) => {
                 return (
@@ -454,6 +552,7 @@ const MarkEntry = () => {
                   </div>
                 );
               })}
+
               <div className="d-flex justify-content-around mt-3">
                 <Button variant="secondary" onClick={handleCloseModal}>
                   Cancel
@@ -470,6 +569,152 @@ const MarkEntry = () => {
             </>
           ) : (
             <p>Loading student data...</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      <Modal show={showModalUP} onHide={handleCloseModalUP}>
+        <Modal.Header
+          closeButton
+          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+        >
+          <Modal.Title className="text-center text-uppercase">
+            {" "}
+            Update mark
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedStudent && EditStudent ? (
+            <>
+              <div className="d-flex justify-content-between align-items-center ">
+                <p>
+                  {" "}
+                  <strong>Name: </strong> {selectedStudent.Name}{" "}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Roll No: </strong>{" "}
+                  {selectedStudent.rollno.toUpperCase()}{" "}
+                </p>
+              </div>
+
+              {selectedStudent &&
+                (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
+                  (no) => {
+                    const checkField = `check${no}`;
+                    const markField = `mark${no}`;
+
+                    return (
+                      <div className="mt-3 mb-4" key={no}>
+                        <label htmlFor="" className="text-uppercase fw-bold">
+                          {no === 1
+                            ? "Internal - I"
+                            : no === 2
+                            ? "Internal - II"
+                            : "Internal - III"}
+                        </label>
+                        <input
+                          type={updatestate[checkField] ? "text" : "number"}
+                          className="form-control"
+                          placeholder={`Internal - ${no}`}
+                          value={updatestate[markField]}
+                          onChange={(e) =>
+                            dispatch({
+                              field: markField,
+                              value: e.target.value,
+                            })
+                          }
+                          disabled={updatestate[checkField]}
+                          min={0}
+                          max={30}
+                        />
+                        <div className="form-check mt-2">
+                          <input
+                            type="checkbox"
+                            id={checkField}
+                            className="form-check-input"
+                            name={checkField}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                            
+                                   updateFun({
+                                      field: checkField,
+                                      value: isChecked,
+                                    })
+                                  
+
+                              updateFun({
+                                      field: markField,
+                                      value: isChecked ? "Absent" : "",
+                                    })
+                                  
+                              
+                            }}
+                            checked={updatestate[checkField]}
+                          />
+                          <label
+                            htmlFor={checkField}
+                            className="fw-semibold ms-2 text-danger"
+                            style={{ letterSpacing: "3px" }}
+                          >
+                            Absent
+                          </label>
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+
+              {[1, 2].map((no) => {
+                return (
+                  <div className={no == 1 ? "" : "mt-4"} key={no}>
+                    <label
+                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                      className="fw-bold text-uppercase"
+                      style={{ letterSpacing: "2px" }}
+                    >
+                      {" "}
+                      {no == 1 ? "Assignment" : "Seminar"}{" "}
+                    </label>
+                    <input
+                      type="number"
+                      id={no == 1 ? "Assignment" : "Seminar"}
+                      className="form-control"
+                      placeholder={no == 1 ? "Assignment" : "Seminar"}
+                      name={no == 1 ? "Assignment" : "Seminar"}
+                      onChange={(e) => {
+                        updateFun({
+                          field: e.target.name,
+                          value: e.target.value,
+                        });
+                      }}
+                      value={
+                        no == 1 ? updatestate.Assignment : updatestate.Seminar
+                      }
+                      max={5}
+                      min={0}
+                    />
+                  </div>
+                );
+              })}
+
+              <div className="d-flex justify-content-around mt-3">
+                <Button variant="secondary" onClick={handleCloseModalUP}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    UpdateStudentMark(students);
+                  }}
+                >
+                  Update
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p>Please set Mark After Edit</p>
           )}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
