@@ -56,22 +56,23 @@ const StudentList = () => {
     if (!Department) return;
     const q = query(
       collection(db, "student"),
-      where("Department", "==", Department)
+      where("Department", "==", Department),
+      orderBy("rollno")
     );
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      const students = snapshot.docs
-        .map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }))
-        .sort((a, b) =>
-          a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
-        );
+      const students = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))
+      .sort((a, b) =>
+        a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
+      );
       dispatch({ type: "SET_STUDENTS", payload: students });
       const activeStudent = students.filter((stu) => {
-        return stu.active === true;
+        return stu.active == true;
       });
+      console.log(activeStudent);
       setActiveStudent(activeStudent);
     }
   };
@@ -170,7 +171,7 @@ const StudentList = () => {
     await updateDoc(studentOf, { active: !selectedStudent.active });
     fetchStudents();
   };
-
+  console.log(state);
   const UpdateAllDetails = async () => {
     if (
       !state.NameUP ||
@@ -237,9 +238,9 @@ const StudentList = () => {
 
   // === Count inactive per year
   const inactiveCounts = {
-    1: studentState.filter((s) => s.year === 1 && !s.active).length,
-    2: studentState.filter((s) => s.year === 2 && !s.active).length,
-    3: studentState.filter((s) => s.year === 3 && !s.active).length,
+    1: studentState.filter((s) => s.year == 1 && !s.active).length,
+    2: studentState.filter((s) => s.year == 2 && !s.active).length,
+    3: studentState.filter((s) => s.year == 3 && !s.active).length,
   };
 
   return (
@@ -268,17 +269,17 @@ const StudentList = () => {
             <div className="row g-2 text-dark text-uppercase fw-semibold text-center">
               <div className="col-12">
                 I - Year -{" "}
-                {studentState.filter((s) => s.year === 1).length -
+                {studentState.filter((s) => s.year == 1).length -
                   inactiveCounts[1]}
               </div>
               <div className="col-6">
                 II - Year -{" "}
-                {studentState.filter((s) => s.year === 2).length -
+                {studentState.filter((s) => s.year == 2).length -
                   inactiveCounts[2]}
               </div>
               <div className="col-6">
                 III - Year -{" "}
-                {studentState.filter((s) => s.year === 3).length -
+                {studentState.filter((s) => s.year == 3).length -
                   inactiveCounts[3]}
               </div>
             </div>
@@ -291,11 +292,9 @@ const StudentList = () => {
 
       <div className="container mt-5 mb-5 ">
         {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
-          const studentsOfYear = studentState
-            .filter((std) => std.year === year)
-            .sort((a, b) =>
-              a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
-            );
+          const studentsOfYear = studentState.filter(
+            (std) => Number(std.year) == year
+          );
           return studentsOfYear.length > 0 ? (
             <div key={year} className="mb-4">
               <h5 className="text-center fw-bold">YEAR - {year}</h5>
