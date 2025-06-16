@@ -8,12 +8,30 @@ import {
   setDoc,
   where,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+// import "animate.css";
 
 const MarkEntry = () => {
+  //
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const staff = JSON.parse(sessionStorage.getItem("staff_Data") || "{}");
+        const subject = JSON.parse(sessionStorage.getItem("Subject") || "{}");
+        setStaffData(staff);
+        setSelectedSubject(subject);
+      } catch (error) {
+        console.error("Initialization error:", error);
+      }
+    };
+    loadInitialData();
+  }, []);
+
   // useState
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [staffData, setStaffData] = useState({});
@@ -25,6 +43,7 @@ const MarkEntry = () => {
   const [Edits, setEdit] = useState(false);
   const [EditStudent, setEditStudent] = useState(null);
 
+  // ReducerObject's
   const initialize = {
     check1: false,
     check2: false,
@@ -47,6 +66,7 @@ const MarkEntry = () => {
     Seminar: "",
   };
 
+  // ReducerFunction's
   const checkReducer = (state, action) => {
     return {
       ...state,
@@ -61,28 +81,11 @@ const MarkEntry = () => {
     };
   };
 
+  // useReducer's
   const [state, dispatch] = useReducer(checkReducer, initialize);
   const [updatestate, updateFun] = useReducer(updateReducer, updateObject);
-  // console.log(state);
 
-  useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        const staff = JSON.parse(sessionStorage.getItem("staff_Data") || "{}");
-        const subject = JSON.parse(sessionStorage.getItem("Subject") || "{}");
-        setStaffData(staff);
-        setSelectedSubject(subject);
-      } catch (error) {
-        console.error("Initialization error:", error);
-      }
-    };
-    loadInitialData();
-  }, []);
-
-  useEffect(() => {
-    studentData();
-  }, [selectedSubject]);
-
+  // fetchStudentFromDataBase
   const studentData = async () => {
     if (
       selectedSubject?.department &&
@@ -112,67 +115,28 @@ const MarkEntry = () => {
       }
     }
   };
+  useEffect(() => {
+    studentData();
+  }, [selectedSubject]);
 
+  // open set Mark Theory
   const handleShowModal = (student) => {
     setSelectedStudent(student);
     setShowModal(true);
   };
 
-  const UpdateMark = async (student) => {
-    try {
-      setShowModalUP(true);
-      setEdit(true);
-      const UpdataStudent = doc(
-        db,
-        "student",
-        student.id,
-        selectedSubject.semester,
-        selectedSubject.subject
-      );
-      const FetchData = await getDoc(UpdataStudent);
-
-      if (!FetchData.exists()) {
-        console.error("No such document!");
-        return;
-      }
-      const FullData = FetchData.data();
-      updateFun({ field: "Assignment", value: FullData.Assignment ?? "" });
-      updateFun({ field: "Seminar", value: FullData.Seminar ?? "" });
-      updateFun({ field: "check1", value: FullData.mark1 == null && true });
-      updateFun({ field: "check2", value: FullData.mark2 == null && true });
-      updateFun({ field: "check3", value: FullData.mark3 == null && true });
-      updateFun({
-        field: "mark1",
-        value: FullData.mark1 == null ? "Absent" : FullData.mark1,
-      });
-      updateFun({
-        field: "mark2",
-        value: FullData.mark2 == null ? "Absent" : FullData.mark2,
-      });
-      updateFun({
-        field: "mark3",
-        value: FullData.mark3 == null ? "Absent" : FullData.mark3,
-      });
-
-      console.log("Fetched Data:", FullData);
-      setSelectedStudent(student);
-      setEditStudent(FullData);
-    } catch (error) {
-      console.error("Error fetching mark data:", error.message);
-    }
-  };
-
-  console.log(updatestate);
-
+  // close set Mark Theory
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedStudent(null);
   };
+
   const handleCloseModalUP = () => {
     setShowModalUP(false);
     setSelectedStudent(null);
   };
 
+  // set Theory mark
   const SubmiteSubjectMark = async (IdSt) => {
     if (selectedSubject.ugorpg == "ug") {
       if (!state.mark1 || !state.mark2 || !state.Assignment || !state.Seminar) {
@@ -230,9 +194,14 @@ const MarkEntry = () => {
           NeetMark: NeetMark,
           Assignment: dbAssignment,
           Seminar: dbSeminar,
+          mark1: dbmark1,
+          mark2: dbmark2,
         });
         toast.dismiss();
         toast.success("Mark Successfully Complited");
+        for (let ObjectRender in initialize) {
+          dispatch({ field: ObjectRender, value: "" });
+        }
       } catch (e) {
         toast.error(e.message);
       }
@@ -321,8 +290,403 @@ const MarkEntry = () => {
       }
     }
     setSelectedStudent("");
+    handleCloseModal();
   };
 
+  // Update Theory Mark
+  const UpdateMark = async (student) => {
+    try {
+      setShowModalUP(true);
+      setEdit(true);
+      const UpdataStudent = doc(
+        db,
+        "student",
+        student.id,
+        selectedSubject.semester,
+        selectedSubject.subject
+      );
+      const FetchData = await getDoc(UpdataStudent);
+
+      if (!FetchData.exists()) {
+        console.error("No such document!");
+        return;
+      }
+      const FullData = FetchData.data();
+      updateFun({ field: "Assignment", value: FullData.Assignment ?? "" });
+      updateFun({ field: "Seminar", value: FullData.Seminar ?? "" });
+      updateFun({
+        field: "check1",
+        value: FullData.mark1 == null ? true : false,
+      });
+      updateFun({
+        field: "check2",
+        value: FullData.mark2 == null ? true : false,
+      });
+      updateFun({
+        field: "check3",
+        value: FullData.mark3 == null ? true : false,
+      });
+      updateFun({
+        field: "mark1",
+        value: FullData.mark1 == null ? "Absent" : FullData.mark1,
+      });
+      updateFun({
+        field: "mark2",
+        value: FullData.mark2 == null ? "Absent" : FullData.mark2,
+      });
+      updateFun({
+        field: "mark3",
+        value: FullData.mark3 == null ? "Absent" : FullData.mark3,
+      });
+
+      console.log("Fetched Data:", FullData);
+      setSelectedStudent(student);
+      setEditStudent(FullData);
+      // console.log(updatestate);
+    } catch (error) {
+      console.error("Error fetching mark data:", error.message);
+    }
+  };
+
+  const UpdateStudentMark = async (student) => {
+    if (student.ugorpg == "ug") {
+      if (
+        !updatestate.mark1 ||
+        !updatestate.mark2 ||
+        !updatestate.Assignment ||
+        !updatestate.Seminar
+      ) {
+        toast.error("Please Fill All Requirements");
+        return;
+      }
+
+      let dbmark1 =
+        updatestate.mark1 === "Absent" ? null : Number(updatestate.mark1);
+      let dbmark2 =
+        updatestate.mark2 === "Absent" ? null : Number(updatestate.mark2);
+
+      const dbAssignment = Number(updatestate.Assignment);
+      const dbSeminar = Number(updatestate.Seminar);
+
+      if (
+        (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+        (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30))
+      ) {
+        toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+        return;
+      }
+
+      if (
+        dbAssignment < 0 ||
+        dbAssignment > 5 ||
+        dbSeminar < 0 ||
+        dbSeminar > 5
+      ) {
+        toast.error("Assignment and Seminar marks must be between 0 and 5");
+        return;
+      }
+
+      try {
+        toast.loading("Uploading...");
+        const Internal_1Og = dbmark1;
+        const Internal_2Og = dbmark2;
+        const Internal_1 = dbmark1 / 2;
+        const Internal_2 = dbmark2 / 2;
+        const BothInternal = Math.round(Internal_1 + Internal_2);
+        const TotalInternal = Math.round(BothInternal / 2);
+        const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+        const UpdataBase = doc(
+          db,
+          "student",
+          student.id,
+          selectedSubject.semester,
+          selectedSubject.subject
+        );
+        await updateDoc(UpdataBase, {
+          Internal_1Og: Internal_1Og,
+          Internal_2Og: Internal_2Og,
+          Internal_1: Internal_1,
+          Internal_2: Internal_2,
+          BothInternal: BothInternal,
+          TotalInternal: TotalInternal,
+          NeetMark: NeetMark,
+          Assignment: dbAssignment,
+          Seminar: dbSeminar,
+          mark1: dbmark1,
+          mark2: dbmark2,
+        });
+        toast.dismiss();
+        toast.success("Update Successfully");
+        for (let ObjectRender in updateObject) {
+          updateFun({ field: ObjectRender, value: "" });
+        }
+        setSelectedStudent("");
+        setShowModalUP(false);
+      } catch (e) {
+        toast.error(e.message);
+      }
+    } else {
+      if (
+        !updatestate.mark1 ||
+        !updatestate.mark2 ||
+        !updatestate.mark3 ||
+        !updatestate.Assignment ||
+        !updatestate.Seminar
+      ) {
+        toast.error("Please Fill All Requirements");
+        return;
+      }
+
+      let dbmark1 =
+        updatestate.mark1 === "Absent" ? null : Number(updatestate.mark1);
+      let dbmark2 =
+        updatestate.mark2 === "Absent" ? null : Number(updatestate.mark2);
+      let dbmark3 =
+        updatestate.mark3 === "Absent" ? null : Number(updatestate.mark3);
+      const dbAssignment = Number(updatestate.Assignment);
+      const dbSeminar = Number(updatestate.Seminar);
+
+      if (
+        (dbmark1 !== null && (dbmark1 < 0 || dbmark1 > 30)) ||
+        (dbmark2 !== null && (dbmark2 < 0 || dbmark2 > 30)) ||
+        (dbmark3 !== null && (dbmark3 < 0 || dbmark3 > 30))
+      ) {
+        toast.error("Mark1 and Mark2 must be between 0 and 30 ");
+        return;
+      }
+
+      let MarkArray = [dbmark1, dbmark2, dbmark3];
+      MarkArray.sort((a, b) => b - a);
+      console.log(MarkArray);
+      let dbMark1 = MarkArray[0];
+      let dbMark2 = MarkArray[1];
+      console.log(dbMark1, dbMark2);
+
+      if (
+        dbAssignment < 0 ||
+        dbAssignment > 5 ||
+        dbSeminar < 0 ||
+        dbSeminar > 5
+      ) {
+        toast.error("Assignment and Seminar marks must be between 0 and 5");
+        return;
+      }
+
+      try {
+        toast.loading("Uploading...");
+        const Internal_1Og = dbMark1;
+        const Internal_2Og = dbMark2;
+        const Internal_1 = dbMark1 / 2;
+        const Internal_2 = dbMark2 / 2;
+        const BothInternal = Math.round(Internal_1 + Internal_2);
+        const TotalInternal = Math.round(BothInternal / 2);
+        const NeetMark = Math.round(TotalInternal + dbAssignment + dbSeminar);
+
+        const dbSetMark = doc(db, "student", student.id);
+        const dbCollection = doc(
+          collection(dbSetMark, selectedSubject.semester),
+          selectedSubject.subject
+        );
+
+        await updateDoc(dbCollection, {
+          mark1: dbmark1,
+          mark2: dbmark2,
+          mark3: dbmark3,
+          Internal_1Og: Internal_1Og,
+          Internal_2Og: Internal_2Og,
+          Internal_1: Internal_1,
+          Internal_2: Internal_2,
+          BothInternal: BothInternal,
+          TotalInternal: TotalInternal,
+          NeetMark: NeetMark,
+          Assignment: dbAssignment,
+          Seminar: dbSeminar,
+        });
+        toast.dismiss();
+        for (let ObjectRender in updateObject) {
+          updateFun({ field: ObjectRender, value: "" });
+        }
+        toast.success("Update Successfully Complited");
+        setShowModal(false);
+      } catch (e) {
+        toast.error(e.message);
+      }
+      setSelectedStudent("");
+      setShowModalUP(false);
+    }
+  };
+
+  // View Result
+  const ResultAlert = async (stId) => {
+    try {
+      toast.loading("Please Wait");
+      const studentSnap = await getDoc(doc(db, "student", stId));
+      const StudentDetails = studentSnap.data();
+
+      const markSnap = await getDoc(
+        doc(
+          db,
+          "student",
+          stId,
+          selectedSubject.semester,
+          selectedSubject.subject
+        )
+      );
+      const MarkList = markSnap.data();
+
+      if (!MarkList) {
+        toast.dismiss();
+        toast.error("Please set Mark before viewing the result.");
+        return;
+      }
+      if (StudentDetails.ugorpg == "pg") {
+        Swal.fire({
+          title: " RESULT ",
+          html: `
+          <div style="text-align: left; font-size: 14px;">
+            <h4> STUDENT DETAILS</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Department:</b></td><td>${
+                StudentDetails.Department
+              }</td></tr>
+              <tr><td><b>R/S:</b></td><td>${StudentDetails.rs.toUpperCase()}</td></tr>
+              <tr><td><b>Name:</b></td><td>${StudentDetails.Name}</td></tr>
+              <tr><td><b>Roll No:</b></td><td>${StudentDetails.rollno.toUpperCase()}</td></tr>
+              <tr><td><b>Class:</b></td><td>${StudentDetails.class}</td></tr>
+              <tr><td><b>UG/PG:</b></td><td>${StudentDetails.ugorpg.toUpperCase()}</td></tr>
+              <tr><td><b>Status:</b></td><td>${
+                StudentDetails.active ? "Active" : "Inactive"
+              }</td></tr>
+            </table>
+            <hr>
+      
+            <h4>📘 Original Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Internal - I:</b></td><td>${
+                MarkList.mark1 ?? "Absent"
+              }</td></tr>
+              <tr><td><b>Internal - II:</b></td><td>${
+                MarkList.mark2 ?? "Absent"
+              }</td></tr>
+              <tr><td><b>Internal - III:</b></td><td>${
+                MarkList.mark3 ?? "Absent"
+              }</td></tr>
+              <tr><td><b>Assignment:</b></td><td>${
+                MarkList.Assignment
+              }</td></tr>
+              <tr><td><b>Seminar:</b></td><td>${MarkList.Seminar}</td></tr>
+            </table>
+            <hr>
+      
+            <h4>📊 Calculated Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Best Internal - I:</b></td><td>${
+                MarkList.Internal_1Og
+              }</td></tr>
+              <tr><td><b>Best Internal - II:</b></td><td>${
+                MarkList.Internal_2Og
+              }</td></tr>
+              <tr><td><b>Both Internals Avg:</b></td><td>${
+                MarkList.BothInternal
+              }</td></tr>
+              <tr><td><b>Total Internal Avg:</b></td><td>${
+                MarkList.TotalInternal
+              }</td></tr>
+              <tr><td><b><u>Total Mark:</u></b></td><td><b>${
+                MarkList.NeetMark
+              }</b></td></tr>
+            </table>
+          </div>
+        `,
+          icon: "success",
+          width: 700,
+          confirmButtonText: "Close",
+          customClass: {
+            popup: "animate__animated animate__fadeInUp animate__faster",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutDown animate__faster",
+          },
+        });
+      } else {
+        Swal.fire({
+          title: " RESULT ",
+          html: `
+          <div style="text-align: left; font-size: 14px;">
+            <h4> STUDENT DETAILS</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Department:</b></td><td>${
+                StudentDetails.Department
+              }</td></tr>
+              <tr><td><b>R/S:</b></td><td>${StudentDetails.rs.toUpperCase()}</td></tr>
+              <tr><td><b>Name:</b></td><td>${StudentDetails.Name}</td></tr>
+              <tr><td><b>Roll No:</b></td><td>${StudentDetails.rollno.toUpperCase()}</td></tr>
+              <tr><td><b>Class:</b></td><td>${StudentDetails.class}</td></tr>
+              <tr><td><b>UG/PG:</b></td><td>${StudentDetails.ugorpg.toUpperCase()}</td></tr>
+              <tr><td><b>Status:</b></td><td>${
+                StudentDetails.active ? "Active" : "Inactive"
+              }</td></tr>
+            </table>
+            <hr>
+      
+            <h4>📘 Original Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Internal - I:</b></td><td>${
+                MarkList.mark1 ?? "Absent"
+              }</td></tr>
+              <tr><td><b>Internal - II:</b></td><td>${
+                MarkList.mark2 ?? "Absent"
+              }</td></tr>
+              <tr><td><b>Internal - III:</b></td><td>${
+               StudentDetails.ugorpg == "pg" ? (MarkList.mark3 ?? "Absent") : "---"}</td></tr>
+              <tr><td><b>Assignment:</b></td><td>${
+                MarkList.Assignment
+              }</td></tr>
+              <tr><td><b>Seminar:</b></td><td>${MarkList.Seminar}</td></tr>
+            </table>
+            <hr>
+      
+            <h4>📊 Calculated Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Best Internal - I:</b></td><td>${
+                MarkList.Internal_1Og
+              }</td></tr>
+              <tr><td><b>Best Internal - II:</b></td><td>${
+                MarkList.Internal_2Og
+              }</td></tr>
+              <tr><td><b>Both Internals Avg:</b></td><td>${
+                MarkList.BothInternal
+              }</td></tr>
+              <tr><td><b>Total Internal Avg:</b></td><td>${
+                MarkList.TotalInternal
+              }</td></tr>
+              <tr><td><b><u>Total Mark:</u></b></td><td><b>${
+                MarkList.NeetMark
+              }</b></td></tr>
+            </table>
+          </div>
+        `,
+          icon: "success",
+          width: 700,
+          confirmButtonText: "Close",
+          customClass: {
+            popup: "animate__animated animate__fadeInUp animate__faster",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutDown animate__faster",
+          },
+        });
+      }
+
+      toast.dismiss();
+
+      console.log("Student:", StudentDetails);
+      console.log("MarkList:", MarkList);
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
 
   return (
     <div className="bg-light min-vh-100">
@@ -389,7 +753,12 @@ const MarkEntry = () => {
                       </h3>
                     ) : (
                       <div className="w-100">
-                        <button className="btn btn-sm btn-outline-success">
+                        <button
+                          className="btn btn-sm btn-outline-success"
+                          onClick={() => {
+                            ResultAlert(student.id);
+                          }}
+                        >
                           Result
                         </button>
                       </div>
@@ -438,6 +807,7 @@ const MarkEntry = () => {
       <div className="container mt-5 py-5"></div>
       {/* Modal */}
 
+      {/* set theory Mark */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header
           closeButton
@@ -574,6 +944,7 @@ const MarkEntry = () => {
         <Modal.Footer></Modal.Footer>
       </Modal>
 
+      {/* Update theory Mark */}
       <Modal show={showModalUP} onHide={handleCloseModalUP}>
         <Modal.Header
           closeButton
@@ -620,7 +991,7 @@ const MarkEntry = () => {
                           placeholder={`Internal - ${no}`}
                           value={updatestate[markField]}
                           onChange={(e) =>
-                            dispatch({
+                            updateFun({
                               field: markField,
                               value: e.target.value,
                             })
@@ -637,19 +1008,16 @@ const MarkEntry = () => {
                             name={checkField}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
-                            
-                                   updateFun({
-                                      field: checkField,
-                                      value: isChecked,
-                                    })
-                                  
 
                               updateFun({
-                                      field: markField,
-                                      value: isChecked ? "Absent" : "",
-                                    })
-                                  
-                              
+                                field: checkField,
+                                value: isChecked,
+                              });
+
+                              updateFun({
+                                field: markField,
+                                value: isChecked ? "Absent" : "",
+                              });
                             }}
                             checked={updatestate[checkField]}
                           />
@@ -706,7 +1074,7 @@ const MarkEntry = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    UpdateStudentMark(students);
+                    UpdateStudentMark(selectedStudent);
                   }}
                 >
                   Update

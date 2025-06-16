@@ -47,60 +47,77 @@ const HOD = () => {
   };
 
   return (
-    <div className="container my-4 mb-5">
-      {/* Login Form */}
-      <div className="row justify-content-center mt-5">
-        <div className="col-12 text-center mb-4">
-          <h2 className="fw-bold text-primary">HOD Login</h2>
-          <p className="text-muted">Enter your Username and Password</p>
-        </div>
+    <div className="HOD">
+      <div className="container mb-5">
+        {/* Login Form */}
+        <div className="row justify-content-center mt-3 ">
+          <div className="col-12 text-center mb-4">
+            <h2
+              className="fw-bold text-primary text-uppercase"
+              style={{ letterSpacing: "2px" }}
+            >
+              HOD Login
+            </h2>
+            <p
+              className="text-primary text-uppercase fw-semibold"
+              style={{ letterSpacing: "1px" }}
+            >
+              Enter your Username and Password
+            </p>
+          </div>
 
-        <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4 bg-light rounded">
-          <div className="d-flex flex-column gap-4">
-            {/* Username */}
-            <div className="input-group">
-              <span className="input-group-text bg-primary text-white">
-                <FaUserCircle />
-              </span>
-              <input
-                type="text"
-                className="form-control border border-primary"
-                placeholder="Username"
-                onChange={(e) => SetUserName(e.target.value)}
-              />
-            </div>
+          <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4  rounded">
+            <div className="d-flex flex-column gap-4">
+              {/* Username */}
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <FaUserCircle />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border border-primary"
+                  placeholder="Username"
+                  onChange={(e) => SetUserName(e.target.value)}
+                />
+              </div>
 
-            {/* Password */}
-            <div className="input-group">
-              <span className="input-group-text bg-primary text-white">
-                <RiLockPasswordFill />
-              </span>
-              <input
-                type={PasswordEye ? "password" : "text"}
-                className="form-control border border-primary"
-                placeholder="Password"
-                onChange={(e) => SetPassword(e.target.value)}
-              />
-              <span
-                className="input-group-text bg-primary text-light"
-                style={{ cursor: "pointer" }}
-              >
-                {PasswordEye ? (
-                  <FaEyeSlash onClick={() => SetPasswordEye(false)} />
+              {/* Password */}
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <RiLockPasswordFill />
+                </span>
+                <input
+                  type={PasswordEye ? "password" : "text"}
+                  className="form-control border border-primary"
+                  placeholder="Password"
+                  onChange={(e) => SetPassword(e.target.value)}
+                />
+                <span
+                  className="input-group-text bg-primary text-light"
+                  style={{ cursor: "pointer" }}
+                >
+                  {PasswordEye ? (
+                    <FaEyeSlash onClick={() => SetPasswordEye(false)} />
+                  ) : (
+                    <FaRegEye onClick={() => SetPasswordEye(true)} />
+                  )}
+                </span>
+              </div>
+
+              {/* Login Button */}
+              <button className="btn btn-primary fw-bold py-1" onClick={login}>
+                {isloading ? (
+                  <ThreeDot
+                    color="#ffffff"
+                    size="medium"
+                    text=""
+                    textColor=""
+                  />
                 ) : (
-                  <FaRegEye onClick={() => SetPasswordEye(true)} />
+                  "Login"
                 )}
-              </span>
+              </button>
             </div>
-
-            {/* Login Button */}
-            <button className="btn btn-primary fw-bold py-1" onClick={login}>
-              {isloading ? (
-                <ThreeDot color="#ffffff" size="medium" text="" textColor="" />
-              ) : (
-                "Login"
-              )}
-            </button>
           </div>
         </div>
       </div>

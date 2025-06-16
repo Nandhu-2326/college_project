@@ -12,7 +12,7 @@ const Footer = () => {
   return (
     <>
       <div
-        className="d-flex justify-content-center  align-items-center fixed-bottom shadow shadow-md border-0 border-3 border-top border-primary "
+        className="d-flex justify-content-center align-items-center fixed-bottom shadow shadow-md border-0 border-3 border-top border-primary "
         style={{ background: "white" }}
       >
         <div className="row">
