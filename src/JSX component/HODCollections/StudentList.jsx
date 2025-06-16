@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -59,10 +60,14 @@ const StudentList = () => {
     );
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      const students = snapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      const students = snapshot.docs
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .sort((a, b) =>
+          a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
+        );
       dispatch({ type: "SET_STUDENTS", payload: students });
       const activeStudent = students.filter((stu) => {
         return stu.active === true;
@@ -112,13 +117,13 @@ const StudentList = () => {
 
     setUpStudentid(idSt);
     for (const key in UpdateObject) {
-      const originalKey = key.replace("UP", ""); 
+      const originalKey = key.replace("UP", "");
       dispatch1({ field: key, value: filterData[originalKey] });
     }
   };
 
   const handleCloseModal = () => setShowModal(false);
-  
+
   const viewStudent = async (idSt) => {
     toast.loading("Please Wait");
     const STdata = doc(db, "student", idSt);
@@ -286,9 +291,11 @@ const StudentList = () => {
 
       <div className="container mt-5 mb-5 ">
         {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
-          const studentsOfYear = studentState.filter(
-            (std) => std.year === year
-          );
+          const studentsOfYear = studentState
+            .filter((std) => std.year === year)
+            .sort((a, b) =>
+              a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
+            );
           return studentsOfYear.length > 0 ? (
             <div key={year} className="mb-4">
               <h5 className="text-center fw-bold">YEAR - {year}</h5>

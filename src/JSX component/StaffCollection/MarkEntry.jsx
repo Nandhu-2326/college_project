@@ -9,6 +9,7 @@ import {
   where,
   getDoc,
   updateDoc,
+  orderBy,
 } from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -38,6 +39,8 @@ const MarkEntry = () => {
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalUP, setShowModalUP] = useState(false);
+  const [showModalLab, setShowModalLab] = useState(false);
+  const [showModalLabUp, setShowModalLabUp] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [Edits, setEdit] = useState(false);
@@ -66,6 +69,24 @@ const MarkEntry = () => {
     Seminar: "",
   };
 
+  const LabObject = {
+    check1: "",
+    check2: "",
+    mark1: "",
+    mark2: "",
+    LabRecord: "",
+    Observation: "",
+  };
+
+  const LabObjectUp = {
+    check1: "",
+    check2: "",
+    mark1: "",
+    mark2: "",
+    LabRecord: "",
+    Observation: "",
+  };
+
   // ReducerFunction's
   const checkReducer = (state, action) => {
     return {
@@ -81,11 +102,28 @@ const MarkEntry = () => {
     };
   };
 
+  const LabReducer = (Labstate, action) => {
+    return {
+      ...Labstate,
+      [action.field]: action.value,
+    };
+  };
+
+  const LabReducerUp = (LabstateUp, action) => {
+    return {
+      ...LabstateUp,
+      [action.field]: action.value,
+    };
+  };
+
   // useReducer's
   const [state, dispatch] = useReducer(checkReducer, initialize);
   const [updatestate, updateFun] = useReducer(updateReducer, updateObject);
-
+  const [Labstate, LabFun] = useReducer(LabReducer, LabObject);
+  const [LabstateUp, LabFunUp] = useReducer(LabReducerUp, LabObjectUp);
+  // console.log(Labstate);
   // fetchStudentFromDataBase
+
   const studentData = async () => {
     if (
       selectedSubject?.department &&
@@ -102,19 +140,26 @@ const MarkEntry = () => {
         where("year", "==", selectedSubject.year),
         where("rs", "==", selectedSubject.rs)
       );
+
       const snapshot = await getDocs(q);
+
       if (!snapshot.empty) {
         const studentList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+
+        studentList.sort((a, b) =>
+          a.rollno.localeCompare(b.rollno, undefined, { numeric: true })
+        );
+
         setStudents(studentList);
-        console.log(studentList);
       } else {
         setStudents([]);
       }
     }
   };
+
   useEffect(() => {
     studentData();
   }, [selectedSubject]);
@@ -540,10 +585,11 @@ const MarkEntry = () => {
         toast.error("Please set Mark before viewing the result.");
         return;
       }
-      if (StudentDetails.ugorpg == "pg") {
-        Swal.fire({
-          title: " RESULT ",
-          html: `
+      if (selectedSubject.TorL != "Lab") {
+        if (StudentDetails.ugorpg == "pg") {
+          Swal.fire({
+            title: " RESULT ",
+            html: `
           <div style="text-align: left; font-size: 14px;">
             <h4> STUDENT DETAILS</h4>
             <table style="width: 100%; line-height: 1.8;">
@@ -599,20 +645,20 @@ const MarkEntry = () => {
             </table>
           </div>
         `,
-          icon: "success",
-          width: 700,
-          confirmButtonText: "Close",
-          customClass: {
-            popup: "animate__animated animate__fadeInUp animate__faster",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutDown animate__faster",
-          },
-        });
-      } else {
-        Swal.fire({
-          title: " RESULT ",
-          html: `
+            icon: "success",
+            width: 700,
+            confirmButtonText: "Close",
+            customClass: {
+              popup: "animate__animated animate__fadeInUp animate__faster",
+            },
+            hideClass: {
+              popup: "animate__animated animate__fadeOutDown animate__faster",
+            },
+          });
+        } else {
+          Swal.fire({
+            title: " RESULT ",
+            html: `
           <div style="text-align: left; font-size: 14px;">
             <h4> STUDENT DETAILS</h4>
             <table style="width: 100%; line-height: 1.8;">
@@ -639,7 +685,10 @@ const MarkEntry = () => {
                 MarkList.mark2 ?? "Absent"
               }</td></tr>
               <tr><td><b>Internal - III:</b></td><td>${
-               StudentDetails.ugorpg == "pg" ? (MarkList.mark3 ?? "Absent") : "---"}</td></tr>
+                StudentDetails.ugorpg == "pg"
+                  ? MarkList.mark3 ?? "Absent"
+                  : "---"
+              }</td></tr>
               <tr><td><b>Assignment:</b></td><td>${
                 MarkList.Assignment
               }</td></tr>
@@ -667,6 +716,71 @@ const MarkEntry = () => {
             </table>
           </div>
         `,
+            icon: "success",
+            width: 700,
+            confirmButtonText: "Close",
+            customClass: {
+              popup: "animate__animated animate__fadeInUp animate__faster",
+            },
+            hideClass: {
+              popup: "animate__animated animate__fadeOutDown animate__faster",
+            },
+          });
+        }
+      } else {
+        Swal.fire({
+          title: " RESULT ",
+          html: `
+          <div style="text-align: left; font-size: 14px;">
+            <h4> STUDENT DETAILS</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Department:</b></td><td>${
+                StudentDetails.Department
+              }</td></tr>
+              <tr><td><b>R/S:</b></td><td>${StudentDetails.rs.toUpperCase()}</td></tr>
+              <tr><td><b>Name:</b></td><td>${StudentDetails.Name}</td></tr>
+              <tr><td><b>Roll No:</b></td><td>${StudentDetails.rollno.toUpperCase()}</td></tr>
+              <tr><td><b>Class:</b></td><td>${StudentDetails.class}</td></tr>
+              <tr><td><b>UG/PG:</b></td><td>${StudentDetails.ugorpg.toUpperCase()}</td></tr>
+              <tr><td><b>Status:</b></td><td>${
+                StudentDetails.active ? "Active" : "Inactive"
+              }</td></tr>
+            </table>
+            <hr>
+      
+            <h4>📘 Original Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+              <tr><td><b>Internal - I:</b></td><td>${
+                MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
+              }</td></tr>
+              <tr><td><b>Internal - II:</b></td><td>${
+                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
+              }</td></tr>
+              <tr><td><b>LabRecord:</b></td><td>${MarkList.LabRecord}</td></tr>
+              <tr><td><b>Obsevation:</b></td><td>${
+                MarkList.Observation
+              }</td></tr>
+            </table>
+            <hr>
+            
+            <h4>📊 Calculated Marks</h4>
+            <table style="width: 100%; line-height: 1.8;">
+            <tr><td><b> Internal - I:</b></td><td>${
+              MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
+            }</td></tr>
+              <tr><td><b> Internal - II:</b></td><td>${
+                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
+              }</td></tr>
+              <tr><td><b>Average Mark :</b></td><td>${
+                MarkList.AverageMark
+              }</td></tr>
+             
+              <tr><td><b>Total Mark:</b></td><td><b>${
+                MarkList.Totalmark
+              }</b></td></tr>
+            </table>
+          </div>
+        `,
           icon: "success",
           width: 700,
           confirmButtonText: "Close",
@@ -683,6 +797,198 @@ const MarkEntry = () => {
 
       console.log("Student:", StudentDetails);
       console.log("MarkList:", MarkList);
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  // Lab Mark Entry
+  const handleCloseModalLab = () => {
+    setShowModalLab(false);
+    setSelectedStudent("");
+    for (let LabObjests in LabObject) {
+      LabFun({ field: LabObjests, value: "" });
+    }
+  };
+
+  const LabMarkEntry = (student) => {
+    setShowModalLab(true);
+    setSelectedStudent(student);
+  };
+
+  const LabMark = async (student) => {
+    try {
+      if (
+        !Labstate.mark1 ||
+        !Labstate.mark2 ||
+        !Labstate.Observation ||
+        !Labstate.LabRecord
+      ) {
+        return toast.error("Please Fill All Requirement");
+      }
+      if (
+        Labstate.mark1 < 0 ||
+        Labstate.mark1 > 30 ||
+        Labstate.mark2 < 0 ||
+        Labstate.mark2 > 30
+      ) {
+        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+      }
+      if (
+        Labstate.LabRecord < 0 ||
+        Labstate.LabRecord > 5 ||
+        Labstate.Observation < 0 ||
+        Labstate.Observation > 5
+      ) {
+        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+      }
+      toast.loading("Please Wait");
+      const labMark1 =
+        Labstate.mark1 != "Absent" ? Number(Labstate.mark1) : null;
+      const labMark2 =
+        Labstate.mark2 != "Absent" ? Number(Labstate.mark2) : null;
+      const labMarkRecord = Number(Labstate.LabRecord);
+      const labMarkObservation = Number(Labstate.Observation);
+
+      const AverageMark = Math.round((labMark1 + labMark2) / 2);
+      const TotalMark = Math.round(
+        AverageMark + labMarkRecord + labMarkObservation
+      );
+
+      const fetchDataMark = doc(db, "student", student.id);
+      const MarkCollection = doc(
+        collection(fetchDataMark, selectedSubject.semester),
+        selectedSubject.subject
+      );
+      await setDoc(MarkCollection, {
+        Internal_1Og: labMark1,
+        Internal_2Og: labMark2,
+        AverageMark: AverageMark,
+        LabRecord: labMarkRecord,
+        Observation: labMarkObservation,
+        Totalmark: TotalMark,
+      });
+      toast.dismiss();
+      toast.success("Mark Successfully Upload");
+      setShowModalLab(false);
+      setSelectedStudent("");
+      for (let LabObjests in LabObject) {
+        LabFun({ field: LabObjests, value: "" });
+      }
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  // Lab Mark Update
+  const handleCloseModalLabUp = () => {
+    setShowModalLabUp(false);
+    for (let LabUp in LabObjectUp) {
+      LabFunUp({ field: LabUp, value: "" });
+    }
+    setSelectedStudent("");
+  };
+
+  const LabUpdateMark = async (student) => {
+    try {
+      setSelectedStudent(student);
+      const UpdataLab = doc(
+        db,
+        "student",
+        student.id,
+        selectedSubject.semester,
+        selectedSubject.subject
+      );
+      const FetchData = await getDoc(UpdataLab);
+
+      if (!FetchData.exists()) {
+        toast.error("Please set Mark After Edit ");
+        return;
+      }
+      setShowModalLabUp(true);
+      const LabData = FetchData.data();
+      LabFunUp({ field: "LabRecord", value: LabData.LabRecord });
+      LabFunUp({ field: "Observation", value: LabData.Observation });
+      LabFunUp({
+        field: "check1",
+        value: LabData.Internal_1Og == null ? true : false,
+      });
+      LabFunUp({
+        field: "check2",
+        value: LabData.Internal_2Og == null ? true : false,
+      });
+      LabFunUp({
+        field: "mark1",
+        value: LabData.Internal_1Og == null ? "Absent" : LabData.Internal_1Og,
+      });
+      LabFunUp({
+        field: "mark2",
+        value: LabData.Internal_2Og == null ? "Absent" : LabData.Internal_2Og,
+      });
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  const LabMarkUp = async (student) => {
+    try {
+      if (
+        !LabstateUp.mark1 ||
+        !LabstateUp.mark2 ||
+        !LabstateUp.Observation ||
+        !LabstateUp.LabRecord
+      ) {
+        return toast.error("Please Fill All Requirement");
+      }
+      if (
+        LabstateUp.mark1 < 0 ||
+        LabstateUp.mark1 > 30 ||
+        LabstateUp.mark2 < 0 ||
+        LabstateUp.mark2 > 30
+      ) {
+        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+      }
+      if (
+        LabstateUp.LabRecord < 0 ||
+        LabstateUp.LabRecord > 5 ||
+        LabstateUp.Observation < 0 ||
+        LabstateUp.Observation > 5
+      ) {
+        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+      }
+      toast.loading("Please Wait");
+      const labMark1 =
+        LabstateUp.mark1 != "Absent" ? Number(LabstateUp.mark1) : null;
+      const labMark2 =
+        LabstateUp.mark2 != "Absent" ? Number(LabstateUp.mark2) : null;
+      const labMarkRecord = Number(LabstateUp.LabRecord);
+      const labMarkObservation = Number(LabstateUp.Observation);
+
+      const AverageMark = Math.round((labMark1 + labMark2) / 2);
+      const TotalMark = Math.round(
+        AverageMark + labMarkRecord + labMarkObservation
+      );
+
+      const fetchDataMark = doc(db, "student", student.id);
+      const MarkCollection = doc(
+        collection(fetchDataMark, selectedSubject.semester),
+        selectedSubject.subject
+      );
+      await updateDoc(MarkCollection, {
+        Internal_1Og: labMark1,
+        Internal_2Og: labMark2,
+        AverageMark: AverageMark,
+        LabRecord: labMarkRecord,
+        Observation: labMarkObservation,
+        Totalmark: TotalMark,
+      });
+      toast.dismiss();
+      toast.success("Mark Successfully Update");
+      setShowModalLabUp(false);
+      setSelectedStudent("");
+      for (let LabObjests in LabObjectUp) {
+        LabFunUp({ field: LabObjests, value: "" });
+      }
     } catch (e) {
       toast.error(e.message);
     }
@@ -781,13 +1087,21 @@ const MarkEntry = () => {
                     <div className="card-footer bg-white d-flex justify-content-between">
                       <button
                         className="btn btn-success btn-sm px-3"
-                        onClick={() => handleShowModal(student)}
+                        onClick={() => {
+                          selectedSubject.TorL !== "Lab"
+                            ? handleShowModal(student)
+                            : LabMarkEntry(student);
+                        }}
                       >
                         Set Mark
                       </button>
                       <button
                         className="btn btn-danger btn-sm px-3"
-                        onClick={() => UpdateMark(student)}
+                        onClick={() =>
+                          selectedSubject.TorL !== "Lab"
+                            ? UpdateMark(student)
+                            : LabUpdateMark(student)
+                        }
                       >
                         Edit
                       </button>
@@ -1075,6 +1389,282 @@ const MarkEntry = () => {
                   variant="primary"
                   onClick={() => {
                     UpdateStudentMark(selectedStudent);
+                  }}
+                >
+                  Update
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p>Please set Mark After Edit</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      {/* Lab Mark Entry */}
+      <Modal show={showModalLab} onHide={handleCloseModalLab}>
+        <Modal.Header
+          closeButton
+          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+        >
+          <Modal.Title className="text-center text-uppercase">
+            {" "}
+            Lab Mark
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedStudent ? (
+            <>
+              <div className="d-flex justify-content-between align-items-center ">
+                <p>
+                  {" "}
+                  <strong>Name: </strong> {selectedStudent.Name}{" "}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Roll No: </strong>{" "}
+                  {selectedStudent.rollno.toUpperCase()}{" "}
+                </p>
+              </div>
+
+              {selectedStudent &&
+                [1, 2].map((no) => {
+                  const checkField = `check${no}`;
+                  const markField = `mark${no}`;
+
+                  return (
+                    <div className="mt-3 mb-4" key={no}>
+                      <label htmlFor="" className="text-uppercase fw-bold">
+                        {no === 1 ? "Internal - I" : "Internal - II"}
+                      </label>
+                      <input
+                        type={Labstate[checkField] ? "text" : "number"}
+                        className="form-control"
+                        placeholder={`Internal - ${no}`}
+                        value={Labstate[markField]}
+                        onChange={(e) =>
+                          LabFun({
+                            field: markField,
+                            value: e.target.value,
+                          })
+                        }
+                        disabled={Labstate[checkField]}
+                        min={0}
+                        max={30}
+                      />
+                      <div className="form-check mt-2">
+                        <input
+                          type="checkbox"
+                          id={checkField}
+                          className="form-check-input"
+                          name={checkField}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+
+                            LabFun({
+                              field: checkField,
+                              value: isChecked,
+                            });
+
+                            LabFun({
+                              field: markField,
+                              value: isChecked ? "Absent" : "",
+                            });
+                          }}
+                          checked={Labstate[checkField]}
+                        />
+                        <label
+                          htmlFor={checkField}
+                          className="fw-semibold ms-2 text-danger"
+                          style={{ letterSpacing: "3px" }}
+                        >
+                          Absent
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+
+              {[1, 2].map((no) => {
+                return (
+                  <div className={no == 1 ? "" : "mt-4"} key={no}>
+                    <label
+                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                      className="fw-bold text-uppercase"
+                      style={{ letterSpacing: "2px" }}
+                    >
+                      {" "}
+                      {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
+                    </label>
+                    <input
+                      type="number"
+                      id={no == 1 ? "LabRecord" : "Observation"}
+                      className="form-control"
+                      placeholder={no == 1 ? "LabRecord" : "Observation"}
+                      name={no == 1 ? "LabRecord" : "Observation"}
+                      onChange={(e) => {
+                        LabFun({
+                          field: e.target.name,
+                          value: e.target.value,
+                        });
+                      }}
+                      value={
+                        no == 1 ? Labstate.LabRecord : Labstate.Observation
+                      }
+                      max={5}
+                      min={0}
+                    />
+                  </div>
+                );
+              })}
+
+              <div className="d-flex justify-content-around mt-3">
+                <Button variant="secondary" onClick={handleCloseModalLab}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    LabMark(selectedStudent);
+                  }}
+                >
+                  save
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p>Please set Mark After Edit</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      {/* Lab Mark Update */}
+      <Modal show={showModalLabUp} onHide={handleCloseModalLabUp}>
+        <Modal.Header
+          closeButton
+          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+        >
+          <Modal.Title className="text-center text-uppercase">
+            {" "}
+            Lab Mark Update
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedStudent ? (
+            <>
+              <div className="d-flex justify-content-between align-items-center ">
+                <p>
+                  {" "}
+                  <strong>Name: </strong> {selectedStudent.Name}{" "}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Roll No: </strong>{" "}
+                  {selectedStudent.rollno.toUpperCase()}{" "}
+                </p>
+              </div>
+
+              {selectedStudent &&
+                [1, 2].map((no) => {
+                  const checkField = `check${no}`;
+                  const markField = `mark${no}`;
+
+                  return (
+                    <div className="mt-3 mb-4" key={no}>
+                      <label htmlFor="" className="text-uppercase fw-bold">
+                        {no === 1 ? "Internal - I" : "Internal - II"}
+                      </label>
+                      <input
+                        type={LabstateUp[checkField] ? "text" : "number"}
+                        className="form-control"
+                        placeholder={`Internal - ${no}`}
+                        value={LabstateUp[markField]}
+                        onChange={(e) =>
+                          LabFunUp({
+                            field: markField,
+                            value: e.target.value,
+                          })
+                        }
+                        disabled={LabstateUp[checkField]}
+                        min={0}
+                        max={30}
+                      />
+                      <div className="form-check mt-2">
+                        <input
+                          type="checkbox"
+                          id={checkField}
+                          className="form-check-input"
+                          name={checkField}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+
+                            LabFunUp({
+                              field: checkField,
+                              value: isChecked,
+                            });
+
+                            LabFunUp({
+                              field: markField,
+                              value: isChecked ? "Absent" : "",
+                            });
+                          }}
+                          checked={LabstateUp[checkField]}
+                        />
+                        <label
+                          htmlFor={checkField}
+                          className="fw-semibold ms-2 text-danger"
+                          style={{ letterSpacing: "3px" }}
+                        >
+                          Absent
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+
+              {[1, 2].map((no) => {
+                return (
+                  <div className={no == 1 ? "" : "mt-4"} key={no}>
+                    <label
+                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                      className="fw-bold text-uppercase"
+                      style={{ letterSpacing: "2px" }}
+                    >
+                      {" "}
+                      {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
+                    </label>
+                    <input
+                      type="number"
+                      id={no == 1 ? "LabRecord" : "Observation"}
+                      className="form-control"
+                      placeholder={no == 1 ? "LabRecord" : "Observation"}
+                      name={no == 1 ? "LabRecord" : "Observation"}
+                      onChange={(e) => {
+                        LabFunUp({
+                          field: e.target.name,
+                          value: e.target.value,
+                        });
+                      }}
+                      value={
+                        no == 1 ? LabstateUp.LabRecord : LabstateUp.Observation
+                      }
+                      max={5}
+                      min={0}
+                    />
+                  </div>
+                );
+              })}
+
+              <div className="d-flex justify-content-around mt-3">
+                <Button variant="secondary" onClick={handleCloseModalLabUp}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    LabMarkUp(selectedStudent);
                   }}
                 >
                   Update
