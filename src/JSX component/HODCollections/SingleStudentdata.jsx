@@ -272,7 +272,7 @@ const SingleStudentdata = () => {
                   name=""
                   id=""
                   onChange={(e) => {
-                    setActives(e.target.value === "false");
+                    setActives(e.target.value);
                   }}
                   className="form-select"
                   value={Actives}

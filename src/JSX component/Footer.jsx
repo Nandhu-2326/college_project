@@ -11,62 +11,63 @@ const Footer = () => {
 
   return (
     <>
-      <div
-        className="d-flex justify-content-center align-items-center fixed-bottom shadow shadow-md border-0 border-3 border-top border-primary "
-        style={{ background: "white" }}
-      >
-        <div className="row">
-          <div className="col  px-5 text-uppercase">
-            <div className="d-flex justify-content-center align-items-center ">
-              <div className="d-flex justify-content-center mx-1 px-1 flex-column  align-items-center">
-                <ImUserTie
-                  style={{ fontSize: "30px", cursor: "pointer" }}
-                  className="text-primary"
-                  onClick={() => {
-                    nav("/HODLayout");
-                  }}
-                />
-                <p className="text-primary ">HOD</p>
-              </div>
-              <div className="d-flex justify-content-center mx-1 px-1 flex-column  align-items-center">
-                <FaUserShield
-                  style={{ fontSize: "30px", cursor: "pointer" }}
-                  className="text-primary"
-                  onClick={admin}
-                />
-                <p className="text-primary ">Admin</p>
-              </div>
-              <div className="d-flex mt-1 mx-2 justify-content-center px-1  flex-column align-items-center">
-                <FaUserGraduate
-                  style={{ fontSize: "30px", cursor: "pointer" }}
-                  className=" text-primary "
-                  onClick={() => {
-                    nav("/");
-                  }}
-                />
-                <p className="text-primary ">student</p>
-              </div>
-              <div className="d-flex justify-content-center px-1 flex-column align-items-center">
-                <FaUserTie
-                  style={{ fontSize: "30px", cursor: "pointer" }}
-                  className=" text-primary "
-                  onClick={() => {
-                    nav("/StaffLayout");
-                  }}
-                />
-                <p className="text-primary ">Staff</p>
-              </div>
-              <div className="d-flex justify-content-center  ms-2 flex-column align-items-center">
-                <FcAbout
-                  style={{ fontSize: "30px", cursor: "pointer" }}
-                  className=" text-primary "
-                />
-                <p className="text-primary ">About</p>
-              </div>
-            </div>
-          </div>
+      <div className="footer-glass fixed-bottom">
+  <div className="container">
+    <div className="row justify-content-center">
+      <div className="d-flex justify-content-around align-items-center text-uppercase flex-wrap gap-2">
+        {/* HOD */}
+        <div className="text-center">
+          <ImUserTie
+            style={{ fontSize: "30px", cursor: "pointer" }}
+            className="text-primary footer-icon"
+            onClick={() => nav("/HODLayout")}
+          />
+          <p className="text-primary small mb-0">HOD</p>
+        </div>
+
+        {/* Admin */}
+        <div className="text-center">
+          <FaUserShield
+            style={{ fontSize: "30px", cursor: "pointer" }}
+            className="text-primary footer-icon"
+            onClick={admin}
+          />
+          <p className="text-primary small mb-0">Admin</p>
+        </div>
+
+        {/* Student */}
+        <div className="text-center">
+          <FaUserGraduate
+            style={{ fontSize: "30px", cursor: "pointer" }}
+            className="text-primary footer-icon"
+            onClick={() => nav("/")}
+          />
+          <p className="text-primary small mb-0">Student</p>
+        </div>
+
+        {/* Staff */}
+        <div className="text-center">
+          <FaUserTie
+            style={{ fontSize: "30px", cursor: "pointer" }}
+            className="text-primary footer-icon"
+            onClick={() => nav("/StaffLayout")}
+          />
+          <p className="text-primary small mb-0">Staff</p>
+        </div>
+
+        {/* About */}
+        <div className="text-center">
+          <FcAbout
+            style={{ fontSize: "30px", cursor: "pointer" }}
+            className="footer-icon"
+          />
+          <p className="text-primary small mb-0">About</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
     </>
   );
 };

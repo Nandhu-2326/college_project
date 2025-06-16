@@ -48,7 +48,7 @@ const HOD = () => {
 
   return (
     <div className="HOD">
-      <div className="container mb-5">
+      <div className="container mb-5 hod-bg">
         {/* Login Form */}
         <div className="row justify-content-center mt-3 ">
           <div className="col-12 text-center mb-4">
@@ -67,7 +67,7 @@ const HOD = () => {
           </div>
 
           <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4  rounded">
-            <div className="d-flex flex-column gap-4">
+            <div className="d-flex flex-column gap-4 hod-card">
               {/* Username */}
               <div className="input-group">
                 <span className="input-group-text bg-primary text-white">
