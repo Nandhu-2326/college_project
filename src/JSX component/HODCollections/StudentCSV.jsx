@@ -1,28 +1,22 @@
 import { useState } from "react";
 import { BsUpload } from "react-icons/bs";
 import { db } from "../Database";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const StudentCSV = () => {
-  const nav = useNavigate()
+  const nav = useNavigate();
   const [csvfile, setFile] = useState(null);
 
   const handleChange = (e) => {
     setFile(e.target.files[0]);
   };
+
   const InformationError = () => {
     Swal.fire({
-      html: "Please Fill Information",
+      html: "Please select a CSV file",
       timer: 1000,
       icon: "warning",
       showConfirmButton: false,
@@ -31,8 +25,8 @@ const StudentCSV = () => {
 
   const loading = () => {
     Swal.fire({
-      html: "Loading...",
-      timer: 2000,
+      html: "Uploading...",
+      timer: 5000,
       timerProgressBar: true,
       didOpen: () => Swal.showLoading(),
     });
@@ -41,57 +35,79 @@ const StudentCSV = () => {
   const UserAdd = () => {
     Swal.fire({
       icon: "success",
-      title: "CSV File Upload",
+      title: "✅ CSV File Uploaded",
       timer: 2000,
       showConfirmButton: false,
     });
   };
+
+  const convertToBoolean = (value) => {
+    const lower = value.toLowerCase();
+    if (lower === "true") return true;
+    if (lower === "false") return false;
+    return value; // return as-is if not true/false
+  };
+
   const handleUpload = async () => {
     if (!csvfile) {
       InformationError();
       return;
-    } else {
-      try {
-        loading();
-        const reader = new FileReader();
-        reader.readAsText(csvfile);
-        reader.onload = async (e) => {
-          const text = e.target.result;
-          const rows = text.trim().split("\n");
-          const headers = rows[0].split(",").map((head) => head.trim());
-
-          for (let i = 1; i < rows.length; i++) {
-            const values = rows[i].split(",").map((val) => val.trim());
-            const data = {};
-            headers.forEach((val, index) => {
-              data[val] = values[index];
-            });
-            await addDoc(collection(db, "student"), data);
-          }
-          UserAdd();
-          console.log("Uploading:", csvfile.name);
-        };
-      } catch (e) {
-        console.log(e.message);
-      }
     }
-    // Handle your upload logic here
+
+    try {
+      loading();
+      const reader = new FileReader();
+      reader.readAsText(csvfile);
+      reader.onload = async (e) => {
+        const text = e.target.result;
+        const rows = text.trim().split("\n");
+        const headers = rows[0].split(",").map((h) => h.trim());
+
+        for (let i = 1; i < rows.length; i++) {
+          const values = rows[i].split(",").map((val) => val.trim());
+          const data = {};
+
+          headers.forEach((key, index) => {
+            const value = values[index];
+            const lowerKey = key.toLowerCase();
+
+            if (lowerKey === "year") {
+              const num = parseInt(value);
+              data[key] = isNaN(num) ? value : num;
+            } else if (lowerKey === "active") {
+              data[key] = convertToBoolean(value);
+            } else {
+              data[key] = value;
+            }
+          });
+
+          await addDoc(collection(db, "student"), data);
+        }
+
+        UserAdd();
+        console.log("Upload success:", csvfile.name);
+      };
+    } catch (err) {
+      console.error("Upload failed:", err.message);
+    }
   };
 
   return (
     <div className="d-flex flex-column justify-content-center container align-items-center mt-2 mb-5">
-      <div className="container  d-felx p-3 justify-content-start align-items-center">
+      <div className="container p-3 d-flex justify-content-start align-items-center">
         <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/HODLayout/StaffDetails");
-          }}
+          className="btn text-primary border-0 fs-4"
+          onClick={() => nav("/HODLayout/StaffDetails")}
         >
           <FaArrowLeftLong /> Back
         </button>
       </div>
-      <div className="card p-3 shadow-lg rounded-4">
-        <h3 className="text-primary mt-3 text-center fw-bold mb-4">
+
+      <div
+        className="card p-4 shadow-lg rounded-4 w-100"
+        style={{ maxWidth: "500px" }}
+      >
+        <h3 className="text-primary text-center fw-bold mb-4">
           📄 Upload CSV File
         </h3>
 
@@ -109,8 +125,8 @@ const StudentCSV = () => {
         </div>
 
         {csvfile && (
-          <div className="alert alert-success ">
-            <strong>Selected:</strong> {csvfile.name}
+          <div className="alert alert-success fw-semibold">
+            ✅ Selected: {csvfile.name}
           </div>
         )}
 

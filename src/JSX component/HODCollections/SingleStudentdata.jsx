@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { PiStudentDuotone } from "react-icons/pi";
+import { CiCalendarDate } from "react-icons/ci";
 
 const SingleStudentdata = () => {
   const nav = useNavigate();
@@ -21,7 +22,8 @@ const SingleStudentdata = () => {
   const [Name, setName] = useState();
   const [DepartmentData, setDepartmentData] = useState([]);
   const [Actives, setActives] = useState(true);
-  console.log(Actives);
+  const [Dob, setDob] = useState();
+  // console.log(Dob);
   const loading = () => {
     Swal.fire({
       html: "Loading...",
@@ -60,14 +62,15 @@ const SingleStudentdata = () => {
 
   const Add = async () => {
     if (
-      !rollno &&
-      !ugorpg &&
-      !section &&
-      !Departments &&
-      !Year &&
-      !rs &&
-      !Name &&
-      !Actives
+      !rollno ||
+      !ugorpg ||
+      !section ||
+      !Departments ||
+      !Year ||
+      !rs ||
+      !Name ||
+      !Actives ||
+      !Dob
     ) {
       InformationError();
     } else {
@@ -80,8 +83,9 @@ const SingleStudentdata = () => {
         rollno: rollno,
         rs: rs,
         ugorpg: ugorpg,
-        year: Year,
+        year: Number(Year),
         active: Boolean(Actives),
+        dob: Dob,
       });
       setRollno("");
       setDepartment("");
@@ -91,6 +95,7 @@ const SingleStudentdata = () => {
       setUgorpg("");
       setYear("");
       setActives("");
+      setDob("");
       success();
     }
   };
@@ -108,7 +113,7 @@ const SingleStudentdata = () => {
         </button>
       </div>
       <div className="container py-5 mb-5">
-        <div >
+        <div>
           <h4 className="text-primary mb-4 text-center fw-bold">
             🎓 Student Information Form
           </h4>
@@ -256,7 +261,7 @@ const SingleStudentdata = () => {
                   className="form-control"
                   placeholder="Enter Roll Number"
                   onChange={(e) => {
-                    setRollno(e.target.value);
+                    setRollno(e.target.value.toUpperCase());
                   }}
                   value={rollno}
                 />
@@ -281,6 +286,21 @@ const SingleStudentdata = () => {
                   <option value={true}> Active </option>
                   <option value={false}> Non Active</option>
                 </select>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">D.O.B</label>
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <CiCalendarDate />
+                </span>
+                <input
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setDob(e.target.value);
+                  }}
+                />
               </div>
             </div>
 

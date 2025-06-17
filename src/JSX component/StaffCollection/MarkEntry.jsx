@@ -137,7 +137,7 @@ const MarkEntry = () => {
         where("Department", "==", selectedSubject.department),
         where("class", "==", selectedSubject.class),
         where("ugorpg", "==", selectedSubject.ugorpg),
-        where("year", "==", selectedSubject.year),
+        where("year", "==", Number(selectedSubject.year)),
         where("rs", "==", selectedSubject.rs)
       );
 
@@ -147,12 +147,11 @@ const MarkEntry = () => {
         const studentList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
-
+        }))
         studentList.sort((a, b) =>
           a.rollno.localeCompare(b.rollno, undefined, { numeric: true })
         );
-
+        console.log(studentList);
         setStudents(studentList);
       } else {
         setStudents([]);

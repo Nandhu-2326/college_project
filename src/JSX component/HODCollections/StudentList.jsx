@@ -93,6 +93,7 @@ const StudentList = () => {
     rsUP: "",
     yearUP: "",
     classUP: "",
+    dobUP: "",
   };
 
   const inputFields = [
@@ -103,6 +104,7 @@ const StudentList = () => {
     { label: "Regular or Self", name: "rsUP" },
     { label: "Year", name: "yearUP" },
     { label: "Class", name: "classUP" },
+    { label: "Dob", name: "dobUP" },
   ];
 
   const UpdateReducer = (state, active) => ({
@@ -111,6 +113,12 @@ const StudentList = () => {
   });
 
   const [state, dispatch1] = useReducer(UpdateReducer, UpdateObject);
+
+  function formatDateForInput(dateStr) {
+    if (!dateStr) return "";
+    const [day, month, year] = dateStr.split("-");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
 
   const handleShowModal = async (idSt) => {
     setShowModal(true);
@@ -124,6 +132,18 @@ const StudentList = () => {
       dispatch1({ field: key, value: filterData[originalKey] });
     }
   };
+
+  function formatDateForSaving(dateStr) {
+    if (!dateStr || !dateStr.includes("-")) return "";
+    const [year, month, day] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
+  function formatDateForInput(dateStr) {
+    if (!dateStr || !dateStr.includes("-")) return "";
+    const [day, month, year] = dateStr.split("-");
+    return `${year}-${month}-${day}`;
+  }
 
   const handleCloseModal = () => setShowModal(false);
 
@@ -173,6 +193,9 @@ const StudentList = () => {
             <tr><td><b style="color:#2c3e50;">Regular/Self:</b></td><td>${
               filterData.rs?.toUpperCase() || "-"
             }</td></tr>
+            <tr><td><b style="color:#2c3e50;">D.O.B:</b></td><td>${
+              filterData.dob || "-"
+            }</td></tr>
             <tr><td><b style="color:#2c3e50;">Status:</b></td>
               <td>
                 <b style="color: ${filterData.active ? "#27ae60" : "#c0392b"};">
@@ -219,6 +242,7 @@ const StudentList = () => {
     await updateDoc(studentOf, { active: !selectedStudent.active });
     fetchStudents();
   };
+
   const UpdateAllDetails = async () => {
     if (
       !state.NameUP ||
@@ -227,7 +251,8 @@ const StudentList = () => {
       !state.DepartmentUP ||
       !state.yearUP ||
       !state.rsUP ||
-      !state.classUP
+      !state.classUP ||
+      !state.dobUP
     ) {
       toast.error("Please fill all fields");
       return;
@@ -261,13 +286,17 @@ const StudentList = () => {
         rollno: state.rollnoUP.toUpperCase(),
         ugorpg: state.ugorpgUP.toLowerCase(),
         Department: state.DepartmentUP,
-        year: year,
+        year: Number(year),
         class: state.classUP.toUpperCase(),
         rs: state.rsUP.toLowerCase(),
+        dob: state.dobUP,
       });
       fetchStudents();
       toast.dismiss();
       toast.success("Updated Student Details");
+      for (let Obs in UpdateObject) {
+        dispatch1({ field: Obs, value: "" });
+      }
       setShowModal(false);
     } catch (error) {
       toast.dismiss();
@@ -285,13 +314,14 @@ const StudentList = () => {
   const ChangeDeleteThirdYear = (nums) => {
     Swal.fire({
       title: "Are you sure?",
-      text: ugorpg == "ug"
-  ? nums == 3
-    ? "This will DELETE all 3rd year students!"
-    : `Move ${nums} Year to ${nums + 1} Year?`
-  : nums == 2
-    ? "This will DELETE all 2nd year students!"
-    : `Move ${nums} Year to ${nums + 1} Year?`,
+      text:
+        ugorpg == "ug"
+          ? nums == 3
+            ? "This will DELETE all 3rd year students!"
+            : `Move ${nums} Year to ${nums + 1} Year?`
+          : nums == 2
+          ? "This will DELETE all 2nd year students!"
+          : `Move ${nums} Year to ${nums + 1} Year?`,
 
       icon: "warning",
       showCancelButton: true,
@@ -314,34 +344,15 @@ const StudentList = () => {
     const getStudent = await getDocs(querys);
 
     if (!getStudent.empty) {
-      if(ugorpg == "ug"){
+      if (ugorpg == "ug") {
         if (nums === 3) {
           for (const docSnap of getStudent.docs) {
-          await deleteDoc(doc(db, "student", docSnap.id));
-        }
-        toast.dismiss();
-        toast.success("Deleted!", "All 3rd year students removed", "success");
-      } else {
-        const newYear = nums + 1;
-        for (const docSnap of getStudent.docs) {
-          await updateDoc(doc(db, "student", docSnap.id), {
-            year: newYear,
-          });
-        }
-        toast.dismiss();
-        toast.success(`All ${nums} Year students moved to ${newYear} Year`);
-      }
-      fetchStudents();
-        }
-        else{
-          if (nums == 2) {
-            for (const docSnap of getStudent.docs) {
             await deleteDoc(doc(db, "student", docSnap.id));
           }
           toast.dismiss();
-          toast.success("Deleted!", "All 2rd year students removed", "success");
+          toast.success("Deleted!", "All 3rd year students removed", "success");
         } else {
-          const newYear = nums+1;
+          const newYear = nums + 1;
           for (const docSnap of getStudent.docs) {
             await updateDoc(doc(db, "student", docSnap.id), {
               year: newYear,
@@ -351,7 +362,25 @@ const StudentList = () => {
           toast.success(`All ${nums} Year students moved to ${newYear} Year`);
         }
         fetchStudents();
+      } else {
+        if (nums == 2) {
+          for (const docSnap of getStudent.docs) {
+            await deleteDoc(doc(db, "student", docSnap.id));
+          }
+          toast.dismiss();
+          toast.success("Deleted!", "All 2rd year students removed", "success");
+        } else {
+          const newYear = nums + 1;
+          for (const docSnap of getStudent.docs) {
+            await updateDoc(doc(db, "student", docSnap.id), {
+              year: newYear,
+            });
+          }
+          toast.dismiss();
+          toast.success(`All ${nums} Year students moved to ${newYear} Year`);
         }
+        fetchStudents();
+      }
     } else {
       toast.dismiss();
       toast.error(`No students found in ${nums} Year`);
@@ -412,7 +441,7 @@ const StudentList = () => {
             <div className="row g-3 justify-content-center">
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -426,7 +455,7 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}
@@ -440,7 +469,7 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-danger btn-sm bg-gradient shadow-sm fw-semibold"
+                  className="btn btn-danger bg-gradient shadow-sm fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(3);
                   }}
@@ -457,7 +486,7 @@ const StudentList = () => {
             <div className="row g-3 justify-content-center">
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -471,7 +500,7 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-danger btn-sm bg-gradient shadow-sm fw-semibold"
+                  className="btn btn-danger bg-gradient shadow-sm fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}
@@ -579,37 +608,50 @@ const StudentList = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {inputFields.map((field, index) => (
-            <div key={index} className="mb-3">
-              <label
-                htmlFor={field.name}
-                className="form-label text-uppercase"
-                style={{ letterSpacing: "2px" }}
-              >
-                {field.label}
-              </label>
-              <input
-                type={field.name === "yearUP" ? "number" : "text"}
-                id={field.name}
-                name={field.name}
-                className="form-control"
-                value={state[field.name]}
-                min={field.name === "yearUP" ? 1 : undefined}
-                max={field.name === "yearUP" ? 3 : undefined}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  if (["rollnoUP", "classUP"].includes(field.name)) {
-                    value = value.toUpperCase();
-                  } else if (
-                    ["ugorpgUP", "activeUP", "rsUP"].includes(field.name)
-                  ) {
-                    value = value.toLowerCase();
-                  }
-                  dispatch1({ field: field.name, value });
-                }}
-              />
-            </div>
-          ))}
+        {inputFields.map((field, index) => (
+  <div key={index} className="mb-3">
+    <label
+      htmlFor={field.name}
+      className="form-label text-uppercase"
+      style={{ letterSpacing: "2px" }}
+    >
+      {field.label}
+    </label>
+    <input
+      type={
+        field.name === "yearUP"
+          ? "number"
+          : field.name === "dobUP"
+          ? "date"
+          : "text"
+      }
+      id={field.name}
+      name={field.name}
+      className="form-control"
+      value={
+        field.name === "dobUP"
+          ? formatDateForInput(state[field.name])
+          : state[field.name]
+      }
+      min={field.name === "yearUP" ? 1 : undefined}
+      max={field.name === "yearUP" ? 3 : undefined}
+      onChange={(e) => {
+        let value = e.target.value;
+
+        if (field.name === "dobUP") {
+          value = formatDateForSaving(value); // Convert to dd-MM-yyyy
+        } else if (["rollnoUP", "classUP"].includes(field.name)) {
+          value = value.toUpperCase();
+        } else if (["ugorpgUP", "activeUP", "rsUP"].includes(field.name)) {
+          value = value.toLowerCase();
+        }
+
+        dispatch1({ field: field.name, value });
+      }}
+    />
+  </div>
+))}
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
