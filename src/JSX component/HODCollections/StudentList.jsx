@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -21,6 +22,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { FaRotate } from "react-icons/fa6";
+import { RiDeleteBin2Line } from "react-icons/ri";
 
 const initialStudentState = [];
 const studentReducer = (state, action) => {
@@ -61,13 +64,14 @@ const StudentList = () => {
     );
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      const students = snapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }))
-      .sort((a, b) =>
-        a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
-      );
+      const students = snapshot.docs
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .sort((a, b) =>
+          a.rollno?.localeCompare(b.rollno, undefined, { numeric: true })
+        );
       dispatch({ type: "SET_STUDENTS", payload: students });
       const activeStudent = students.filter((stu) => {
         return stu.active == true;
@@ -89,7 +93,6 @@ const StudentList = () => {
     rsUP: "",
     yearUP: "",
     classUP: "",
-    activeUP: "",
   };
 
   const inputFields = [
@@ -100,7 +103,6 @@ const StudentList = () => {
     { label: "Regular or Self", name: "rsUP" },
     { label: "Year", name: "yearUP" },
     { label: "Class", name: "classUP" },
-    { label: "Active", name: "activeUP" },
   ];
 
   const UpdateReducer = (state, active) => ({
@@ -132,19 +134,65 @@ const StudentList = () => {
     const filterData = getDataST.data();
     toast.dismiss();
     Swal.fire({
-      title: "Student Information",
       html: `
-        <div style="text-align: left; line-height: 1.8;">
-          <strong>Name:</strong> ${filterData.Name || "-"}<br/>
-          <strong>Roll No:</strong> ${filterData.rollno || "-"}<br/>
-          <strong>Department:</strong> ${filterData.Department || "-"}<br/>
-          <strong>UG/PG:</strong> ${filterData.ugorpg.toUpperCase() || "-"}<br/>
-          <strong>Year:</strong> ${filterData.year || "-"}<br/>
-          <strong>Class:</strong> ${filterData.class || "-"}<br/>
-          <strong>Regular/Self:</strong> ${filterData.rs || "-"}<br/>
-          <strong>Active:</strong> ${filterData.active ? "Yes" : "No"}
+        <div style="
+          text-align: left;
+          font-size: 14.5px;
+          font-family: 'Segoe UI', sans-serif;
+          background: linear-gradient(to right, #fdfbfb, #ebedee);
+          border-radius: 10px;
+          padding: 20px;
+          box-shadow: inset 0 0 0.5px #ccc;
+        ">
+          <h4 style="
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+          ">🧾 STUDENT DETAILS</h4>
+    
+          <table style="width: 100%; line-height: 1.9; color: #2d3436;">
+            <tr><td><b style="color:#2c3e50;">Name:</b></td><td>${
+              filterData.Name || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Roll No:</b></td><td>${
+              filterData.rollno?.toUpperCase() || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Department:</b></td><td>${
+              filterData.Department || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">UG/PG:</b></td><td>${
+              filterData.ugorpg?.toUpperCase() || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Year:</b></td><td>${
+              filterData.year || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Class:</b></td><td>${
+              filterData.class || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Regular/Self:</b></td><td>${
+              filterData.rs?.toUpperCase() || "-"
+            }</td></tr>
+            <tr><td><b style="color:#2c3e50;">Status:</b></td>
+              <td>
+                <b style="color: ${filterData.active ? "#27ae60" : "#c0392b"};">
+                  ${filterData.active ? "Active" : "Inactive"}
+                </b>
+              </td>
+            </tr>
+          </table>
         </div>
       `,
+      width: 620,
+      background: "#f0f2f5",
+      confirmButtonColor: "#2d98da",
+      confirmButtonText: "Close",
+      customClass: {
+        popup: "animate__animated animate__fadeInUp animate__faster",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutDown animate__faster",
+      },
     });
   };
 
@@ -171,7 +219,6 @@ const StudentList = () => {
     await updateDoc(studentOf, { active: !selectedStudent.active });
     fetchStudents();
   };
-  console.log(state);
   const UpdateAllDetails = async () => {
     if (
       !state.NameUP ||
@@ -179,7 +226,6 @@ const StudentList = () => {
       !state.ugorpgUP ||
       !state.DepartmentUP ||
       !state.yearUP ||
-      !state.activeUP ||
       !state.rsUP ||
       !state.classUP
     ) {
@@ -194,11 +240,6 @@ const StudentList = () => {
 
     if (!["A", "B"].includes(state.classUP.toUpperCase())) {
       toast.error("Please enter class A or B only");
-      return;
-    }
-
-    if (!["true", "false"].includes(state.activeUP)) {
-      toast.error("Please enter active as true or false only");
       return;
     }
 
@@ -222,7 +263,6 @@ const StudentList = () => {
         Department: state.DepartmentUP,
         year: year,
         class: state.classUP.toUpperCase(),
-        active: state.activeUP === "true",
         rs: state.rsUP.toLowerCase(),
       });
       fetchStudents();
@@ -241,6 +281,81 @@ const StudentList = () => {
     1: studentState.filter((s) => s.year == 1 && !s.active).length,
     2: studentState.filter((s) => s.year == 2 && !s.active).length,
     3: studentState.filter((s) => s.year == 3 && !s.active).length,
+  };
+  const ChangeDeleteThirdYear = (nums) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: ugorpg == "ug"
+  ? nums == 3
+    ? "This will DELETE all 3rd year students!"
+    : `Move ${nums} Year to ${nums + 1} Year?`
+  : nums == 2
+    ? "This will DELETE all 2nd year students!"
+    : `Move ${nums} Year to ${nums + 1} Year?`,
+
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ChangeYear(nums);
+      }
+    });
+  };
+
+  const ChangeYear = async (nums) => {
+    toast.loading("Please Wait few secound");
+    const querys = query(
+      collection(db, "student"),
+      where("Department", "==", Department),
+      where("year", "==", nums)
+    );
+
+    const getStudent = await getDocs(querys);
+
+    if (!getStudent.empty) {
+      if(ugorpg == "ug"){
+        if (nums === 3) {
+          for (const docSnap of getStudent.docs) {
+          await deleteDoc(doc(db, "student", docSnap.id));
+        }
+        toast.dismiss();
+        toast.success("Deleted!", "All 3rd year students removed", "success");
+      } else {
+        const newYear = nums + 1;
+        for (const docSnap of getStudent.docs) {
+          await updateDoc(doc(db, "student", docSnap.id), {
+            year: newYear,
+          });
+        }
+        toast.dismiss();
+        toast.success(`All ${nums} Year students moved to ${newYear} Year`);
+      }
+      fetchStudents();
+        }
+        else{
+          if (nums == 2) {
+            for (const docSnap of getStudent.docs) {
+            await deleteDoc(doc(db, "student", docSnap.id));
+          }
+          toast.dismiss();
+          toast.success("Deleted!", "All 2rd year students removed", "success");
+        } else {
+          const newYear = nums+1;
+          for (const docSnap of getStudent.docs) {
+            await updateDoc(doc(db, "student", docSnap.id), {
+              year: newYear,
+            });
+          }
+          toast.dismiss();
+          toast.success(`All ${nums} Year students moved to ${newYear} Year`);
+        }
+        fetchStudents();
+        }
+    } else {
+      toast.dismiss();
+      toast.error(`No students found in ${nums} Year`);
+    }
   };
 
   return (
@@ -291,6 +406,85 @@ const StudentList = () => {
       </div>
 
       <div className="container mt-5 mb-5 ">
+        <h5 className="text-center mb-4">🎯 Student Year Change</h5>
+        {ugorpg == "ug" ? (
+          <div className="container mb-5">
+            <div className="row g-3 justify-content-center">
+              <div className="col-12 col-sm-4 d-grid">
+                <button
+                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  onClick={() => {
+                    ChangeDeleteThirdYear(1);
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center gap-2">
+                    <FaRotate />
+                    <span>1 Year → 2 Year</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="col-12 col-sm-4 d-grid">
+                <button
+                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  onClick={() => {
+                    ChangeDeleteThirdYear(2);
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center gap-2">
+                    <FaRotate />
+                    <span>2 Year → 3 Year</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="col-12 col-sm-4 d-grid">
+                <button
+                  className="btn btn-danger btn-sm bg-gradient shadow-sm fw-semibold"
+                  onClick={() => {
+                    ChangeDeleteThirdYear(3);
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center gap-2">
+                    <RiDeleteBin2Line /> <span>Delete 3rd Year</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="container mb-5">
+            <div className="row g-3 justify-content-center">
+              <div className="col-12 col-sm-4 d-grid">
+                <button
+                  className="btn btn-success btn-sm bg-gradient shadow-sm fw-semibold"
+                  onClick={() => {
+                    ChangeDeleteThirdYear(1);
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center gap-2">
+                    <FaRotate />
+                    <span>1 Year → 2 Year</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="col-12 col-sm-4 d-grid">
+                <button
+                  className="btn btn-danger btn-sm bg-gradient shadow-sm fw-semibold"
+                  onClick={() => {
+                    ChangeDeleteThirdYear(2);
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center gap-2">
+                    <RiDeleteBin2Line /> <span>Delete 2rd Year</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
           const studentsOfYear = studentState.filter(
             (std) => Number(std.year) == year
@@ -365,9 +559,15 @@ const StudentList = () => {
               </div>
             </div>
           ) : (
-            <p key={year} className="text-center fw-semibold">
-              No Students Year {year}
-            </p>
+            <div
+              key={year}
+              className="alert alert-warning d-flex align-items-center justify-content-center gap-2 text-dark fw-semibold shadow-sm border-0 rounded-3 text-center"
+              role="alert"
+            >
+              <span style={{ letterSpacing: "1.5px" }}>
+                No students found for <strong>Year {year}</strong>
+              </span>
+            </div>
           );
         })}
       </div>
