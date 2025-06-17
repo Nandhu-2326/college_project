@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { db } from "../Database";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { FaPenAlt } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 const StaffSubjects = () => {
   const nav = useNavigate();
   const [StaffData, setStaffData] = useState({});
   const [STsubject, setSTsubject] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const SendValue = (value) => {
     console.log(value);
     sessionStorage.setItem("Subject", JSON.stringify(value));
@@ -33,6 +35,21 @@ const StaffSubjects = () => {
       getSTubject(StaffData.id);
     }
   }, [StaffData]);
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000); // 1 second
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <div className="text-center mt-5">
+          <ClipLoader size={60} color="#0000FF" />
+          <p className="text-primary mt-3 fw-bold">Loading Subjects...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">

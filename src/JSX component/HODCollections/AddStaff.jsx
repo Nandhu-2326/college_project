@@ -4,7 +4,16 @@ import { FaUser } from "react-icons/fa";
 import { FaUserLock } from "react-icons/fa6";
 import { InformationError, UserAdd, showWarning } from "../SweetAlert";
 import { db } from "../Database";
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -79,16 +88,30 @@ const AddStaff = () => {
       showWarning("Please Fill All Fields");
     } else {
       try {
-        setisloading(true);
-        await addDoc(collection(db, "Allstaffs"), {
-          staffName: state.staffName,
-          UserName: state.UserName,
-          Password: state.Password,
-          DepartmentCode: DepartmentCode,
-        });
-        toast.success("Staff Saved");
-        setisloading(false);
-        nav("/HODLayout/StaffDetails");
+        const AnalysisData = query(
+          collection(db, "Allstaffs"),
+          where("Password", "==", state.Password),
+          where("UserName", "==", state.UserName)
+        );
+
+        const dataFetch = await getDocs(AnalysisData);
+
+        if (dataFetch.empty) {
+          // No duplicate found, safe to add
+          setisloading(true);
+          await addDoc(collection(db, "Allstaffs"), {
+            staffName: state.staffName,
+            UserName: state.UserName,
+            Password: state.Password,
+            DepartmentCode: DepartmentCode,
+          });
+          toast.success("Staff Saved");
+          setisloading(false);
+          nav("/HODLayout/StaffDetails");
+        } else {
+          // Duplicate found
+          toast.error("Username and Password Already Provided");
+        }
       } catch (error) {
         setisloading(false);
         toast.error("Error adding staff");
@@ -102,16 +125,27 @@ const AddStaff = () => {
       showWarning("Please Fill All Fields");
     } else {
       try {
-        setisloading(true);
-        await updateDoc(doc(db, "Allstaffs", staffId), {
-          staffName: state.staffName,
-          UserName: state.UserName,
-          Password: state.Password,
-          DepartmentCode: DepartmentCode,
-        });
-        toast.success("Staff Updated");
-        setisloading(false);
-        nav("/HODLayout/StaffDetails");
+        const AnalysisDataUP = query(
+          collection(db, "Allstaffs"),
+          where("Password", "==", state.Password),
+          where("UserName", "==", state.UserName)
+        );
+
+        const dataFetchUP = await getDocs(AnalysisDataUP);
+        if (dataFetchUP.empty) {
+          setisloading(true);
+          await updateDoc(doc(db, "Allstaffs", staffId), {
+            staffName: state.staffName,
+            UserName: state.UserName,
+            Password: state.Password,
+            DepartmentCode: DepartmentCode,
+          });
+          toast.success("Staff Updated");
+          setisloading(false);
+          nav("/HODLayout/StaffDetails");
+        } else {
+          toast.error("Username and Password Already Provided");
+        }
       } catch (error) {
         setisloading(false);
         toast.error("Error updating staff");
@@ -127,6 +161,7 @@ const AddStaff = () => {
         <p className="fw-semibold m-0">HOD: {HODName}</p>
         <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
       </div>
+
       <div className="container  d-felx  p-3 justify-content-start align-items-center">
         <button
           className="btn text-primary border-0 fs-3"
@@ -137,6 +172,7 @@ const AddStaff = () => {
           <FaArrowLeftLong /> Back
         </button>
       </div>
+
       {/* Main Card */}
       <div className="d-flex mt-4 justify-content-center align-items-center mb-5">
         <div className="card shadow-lg rounded-4" style={{ width: "500px" }}>
@@ -190,7 +226,11 @@ const AddStaff = () => {
                           {icon}
                         </span>
                         <input
-                          type={fieldName === "Password" && eyeNumber == 1 ? "password" : "text"}
+                          type={
+                            fieldName === "Password" && eyeNumber == 1
+                              ? "password"
+                              : "text"
+                          }
                           className="form-control"
                           placeholder={placeholder}
                           name={fieldName}
@@ -208,9 +248,20 @@ const AddStaff = () => {
                                 <button
                                   key={nums}
                                   className="input-group-text btn btn-primary"
-                                
                                 >
-                                  {nums === 1 ? <IoEyeOffSharp   onClick={ ()=>{ seteyeNumber(2) }}/> : <IoMdEye   onClick={ ()=>{ seteyeNumber(1) }}/>}
+                                  {nums === 1 ? (
+                                    <IoEyeOffSharp
+                                      onClick={() => {
+                                        seteyeNumber(2);
+                                      }}
+                                    />
+                                  ) : (
+                                    <IoMdEye
+                                      onClick={() => {
+                                        seteyeNumber(1);
+                                      }}
+                                    />
+                                  )}
                                 </button>
                               );
                             })

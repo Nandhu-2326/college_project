@@ -13,6 +13,7 @@ import { RiDeleteBin3Fill } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SubjectAlert = () => {
   const [isLoading, setisLoading] = useState(false);
@@ -78,7 +79,6 @@ const SubjectAlert = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, stateObject);
-  console.log(state);
   const AddStaffData = async () => {
     if (
       !state.subject ||
@@ -132,11 +132,21 @@ const SubjectAlert = () => {
     }
   }, [id]);
 
-  const DeletSubject = async (idDel) => {
+  const DeletSubject = async (idDel, subject) => {
     try {
-      await deleteDoc(doc(db, "Allstaffs", id, "subject", idDel));
-      toast.success("Subject deleted!");
-      fetchSavedSubjects();
+      Swal.fire({
+        title: "Are you sure?",
+        text: `${subject} Will be Removed.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteDoc(doc(db, "Allstaffs", id, "subject", idDel));
+          fetchSavedSubjects();
+          toast.success(`${subject} is Deleted `);
+        }
+      });
     } catch (e) {
       toast.error(e.message);
     }
@@ -350,7 +360,9 @@ const SubjectAlert = () => {
 
                             <td>
                               <RiDeleteBin3Fill
-                                onClick={() => DeletSubject(value.id)}
+                                onClick={() =>
+                                  DeletSubject(value.id, value.subject)
+                                }
                                 style={{
                                   cursor: "pointer",
                                   color: "#dc3545",

@@ -114,11 +114,11 @@ const StudentList = () => {
 
   const [state, dispatch1] = useReducer(UpdateReducer, UpdateObject);
 
-  function formatDateForInput(dateStr) {
-    if (!dateStr) return "";
-    const [day, month, year] = dateStr.split("-");
-    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-  }
+  // function formatDateForInput(dateStr) {
+  //   if (!dateStr) return "";
+  //   const [day, month, year] = dateStr.split("-");
+  //   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  // }
 
   const handleShowModal = async (idSt) => {
     setShowModal(true);
@@ -133,16 +133,20 @@ const StudentList = () => {
     }
   };
 
+  function formatDateForInput(dateStr) {
+    if (!dateStr || !dateStr.includes("-")) return "";
+    const parts = dateStr.split("-");
+    if (parts[0].length === 4) {
+      return dateStr;
+    }
+    const [day, month, year] = parts;
+    return `${year}-${month}-${day}`;
+  }
+
   function formatDateForSaving(dateStr) {
     if (!dateStr || !dateStr.includes("-")) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}-${month}-${year}`;
-  }
-
-  function formatDateForInput(dateStr) {
-    if (!dateStr || !dateStr.includes("-")) return "";
-    const [day, month, year] = dateStr.split("-");
-    return `${year}-${month}-${day}`;
   }
 
   const handleCloseModal = () => setShowModal(false);
@@ -608,50 +612,51 @@ const StudentList = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {inputFields.map((field, index) => (
-  <div key={index} className="mb-3">
-    <label
-      htmlFor={field.name}
-      className="form-label text-uppercase"
-      style={{ letterSpacing: "2px" }}
-    >
-      {field.label}
-    </label>
-    <input
-      type={
-        field.name === "yearUP"
-          ? "number"
-          : field.name === "dobUP"
-          ? "date"
-          : "text"
-      }
-      id={field.name}
-      name={field.name}
-      className="form-control"
-      value={
-        field.name === "dobUP"
-          ? formatDateForInput(state[field.name])
-          : state[field.name]
-      }
-      min={field.name === "yearUP" ? 1 : undefined}
-      max={field.name === "yearUP" ? 3 : undefined}
-      onChange={(e) => {
-        let value = e.target.value;
+          {inputFields.map((field, index) => (
+            <div key={index} className="mb-3">
+              <label
+                htmlFor={field.name}
+                className="form-label text-uppercase"
+                style={{ letterSpacing: "2px" }}
+              >
+                {field.label}
+              </label>
+              <input
+                type={
+                  field.name === "yearUP"
+                    ? "number"
+                    : field.name === "dobUP"
+                    ? "date"
+                    : "text"
+                }
+                id={field.name}
+                name={field.name}
+                className="form-control"
+                value={
+                  field.name === "dobUP"
+                    ? formatDateForInput(state[field.name])
+                    : state[field.name]
+                }
+                min={field.name === "yearUP" ? 1 : undefined}
+                max={field.name === "yearUP" ? 3 : undefined}
+                onChange={(e) => {
+                  let value = e.target.value;
 
-        if (field.name === "dobUP") {
-          value = formatDateForSaving(value); // Convert to dd-MM-yyyy
-        } else if (["rollnoUP", "classUP"].includes(field.name)) {
-          value = value.toUpperCase();
-        } else if (["ugorpgUP", "activeUP", "rsUP"].includes(field.name)) {
-          value = value.toLowerCase();
-        }
+                  if (field.name === "dobUP") {
+                    value = formatDateForSaving(value); // save as DD-MM-YYYY
+                  } else if (["rollnoUP", "classUP"].includes(field.name)) {
+                    value = value.toUpperCase();
+                  } else if (
+                    ["ugorpgUP", "activeUP", "rsUP"].includes(field.name)
+                  ) {
+                    value = value.toLowerCase();
+                  }
 
-        dispatch1({ field: field.name, value });
-      }}
-    />
-  </div>
-))}
-
+                  dispatch1({ field: field.name, value });
+                }}
+              />
+            </div>
+          ))}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

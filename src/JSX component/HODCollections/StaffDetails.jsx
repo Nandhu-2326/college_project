@@ -14,7 +14,8 @@ import { FcDeleteDatabase } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { IoPersonAdd } from "react-icons/io5";
 import { FaUsersGear } from "react-icons/fa6";
-import { Atom } from "react-loading-indicators";
+import Swal from "sweetalert2";
+import { HashLoader } from "react-spinners";
 
 const StaffDetails = () => {
   const nav = useNavigate();
@@ -42,10 +43,49 @@ const StaffDetails = () => {
     }));
     setStaffData(filteredStaff);
   };
+  const DeletStaffAlert = (id, stName) => {
+    Swal.fire({
+      title: "Delete Staff?",
+      html: `<div style="font-size: 1.1rem">
+               Are you sure you want to remove <strong>${stName}</strong>?
+             </div>`,
+      iconHtml: "🗑️",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "No, Cancel",
+      confirmButtonColor: "#e74c3c",
+      cancelButtonColor: "#3498db",
+      background: "#fefefe",
+      backdrop: `
+        rgba(0,0,0,0.4)
+        left top
+        no-repeat
+      `,
+      customClass: {
+        popup: "animated fadeInDown faster",
+        title: "text-danger fw-bold",
+        confirmButton: "px-4 py-2",
+        cancelButton: "px-4 py-2",
+      },
+      reverseButtons: true,
+      focusCancel: true,
+      showClass: {
+        popup: "swal2-show animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "swal2-hide animate__animated animate__fadeOutUp",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        DeleteStaff(id, stName);
+      }
+    });
+  };
 
-  const DeleteStaff = async (staffid) => {
+  const DeleteStaff = async (staffid, stName) => {
     await deleteDoc(doc(db, "Allstaffs", staffid));
-    toast.success("Staff Deleted");
+    toast.success(`${stName} has been permanently removed.`);
     getDataFromAllstaffs();
   };
 
@@ -85,7 +125,7 @@ const StaffDetails = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageLoad(false);
-    }, 1500);
+    }, 2500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -96,7 +136,7 @@ const StaffDetails = () => {
         className="d-flex justify-content-center align-items-center"
         style={{ height: "75vh" }}
       >
-        <Atom color="#061bff" size="large" text="" textColor="" />
+        <HashLoader color="#1e90ff" size={75} />
       </div>
     );
   }
@@ -110,13 +150,21 @@ const StaffDetails = () => {
       </div>
 
       <div className="container mt-4">
-        <div className="d-flex flex-column align-items-center mb-2">
-          <h1 className="h3 text-uppercase text-primary fw-semibold mb-1">
+        <div className="d-flex flex-column align-items-center mb-4">
+          <h1
+            className="display-6 fw-bold text-uppercase text-primary mb-2"
+            style={{ letterSpacing: "1px" }}
+          >
             View Staff
           </h1>
-          <h6 className="text-uppercase text-primary fw-semibold mb-0">
-            with Alert Subject
-          </h6>
+          <div className="bg-light px-4 py-1 rounded shadow-sm">
+            <h6
+              className="text-uppercase text-center text-dark fw-semibold mb-0"
+              style={{ letterSpacing: "1px" }}
+            >
+              With Assigned Subject Alerts
+            </h6>
+          </div>
         </div>
 
         <div className="container py-4">
@@ -211,7 +259,9 @@ const StaffDetails = () => {
                     <td>
                       <button
                         className="btn btn-outline-danger"
-                        onClick={() => DeleteStaff(value.id)}
+                        onClick={() =>
+                          DeletStaffAlert(value.id, value.staffName)
+                        }
                         title="Delete Staff"
                       >
                         <FcDeleteDatabase size={22} />
