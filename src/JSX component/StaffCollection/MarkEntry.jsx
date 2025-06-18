@@ -277,6 +277,7 @@ const MarkEntry = () => {
           mark1: dbmark1,
           mark2: dbmark2,
           markState: "true",
+          TorL : selectedSubject.TorL
         });
         toast.dismiss();
         toast.success("Mark Successfully Complited");
@@ -360,6 +361,8 @@ const MarkEntry = () => {
           Assignment: dbAssignment,
           Seminar: dbSeminar,
           markState: "true",
+          TorL : selectedSubject.TorL
+
         });
         toast.dismiss();
         for (let ObjectRender in initialize) {
@@ -910,6 +913,8 @@ const MarkEntry = () => {
         Observation: labMarkObservation,
         Totalmark: TotalMark,
         markState: "true",
+        TorL : selectedSubject.TorL
+
       });
       toast.dismiss();
       toast.success("Mark Successfully Upload");

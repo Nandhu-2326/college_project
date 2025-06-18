@@ -15,6 +15,7 @@
     "@mui/material": "^7.1.0",
     "bootstrap": "^5.3.5",
     "firebase": "^11.6.1",
+    "html2pdf.js": "^0.10.3",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
