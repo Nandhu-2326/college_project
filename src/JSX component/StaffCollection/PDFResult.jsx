@@ -307,6 +307,15 @@ const PDFResult = () => {
             </tbody>
           </table>
         </div>
+        
+        <div className="mt-5">
+              <div className="row">
+                <div className="col-4">PRINCIPAL</div>
+                <div className="col-4 text-center">HOD </div>
+                <div className="col-4 text-end">STAFF</div>
+              </div>
+        </div>
+
       </div>
     </>
   );
