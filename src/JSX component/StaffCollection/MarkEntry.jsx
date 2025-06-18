@@ -9,13 +9,15 @@ import {
   where,
   getDoc,
   updateDoc,
-  orderBy,
 } from "firebase/firestore";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-// import "animate.css";
+import { TiTick } from "react-icons/ti";
+import { RiUserSearchLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const MarkEntry = () => {
   //
@@ -32,8 +34,11 @@ const MarkEntry = () => {
     };
     loadInitialData();
   }, []);
+  // search state
+  const [searchTerm, setSearchTerm] = useState("");
 
   // useState
+  const [markedStudents, setMarkedStudents] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [staffData, setStaffData] = useState({});
   const [students, setStudents] = useState([]);
@@ -121,9 +126,8 @@ const MarkEntry = () => {
   const [updatestate, updateFun] = useReducer(updateReducer, updateObject);
   const [Labstate, LabFun] = useReducer(LabReducer, LabObject);
   const [LabstateUp, LabFunUp] = useReducer(LabReducerUp, LabObjectUp);
-  // console.log(Labstate);
-  // fetchStudentFromDataBase
 
+  // fetchStudentFromDataBase
   const studentData = async () => {
     if (
       selectedSubject?.department &&
@@ -147,17 +151,49 @@ const MarkEntry = () => {
         const studentList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))
+        }));
         studentList.sort((a, b) =>
           a.rollno.localeCompare(b.rollno, undefined, { numeric: true })
         );
-        console.log(studentList);
+
         setStudents(studentList);
       } else {
         setStudents([]);
       }
     }
   };
+
+  const checkMarkState = async () => {
+    const trueMarkStudents = [];
+
+    for (let student of students) {
+      const subjectDocRef = doc(
+        db,
+        "student",
+        student.id,
+        selectedSubject.semester,
+        selectedSubject.subject
+      );
+
+      const docSnap = await getDoc(subjectDocRef);
+
+      if (docSnap.exists() && docSnap.data().markState == "true") {
+        trueMarkStudents.push(student.id);
+      }
+    }
+
+    setMarkedStudents(trueMarkStudents);
+  };
+
+  useEffect(() => {
+    if (
+      students.length > 0 &&
+      selectedSubject?.semester &&
+      selectedSubject?.subject
+    ) {
+      checkMarkState();
+    }
+  }, [students, selectedSubject]);
 
   useEffect(() => {
     studentData();
@@ -240,6 +276,7 @@ const MarkEntry = () => {
           Seminar: dbSeminar,
           mark1: dbmark1,
           mark2: dbmark2,
+          markState: "true",
         });
         toast.dismiss();
         toast.success("Mark Successfully Complited");
@@ -322,6 +359,7 @@ const MarkEntry = () => {
           NeetMark: NeetMark,
           Assignment: dbAssignment,
           Seminar: dbSeminar,
+          markState: "true",
         });
         toast.dismiss();
         for (let ObjectRender in initialize) {
@@ -334,6 +372,7 @@ const MarkEntry = () => {
       }
     }
     setSelectedStudent("");
+    checkMarkState();
     handleCloseModal();
   };
 
@@ -581,7 +620,7 @@ const MarkEntry = () => {
 
       if (!MarkList) {
         toast.dismiss();
-        toast.error("Please set Mark before viewing the result.");
+        toast.error("Please set Mark After viewing the result.");
         return;
       }
       if (selectedSubject.TorL != "Lab") {
@@ -614,9 +653,13 @@ const MarkEntry = () => {
               <tr><td><b>Internal - II:</b></td><td>${
                 MarkList.mark2 ?? "Absent"
               }</td></tr>
-              <tr><td><b>Internal - III:</b></td><td>${
-                MarkList.mark3 ?? "Absent"
-              }</td></tr>
+             ${
+               StudentDetails.ugorpg == "pg" &&
+               `<tr><td><b>Internal - III:</b></td><td>${
+                 MarkList.mark3 ?? "Absent"
+               }
+              </td></tr>`
+             }
               <tr><td><b>Assignment:</b></td><td>${
                 MarkList.Assignment
               }</td></tr>
@@ -866,9 +909,11 @@ const MarkEntry = () => {
         LabRecord: labMarkRecord,
         Observation: labMarkObservation,
         Totalmark: TotalMark,
+        markState: "true",
       });
       toast.dismiss();
       toast.success("Mark Successfully Upload");
+      checkMarkState();
       setShowModalLab(false);
       setSelectedStudent("");
       for (let LabObjests in LabObject) {
@@ -992,7 +1037,7 @@ const MarkEntry = () => {
       toast.error(e.message);
     }
   };
-
+  const nav = useNavigate();
   return (
     <div className="bg-light min-vh-100">
       {/* Header */}
@@ -1000,7 +1045,18 @@ const MarkEntry = () => {
         <h6 className="mb-0">STAFF: {staffData?.staffName || "N/A"}</h6>
         <h6 className="mb-0">D-Code: {staffData?.DepartmentCode || "N/A"}</h6>
       </header>
-
+      {/* Back Page */}
+      <div className="container  d-felx p-3 justify-content-start align-items-center">
+        <button
+          className="btn text-primary border-0 fs-3"
+          onClick={() => {
+            nav("/StaffLayout/StaffSubjects");
+          }}
+        >
+          <FaArrowLeftLong /> Back
+        </button>
+      </div>
+      
       {/* Title */}
       <div className="text-center my-4">
         <h2 className="text-uppercase text-primary fw-bold">Mark Entry</h2>
@@ -1035,80 +1091,124 @@ const MarkEntry = () => {
         </div>
       </div>
 
+      {/* search with Allresult */}
+      <div className="container">
+        <div className="row d-felx justify-content-sm-around align-items-sm-center">
+          <div className="col-12 col-sm-5 ">
+            <div className="input-group ">
+              <span
+                className="input-group-text fw-bold bg-primary text-light"
+                style={{ fontSize: "20px" }}
+              >
+                <RiUserSearchLine />
+              </span>
+              <input
+                type="search"
+                className="form-control"
+                placeholder="Roll Number"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="col-12 col-sm-6 text-end mt-4 mb-3 mt-sm-0">
+            <button
+              className="btn btn-outline-success"
+              onClick={() => {
+                nav("/StaffLayouT/PDFResult");
+              }}
+            >
+              All Result
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Student List */}
       <div className="container">
-        <h3 className="text-center text-primary text-uppercase mb-4">
+        <h3 className="text-center text-primary text-uppercase mb-4 mt-sm-3">
           Student List
         </h3>
         <div className="row g-4">
           {students.length > 0 ? (
-            students.map((student) => (
-              <div className="col-12 col-md-6 col-lg-4" key={student.id}>
-                <div
-                  className={
-                    student.active
-                      ? "card shadow-sm border-0 h-100"
-                      : "card shadow-sm border-2 border-danger opacity-50 "
-                  }
-                >
-                  <div className="card-header bg-white d-flex justify-content-center align-items-center border-bottom">
+            students
+              .filter((student) =>
+                student.rollno.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((student) => (
+                <div className="col-12 col-md-6 col-lg-4" key={student.id}>
+                  <div
+                    className={
+                      student.active
+                        ? "card shadow-sm border-0 h-100"
+                        : "card shadow-sm border-2 border-danger opacity-50 "
+                    }
+                  >
+                    <div className="card-header bg-white d-flex justify-content-center align-items-center border-bottom">
+                      {!student.active ? (
+                        <h3 className="h5 text-uppercase text-danger ">
+                          Don't Enter Mark
+                        </h3>
+                      ) : (
+                        <div className="w-100">
+                          <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={() => {
+                              ResultAlert(student.id);
+                            }}
+                          >
+                            Result
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="card-body">
+                      <h5 className="card-title text-primary">
+                        {student.Name}
+                      </h5>
+                      <p className="card-text fw-semibold">
+                        Roll No: {student.rollno.toUpperCase()}
+                      </p>
+                      <p className="text-muted fs-5">
+                        Subject: {selectedSubject?.subject}
+                      </p>
+                    </div>
                     {!student.active ? (
-                      <h3 className="h5 text-uppercase text-danger ">
-                        Don't Enter Mark
+                      <h3 className="h3 text-uppercase text-danger text-center">
+                        Non active Student
                       </h3>
                     ) : (
-                      <div className="w-100">
+                      <div className="card-footer bg-white d-flex justify-content-between">
+                        {markedStudents.includes(student.id) ? (
+                          <TiTick color="green" style={{ fontSize: "30px" }} />
+                        ) : (
+                          <button
+                            className="btn btn-success btn-sm px-3"
+                            onClick={() => {
+                              selectedSubject.TorL !== "Lab"
+                                ? handleShowModal(student)
+                                : LabMarkEntry(student);
+                            }}
+                          >
+                            set Mark
+                          </button>
+                        )}
+
                         <button
-                          className="btn btn-sm btn-outline-success"
-                          onClick={() => {
-                            ResultAlert(student.id);
-                          }}
+                          className="btn btn-danger btn-sm px-3"
+                          onClick={() =>
+                            selectedSubject.TorL !== "Lab"
+                              ? UpdateMark(student)
+                              : LabUpdateMark(student)
+                          }
                         >
-                          Result
+                          Edit
                         </button>
                       </div>
                     )}
                   </div>
-                  <div className="card-body">
-                    <h5 className="card-title text-primary">{student.Name}</h5>
-                    <p className="card-text fw-semibold">
-                      Roll No: {student.rollno.toUpperCase()}
-                    </p>
-                    <p className="text-muted fs-5">
-                      Subject: {selectedSubject?.subject}
-                    </p>
-                  </div>
-                  {!student.active ? (
-                    <h3 className="h3 text-uppercase text-danger text-center">
-                      Non active Student
-                    </h3>
-                  ) : (
-                    <div className="card-footer bg-white d-flex justify-content-between">
-                      <button
-                        className="btn btn-success btn-sm px-3"
-                        onClick={() => {
-                          selectedSubject.TorL !== "Lab"
-                            ? handleShowModal(student)
-                            : LabMarkEntry(student);
-                        }}
-                      >
-                        Set Mark
-                      </button>
-                      <button
-                        className="btn btn-danger btn-sm px-3"
-                        onClick={() =>
-                          selectedSubject.TorL !== "Lab"
-                            ? UpdateMark(student)
-                            : LabUpdateMark(student)
-                        }
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <div className="text-center">
               <h5 className="text-secondary">No students found.</h5>

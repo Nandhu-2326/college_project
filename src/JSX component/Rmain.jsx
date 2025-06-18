@@ -7,7 +7,6 @@ import LoginPage from "./StaffCollection/LoginPage";
 import SingleStudent from "./AdminCollections/SingleStudent";
 import MultipleStudentCSV from "./AdminCollections/MultipleStudentCSV";
 import AdminUserDetails from "./AdminCollections/AdminUserDetails";
-import CalculatorPage from "./CalculatorPage";
 import StaffAddorUpdatePage from "./AdminCollections/StaffAddorUpdatePage";
 
 import Departments from "./AdminCollections/Departments";
@@ -20,6 +19,7 @@ import SubjectAlert from "./HODCollections/SubjectAlert";
 import StaffLayout from "./StaffCollection/StaffLayout";
 import StaffSubjects from "./StaffCollection/StaffSubjects";
 import MarkEntry from "./StaffCollection/MarkEntry";
+import PDFResult from "./StaffCollection/PDFResult";
 import StudentCSV from "./HODCollections/StudentCSV";
 import SingleStudentdata from "./HODCollections/SingleStudentdata";
 import StudentList from "./HODCollections/StudentList";
@@ -30,24 +30,22 @@ const Rmain = () => {
         <Routes>
           <Route path="/" element={<FirstPage />} />
 
-          <Route path="/StaffLayout" element={<StaffLayout/> }>
-            <Route index element={ <LoginPage/> } />
-            <Route path="StaffSubjects" element={ <StaffSubjects /> } />
-            <Route path="MarkEntry" element={ <MarkEntry/> } />
+          <Route path="/StaffLayout" element={<StaffLayout />}>
+            <Route index element={<LoginPage />} />
+            <Route path="StaffSubjects" element={<StaffSubjects />} />
+            <Route path="MarkEntry" element={<MarkEntry />} />
+            <Route path="PDFResult" element={ <PDFResult/> } />
           </Route>
-
+    
           <Route path="/HODLayout" element={<HODLayout />}>
             <Route index element={<HOD />} />
-            <Route path="StudentList" element={<StudentList/> } />
+            <Route path="StudentList" element={<StudentList />} />
             <Route path="StaffDetails" element={<StaffDetails />} />
             <Route path="AddStaff" element={<AddStaff />} />
-            <Route path="SubjectAlert" element={<SubjectAlert/>} />
-            <Route path="StudentCSV" element={<StudentCSV/>} />
-            <Route path="StudentCSV" element={<StudentCSV/>} />
-            <Route path="SingleStudentdata" element={<SingleStudentdata/>} />
+            <Route path="SubjectAlert" element={<SubjectAlert />} />
+            <Route path="StudentCSV" element={<StudentCSV />} />
+            <Route path="SingleStudentdata" element={<SingleStudentdata />} />
           </Route>
-
-          <Route path="/CalculatorPage" element={<CalculatorPage />} />
 
           <Route path="/AdminLogin" element={<AdminLogin />} />
 
@@ -62,7 +60,6 @@ const Rmain = () => {
               element={<StaffAddorUpdatePage />}
             />
           </Route>
-          
         </Routes>
       </Router>
     </>

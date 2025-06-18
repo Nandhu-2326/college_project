@@ -9,7 +9,7 @@ const StaffLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1700); // 2s delay
+    const timer = setTimeout(() => setIsLoading(false), 2100); // 2s delay
     return () => clearTimeout(timer);
   }, []);
 

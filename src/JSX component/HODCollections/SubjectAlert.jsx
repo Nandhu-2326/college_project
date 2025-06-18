@@ -101,7 +101,7 @@ const SubjectAlert = () => {
         );
         await setDoc(CreateCollection, {
           subject: state.subject,
-          year: state.year,
+          year: Number(state.year),
           department: state.department,
           class: state.class,
           TorL: state.TorL,

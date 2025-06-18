@@ -23,6 +23,7 @@ const StaffSubjects = () => {
     const stDoc = doc(db, "Allstaffs", id);
     const stCollection = await getDocs(collection(stDoc, "subject"));
     const stData = stCollection.docs.map((doc) => ({
+      id: doc.id,
       ...doc.data(),
     }));
     setSTsubject(stData);
