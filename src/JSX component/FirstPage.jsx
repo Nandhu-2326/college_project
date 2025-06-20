@@ -1,19 +1,39 @@
+import React, { useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 import CollegeLogo from "./CollegeLogo";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
 import Footer from "./Footer";
 import { RiFileList3Line } from "react-icons/ri";
-import { useState } from "react";
 import { db } from "./Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
 
 const FirstPage = () => {
-  const [dob, setDob] = useState();
-  const [rollno, setRollno] = useState();
-  const [sem, setSem] = useState();
-  const [result, setResult] = useState(null);
-  const [student, setStudent] = useState({});
+  const [dob, setDob] = useState("");
+  const [rollno, setRollno] = useState("");
+  const [sem, setSem] = useState("");
+  const [result, setResult] = useState([]);
+  const [student, setStudent] = useState(null);
+
+  const componentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "Mark Statement",
+    removeAfterPrint: true,
+    pageStyle: `
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        table {
+          border-collapse: collapse;
+        }
+      }
+    `,
+  });
 
   const getResult = async () => {
     if (!rollno || !dob || !sem) {
@@ -24,7 +44,7 @@ const FirstPage = () => {
     try {
       const rollQuery = query(
         collection(db, "student"),
-        where("rollno", "==", rollno.trim())
+        where("rollno", "==", rollno.trim().toUpperCase())
       );
       const rollSnap = await getDocs(rollQuery);
 
@@ -57,7 +77,6 @@ const FirstPage = () => {
           id: doc.id,
         }));
         setResult(markData);
-        console.log(markData);
         setStudent(studentData);
         toast.success("Result Found!");
       } else {
@@ -76,7 +95,7 @@ const FirstPage = () => {
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-12 text-center mb-4">
-            <h2 className="fw-bold text-primary">📄 Check Your Result</h2>
+            <h2 className="fw-bold text-primary text-uppercase">View Result</h2>
             <p className="text-muted fs-6">
               Enter your Roll No and DOB to view marks
             </p>
@@ -141,8 +160,8 @@ const FirstPage = () => {
           </div>
         </div>
 
-        {result && student && (
-          <div className="row mt-5">
+        {Array.isArray(result) && result.length > 0 && student && (
+          <div className="row mt-5" ref={componentRef}>
             <div className="col-12 bg-light rounded-4 p-4 shadow-sm">
               <h5 className="text-center text-uppercase text-primary mb-2">
                 {student.Department}
@@ -193,39 +212,48 @@ const FirstPage = () => {
                             : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL != "Lab"
+                          {doc.TorL !== "Lab"
                             ? doc.BothInternal != null
                               ? doc.BothInternal
                               : "Absent"
-                            : doc.AverageMark == null
-                            ? "Absent"
-                            : doc.AverageMark}
+                            : doc.AverageMark != null
+                            ? doc.AverageMark
+                            : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL != "Lab"
+                          {doc.TorL !== "Lab"
                             ? doc.Assignment != null
                               ? doc.Assignment
                               : "Absent"
-                            : doc.LabRecord == null
-                            ? "Absent"
-                            : doc.LabRecord}
+                            : doc.LabRecord != null
+                            ? doc.LabRecord
+                            : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL != "Lab"
+                          {doc.TorL !== "Lab"
                             ? doc.Seminar != null
                               ? doc.Seminar
                               : "Absent"
-                            : doc.Observation == null
-                            ? "Absent"
-                            : doc.Observation}
+                            : doc.Observation != null
+                            ? doc.Observation
+                            : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL != "Lab" ? doc.NeetMark : doc.Totalmark}
+                          {doc.TorL !== "Lab" ? doc.NeetMark : doc.Totalmark}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="d-flex w-100 justify-content-center mb-3">
+                <button
+                  className="btn btn-dark text-uppercase"
+                  style={{ letterSpacing: "2px" }}
+                  onClick={handlePrint}
+                >
+                  PRINT
+                </button>
               </div>
             </div>
           </div>

@@ -10,6 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect, useReducer, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 import { db } from "../Database";
 import { TiTickOutline } from "react-icons/ti";
 import { HiOutlineArchiveBoxXMark } from "react-icons/hi2";
@@ -34,9 +35,12 @@ const studentReducer = (state, action) => {
       return state;
   }
 };
+
 const StudentList = () => {
   const nav = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [showModalWhats, setShowModalWhats] = useState(false);
+  const [WhatsAppsend, setWhatsAppsend] = useState("");
   const [activeStudent, setActiveStudent] = useState([]);
   const [hodData, setHOD] = useState({});
   const [UpDataStid, setUpStudentid] = useState();
@@ -112,13 +116,42 @@ const StudentList = () => {
     [active.field]: active.value,
   });
 
+  const whatsAppMessage = (sendstate, action) => {
+    if (action.nestedField) {
+      return {
+        ...sendstate,
+        [action.field]: {
+          ...(sendstate[action.field] || {}),
+          [action.nestedField]: action.value,
+        },
+      };
+    } else {
+      return {
+        ...sendstate,
+        [action.field]: action.value,
+      };
+    }
+  };
+
   const [state, dispatch1] = useReducer(UpdateReducer, UpdateObject);
 
-  // function formatDateForInput(dateStr) {
-  //   if (!dateStr) return "";
-  //   const [day, month, year] = dateStr.split("-");
-  //   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-  // }
+  const WhatsAppField = {
+    PH: "",
+    Name: "",
+    Department: "",
+    subject1: { sub1: "", mark1: "" },
+    subject2: { sub2: "", mark2: "" },
+    subject3: { sub3: "", mark3: "" },
+    subject4: { sub4: "", mark4: "" },
+    subject5: { sub5: "", mark5: "" },
+    subject6: { sub6: "", mark6: "" },
+    subject7: { sub7: "", mark7: "" },
+    subject8: { sub8: "", mark8: "" },
+    Internal: "",
+    semester: "",
+  };
+
+  const [sendstate, sends] = useReducer(whatsAppMessage, WhatsAppField);
 
   const handleShowModal = async (idSt) => {
     setShowModal(true);
@@ -391,6 +424,64 @@ const StudentList = () => {
     }
   };
 
+  // WhatsApp Section's
+  const handleOpenModalWhats = (student) => {
+    console.log(student.id);
+    setWhatsAppsend(student);
+    sends({ field: "PH", value: student.PH });
+    sends({ field: "Name", value: student.Name });
+    sends({ field: "Department", value: student.Department });
+    setShowModalWhats(true);
+  };
+  console.log(sendstate);
+  const handleCloseModalWhats = () => {
+    setShowModalWhats(false);
+    setWhatsAppsend("");
+  };
+
+  const WhatappMessage = () => {
+    // Validation
+    for (let i = 1; i <= 8; i++) {
+      const subjectKey = `subject${i}`;
+      const markKey = `mark${i}`;
+
+      const subjectObj = sendstate[subjectKey];
+      const mark = Number(subjectObj?.[markKey]);
+
+      if ((isNaN(mark) || mark < 0 || mark > 30)) {
+        return toast.error(`Mark for subject ${i} must be between 0 and 30`);
+      }
+    }
+
+    if (!sendstate.Internal) {
+      return toast.error("Please Select Internal");
+    }
+
+    if (!sendstate.semester) {
+      return toast.error("Please Select Semester");
+    }
+
+    // Create message
+    let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n📅 *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
+
+    for (let i = 1; i <= 8; i++) {
+      const subjectKey = `subject${i}`;
+      const subjectObj = sendstate[subjectKey];
+
+      if (subjectObj?.[`sub${i}`]) {
+        message += `🔸 ${subjectObj[`sub${i}`]}: ${
+          subjectObj[`mark${i}`] || 0
+        }/30\n`;
+      }
+    }
+
+    // Encode and redirect to WhatsApp
+    const encodedMessage = encodeURIComponent(message);
+    const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
+    const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <>
       <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
@@ -535,6 +626,7 @@ const StudentList = () => {
                       <th>Name</th>
                       <th>Class</th>
                       <th>Year</th>
+                      <th>WhatApp</th>
                       <th>Update</th>
                       <th>Change Active</th>
                       <th>Status</th>
@@ -556,6 +648,14 @@ const StudentList = () => {
                         <td>{student.Name}</td>
                         <td>{student.class}</td>
                         <td>{student.year}</td>
+                        <td className="">
+                          <button
+                            className="btn btn-outline-success"
+                            onClick={() => handleOpenModalWhats(student)}
+                          >
+                            <FaWhatsapp />
+                          </button>
+                        </td>
                         <td>
                           <button
                             className="btn btn-outline-success"
@@ -663,6 +763,131 @@ const StudentList = () => {
             Cancel
           </Button>
           <Button variant="primary" onClick={UpdateAllDetails}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModalWhats} onHide={handleCloseModalWhats}>
+        <Modal.Header closeButton className="bg-primary text-light">
+          <Modal.Title className="text-uppercase text-center">
+            <FaWhatsapp /> Internal Mark send Parents
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Modal.Body>
+            {[
+              { label: "Phone Number", value: sendstate.PH },
+              { label: "Name", value: sendstate.Name },
+              { label: "Department", value: sendstate.Department },
+            ].map((field, index) => (
+              <div key={index} className="mb-3">
+                <label className="form-label text-uppercase">
+                  {field.label}
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={field.value}
+                  onChange={(e) =>
+                    sends({
+                      field:
+                        field.label === "Phone Number" ? "PH" : field.label,
+                      value: e.target.value,
+                    })
+                  }
+                  disabled
+                />
+              </div>
+            ))}
+
+            <select
+              name=""
+              id=""
+              onChange={(e) => {
+                sends({ field: "Internal", value: e.target.value });
+              }}
+              className="form-select my-4"
+            >
+              <option value="">select Internal</option>
+              <option value="Internal_1">Internal - 1</option>
+              <option value="Internal_2">Internal - 2</option>
+              {ugorpg == "pg" && (
+                <option value="Internal_3">Internal - 3</option>
+              )}
+            </select>
+            {(() => {
+              const options = [];
+              for (let i = 1; i <= 6; i++) {
+                const sem = `semester${i}`;
+                options.push(
+                  <option key={sem} value={sem}>
+                    {sem}
+                  </option>
+                );
+              }
+              return (
+                <select
+                  className="form-select my-4"
+                  onChange={(e) => {
+                    sends({ field: "semester", value: e.target.value });
+                  }}
+                >
+                  {options}
+                </select>
+              );
+            })()}
+
+            {Array.from({ length: 8 }, (_, i) => {
+              const index = i + 1;
+              const subjectKey = `subject${index}`;
+              const subField = `sub${index}`;
+              const markField = `mark${index}`;
+
+              const subject = sendstate[subjectKey] || {
+                [subField]: "",
+                [markField]: "",
+              };
+
+              return (
+                <div className="input-group my-4" key={index}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder={`Subject - ${index}`}
+                    value={subject[subField]}
+                    onChange={(e) =>
+                      sends({
+                        field: subjectKey,
+                        nestedField: subField,
+                        value: e.target.value,
+                      })
+                    }
+                  />
+                  <span className="input-group-text" style={{ width: "90px" }}>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={subject[markField]}
+                      onChange={(e) =>
+                        sends({
+                          field: subjectKey,
+                          nestedField: markField,
+                          value: e.target.value,
+                        })
+                      }
+                    />
+                  </span>
+                </div>
+              );
+            })}
+          </Modal.Body>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModalWhats}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={WhatappMessage}>
             Submit
           </Button>
         </Modal.Footer>

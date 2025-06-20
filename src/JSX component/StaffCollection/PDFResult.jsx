@@ -310,9 +310,9 @@ const PDFResult = () => {
         
         <div className="mt-5">
               <div className="row">
-                <div className="col-4">PRINCIPAL</div>
-                <div className="col-4 text-center">HOD </div>
                 <div className="col-4 text-end">STAFF</div>
+                <div className="col-4 text-center">HOD </div>
+                <div className="col-4">PRINCIPAL</div>
               </div>
         </div>
 
