@@ -362,7 +362,6 @@ const MarkEntry = () => {
           Seminar: dbSeminar,
           markState: "true",
           TorL : selectedSubject.TorL
-
         });
         toast.dismiss();
         for (let ObjectRender in initialize) {
@@ -673,10 +672,10 @@ const MarkEntry = () => {
             <h4>📊 Calculated Marks</h4>
             <table style="width: 100%; line-height: 1.8;">
               <tr><td><b>Best Internal - I:</b></td><td>${
-                MarkList.Internal_1Og
+               MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og 
               }</td></tr>
               <tr><td><b>Best Internal - II:</b></td><td>${
-                MarkList.Internal_2Og
+                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
               }</td></tr>
               <tr><td><b>Both Internals Avg:</b></td><td>${
                 MarkList.BothInternal
@@ -730,9 +729,7 @@ const MarkEntry = () => {
                 MarkList.mark2 ?? "Absent"
               }</td></tr>
               <tr><td><b>Internal - III:</b></td><td>${
-                StudentDetails.ugorpg == "pg"
-                  ? MarkList.mark3 ?? "Absent"
-                  : "---"
+                StudentDetails.ugorpg == "pg" && MarkList.mark3 
               }</td></tr>
               <tr><td><b>Assignment:</b></td><td>${
                 MarkList.Assignment
@@ -744,10 +741,10 @@ const MarkEntry = () => {
             <h4>📊 Calculated Marks</h4>
             <table style="width: 100%; line-height: 1.8;">
               <tr><td><b>Best Internal - I:</b></td><td>${
-                MarkList.Internal_1Og
+                MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
               }</td></tr>
               <tr><td><b>Best Internal - II:</b></td><td>${
-                MarkList.Internal_2Og
+                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
               }</td></tr>
               <tr><td><b>Both Internals Avg:</b></td><td>${
                 MarkList.BothInternal
@@ -1003,7 +1000,7 @@ const MarkEntry = () => {
         LabstateUp.Observation < 0 ||
         LabstateUp.Observation > 5
       ) {
-        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+        return toast.error("LabeRecord and Observation Max Mark of 5");
       }
       toast.loading("Please Wait");
       const labMark1 =

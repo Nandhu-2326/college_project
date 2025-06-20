@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { PiStudentDuotone } from "react-icons/pi";
 import { CiCalendarDate } from "react-icons/ci";
+import { MdPermPhoneMsg } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const SingleStudentdata = () => {
   const nav = useNavigate();
@@ -23,6 +25,7 @@ const SingleStudentdata = () => {
   const [DepartmentData, setDepartmentData] = useState([]);
   const [Actives, setActives] = useState(true);
   const [Dob, setDob] = useState();
+  const [PNumber, setPNumber] = useState();
   // console.log(Dob);
   const loading = () => {
     Swal.fire({
@@ -70,10 +73,20 @@ const SingleStudentdata = () => {
       !rs ||
       !Name ||
       !Actives ||
-      !Dob
+      !Dob ||
+      !PNumber
     ) {
-      InformationError();
+     return InformationError();
     } else {
+      if(!PNumber)
+      {
+        return toast.error("Phone Number Not")
+      }
+      else if(PNumber.length > 10 || PNumber.length < 10)
+      {
+        return toast.error("10 Digite Only")
+      }
+    
       console.log(Actives);
       loading();
       await addDoc(collection(db, "student"), {
@@ -86,6 +99,7 @@ const SingleStudentdata = () => {
         year: Number(Year),
         active: Boolean(Actives),
         dob: Dob,
+        PH : PNumber
       });
       setRollno("");
       setDepartment("");
@@ -96,6 +110,7 @@ const SingleStudentdata = () => {
       setYear("");
       setActives("");
       setDob("");
+      setPNumber("")
       success();
     }
   };
@@ -299,6 +314,24 @@ const SingleStudentdata = () => {
                   className="form-control"
                   onChange={(e) => {
                     setDob(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Parent Phone Number
+              </label>
+              <div className="input-group">
+                <span className="input-group-text bg-primary text-white">
+                  <MdPermPhoneMsg />
+                </span>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Phone Number"
+                  onChange={(e) => {
+                    setPNumber(e.target.value);
                   }}
                 />
               </div>

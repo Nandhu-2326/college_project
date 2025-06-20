@@ -98,6 +98,7 @@ const StudentList = () => {
     yearUP: "",
     classUP: "",
     dobUP: "",
+    PH: "",
   };
 
   const inputFields = [
@@ -109,6 +110,7 @@ const StudentList = () => {
     { label: "Year", name: "yearUP" },
     { label: "Class", name: "classUP" },
     { label: "Dob", name: "dobUP" },
+    { label: "Phone Number", name: "PH" },
   ];
 
   const UpdateReducer = (state, active) => ({
@@ -182,7 +184,12 @@ const StudentList = () => {
     return `${day}-${month}-${year}`;
   }
 
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    for (let Obs in UpdateObject) {
+      dispatch1({ field: Obs, value: "" });
+    }
+  };
 
   const viewStudent = async (idSt) => {
     toast.loading("Please Wait");
@@ -289,7 +296,8 @@ const StudentList = () => {
       !state.yearUP ||
       !state.rsUP ||
       !state.classUP ||
-      !state.dobUP
+      !state.dobUP ||
+      !state.PH
     ) {
       toast.error("Please fill all fields");
       return;
@@ -316,6 +324,13 @@ const StudentList = () => {
       return;
     }
 
+    if (!state.PH) {
+      return toast.error("Please Enter Phone Number");
+    }
+    if (state.PH.length > 10 || state.PH.length < 10) {
+      return toast.error("Max 10 Digite ");
+    }
+
     try {
       toast.loading("Updating...");
       await updateDoc(doc(db, "student", UpDataStid), {
@@ -327,6 +342,7 @@ const StudentList = () => {
         class: state.classUP.toUpperCase(),
         rs: state.rsUP.toLowerCase(),
         dob: state.dobUP,
+        PH: state.PH,
       });
       fetchStudents();
       toast.dismiss();
@@ -433,7 +449,7 @@ const StudentList = () => {
     sends({ field: "Department", value: student.Department });
     setShowModalWhats(true);
   };
-  console.log(sendstate);
+
   const handleCloseModalWhats = () => {
     setShowModalWhats(false);
     setWhatsAppsend("");
@@ -448,7 +464,7 @@ const StudentList = () => {
       const subjectObj = sendstate[subjectKey];
       const mark = Number(subjectObj?.[markKey]);
 
-      if ((isNaN(mark) || mark < 0 || mark > 30)) {
+      if (isNaN(mark) || mark < 0 || mark > 30) {
         return toast.error(`Mark for subject ${i} must be between 0 and 30`);
       }
     }
@@ -462,24 +478,28 @@ const StudentList = () => {
     }
 
     // Create message
-    let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n📅 *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
+    if (sendstate.PH) {
+      let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n📅 *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
 
-    for (let i = 1; i <= 8; i++) {
-      const subjectKey = `subject${i}`;
-      const subjectObj = sendstate[subjectKey];
+      for (let i = 1; i <= 8; i++) {
+        const subjectKey = `subject${i}`;
+        const subjectObj = sendstate[subjectKey];
 
-      if (subjectObj?.[`sub${i}`]) {
-        message += `🔸 ${subjectObj[`sub${i}`]}: ${
-          subjectObj[`mark${i}`] || 0
-        }/30\n`;
+        if (subjectObj?.[`sub${i}`]) {
+          message += `🔸 ${subjectObj[`sub${i}`]}: ${
+            subjectObj[`mark${i}`] || 0
+          }/30\n`;
+        }
       }
-    }
 
-    // Encode and redirect to WhatsApp
-    const encodedMessage = encodeURIComponent(message);
-    const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
-    const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
-    window.open(url, "_blank");
+      // Encode and redirect to WhatsApp
+      const encodedMessage = encodeURIComponent(message);
+      const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
+      const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
+      window.open(url, "_blank");
+    } else {
+      toast.error("No Phone Number Please Update Student");
+    }
   };
 
   return (
@@ -723,7 +743,7 @@ const StudentList = () => {
               </label>
               <input
                 type={
-                  field.name === "yearUP"
+                  field.name === "yearUP" || field.PH == "PH"
                     ? "number"
                     : field.name === "dobUP"
                     ? "date"
@@ -833,6 +853,7 @@ const StudentList = () => {
                     sends({ field: "semester", value: e.target.value });
                   }}
                 >
+                  <option value="">--select semester</option>
                   {options}
                 </select>
               );
@@ -887,8 +908,12 @@ const StudentList = () => {
           <Button variant="secondary" onClick={handleCloseModalWhats}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={WhatappMessage}>
-            Submit
+          <Button
+            variant="primary"
+            onClick={WhatappMessage}
+            className="text-uppercase"
+          >
+            <FaWhatsapp /> send
           </Button>
         </Modal.Footer>
       </Modal>
