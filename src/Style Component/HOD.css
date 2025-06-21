@@ -1,0 +1,39 @@
+.topIcons {
+    font-size: 60px;
+    color: rgb(50, 59, 189);
+    background: white;
+    border-radius: 50%;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .h5 {
+    color: rgb(0, 38, 252);
+  }
+
+  .eye{
+    color: rgb(100, 107, 114);
+  }
+  
+  .card {
+    border: none;
+    box-shadow: 0 0 20px 10px white;
+    top: 35px;
+  
+    /* Blur effect */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .HOD {
+    height: 100vh;
+    background-image: url(/books.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    /* background: linear-gradient(rgb(212, 212, 243), rgb(145, 165, 145), rgb(255, 255, 57)); */
+  }
+  

@@ -8,6 +8,7 @@ import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
+// import "./HOD.css"; // Make sure this line exists if styles are in a separate CSS file
 
 const HOD = () => {
   const nav = useNavigate();
@@ -47,76 +48,70 @@ const HOD = () => {
   };
 
   return (
-    <div className="HOD">
+    <div className="HOD mt-0">
       <div className="container mb-5 hod-bg">
-        {/* Login Form */}
-        <div className="row justify-content-center mt-3 ">
-          <div className="col-12 text-center mb-4">
-            <h2
-              className="fw-bold text-primary text-uppercase"
-              style={{ letterSpacing: "2px" }}
-            >
-              HOD Login
-            </h2>
-            <p
-              className="text-primary text-uppercase fw-semibold"
-              style={{ letterSpacing: "1px" }}
-            >
-              Enter your Username and Password
-            </p>
-          </div>
+        <div className="row justify-content-center ">
+          <div className="col-12 col-md-6 col-lg-5 mt-4">
+            <div className="card shadow-sm position-relative pt-5">
+              {/* Floating Circle Icon */}
+              <FaUserCircle className="position-absolute top-0 start-50 translate-middle topIcons z-1" />
 
-          <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4  rounded">
-            <div className="d-flex flex-column gap-4 hod-card">
-              {/* Username */}
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUserCircle />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border border-primary"
-                  placeholder="Username"
-                  onChange={(e) => SetUserName(e.target.value)}
-                />
-              </div>
-
-              {/* Password */}
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <RiLockPasswordFill />
-                </span>
-                <input
-                  type={PasswordEye ? "password" : "text"}
-                  className="form-control border border-primary"
-                  placeholder="Password"
-                  onChange={(e) => SetPassword(e.target.value)}
-                />
-                <span
-                  className="input-group-text bg-primary text-light"
-                  style={{ cursor: "pointer" }}
+              <div className="card-header text-center ">
+                <h4
+                  className="fw-bold text-light h5 text-uppercase"
+                  style={{ letterSpacing: "1.5px" }}
                 >
-                  {PasswordEye ? (
-                    <FaEyeSlash onClick={() => SetPasswordEye(false)} />
-                  ) : (
-                    <FaRegEye onClick={() => SetPasswordEye(true)} />
-                  )}
-                </span>
+                  HOD Login
+                </h4>
               </div>
 
-              {/* Login Button */}
-              <button className="btn btn-primary fw-bold py-1" onClick={login}>
-                {isloading ? (
-                  <ThreeDot
-                    color="#ffffff"
-                    size="medium"
-                    text=""
-                    textColor=""
+              <div className="card-body d-flex flex-column gap-4">
+                {/* Username */}
+                <div className="input-group">
+                  <span className="input-group-text bg-primary border-0 text-white">
+                    <FaUserCircle />
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control border border-primary"
+                    placeholder="Username"
+                    onChange={(e) => SetUserName(e.target.value)}
                   />
-                ) : (
-                  "Login"
-                )}
-              </button>
+                </div>
+
+                {/* Password */}
+                <div className="input-group">
+                  <span className="input-group-text border-0 bg-primary text-white">
+                    <RiLockPasswordFill />
+                  </span>
+                  <input
+                    type={PasswordEye ? "password" : "text"}
+                    className="form-control border border-end-0 border-primary"
+                    placeholder="Password"
+                    onChange={(e) => SetPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text  border-1 bg-white eye border-primary border-start-0 "
+                    style={{ cursor: "pointer" }}
+                    onClick={() => SetPasswordEye(!PasswordEye)}
+                  >
+                    {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
+                  </span>
+                </div>
+              </div>
+
+              <div className="card-footer  border-0 text-center">
+                <button
+                  className="btn btn-primary text-uppercase fw-bold w-100 py-2"
+                  onClick={login}
+                >
+                  {isloading ? (
+                    <ThreeDot color="#ffffff" size="medium" text="" />
+                  ) : (
+                    "Login"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

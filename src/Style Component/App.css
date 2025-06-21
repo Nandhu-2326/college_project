@@ -24,10 +24,11 @@
 }
 /* Footer */
 .footer-glass {
-  background: rgba(255, 255, 255, 0.8); /* Light transparency */
+  /* background: rgba(253, 255, 255, 0.767); Light transparency */
+  background: white;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-top: 2px solid rgba(0, 123, 255, 0.3); /* Primary blue */
+  border-top: 2px solid rgba(0, 123, 255, 0.3); 
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   padding: 0.5rem 1rem;
   transition: background 0.3s ease-in-out;

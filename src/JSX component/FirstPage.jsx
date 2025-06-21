@@ -99,7 +99,7 @@ const FirstPage = () => {
       <div
         className="container-fluid  min-vh-100 "
         style={{
-          backgroundImage: "url(/campus.jpg)",
+          backgroundImage: "url(/room.jpg)",
           backgroundAttachment: "fixed",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -108,7 +108,10 @@ const FirstPage = () => {
         <div className="row justify-content-center ">
           <div className="col-12 text-center mb-4 mt-2">
             <h2 className="fw-bold text-light text-uppercase">View Result</h2>
-            <p className="text-light fw-semibold fs-6">
+            <p
+              className="text-light fw-semibold fs-6 text-uppercase"
+              style={{ letterSpacing: "2px" }}
+            >
               Enter your Roll No and DOB to view marks
             </p>
           </div>
