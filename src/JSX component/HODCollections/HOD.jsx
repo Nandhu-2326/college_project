@@ -48,61 +48,68 @@ const HOD = () => {
   };
 
   return (
-    <div className="HOD mt-0">
+    <div className="HOD ">
       <div className="container mb-5 hod-bg">
         <div className="row justify-content-center ">
           <div className="col-12 col-md-6 col-lg-5 mt-4">
-            <div className="card shadow-sm position-relative pt-5">
+            <div className="card  position-relative pt-5">
               {/* Floating Circle Icon */}
               <FaUserCircle className="position-absolute top-0 start-50 translate-middle topIcons z-1" />
 
-              <div className="card-header text-center ">
+              <div className="card-header border-0 text-center">
                 <h4
-                  className="fw-bold text-light h5 text-uppercase"
+                  className="fw-bold text-dark h5 text-uppercase"
                   style={{ letterSpacing: "1.5px" }}
                 >
                   HOD Login
                 </h4>
               </div>
 
-              <div className="card-body d-flex flex-column gap-4">
+              <div className="card-body d-flex flex-column gap-3">
                 {/* Username */}
+                <label htmlFor="" className="label">
+                  Username
+                </label>
                 <div className="input-group">
-                  <span className="input-group-text bg-primary border-0 text-white">
+                  <span className="input-group-text border icons">
                     <FaUserCircle />
                   </span>
                   <input
                     type="text"
-                    className="form-control border border-primary"
+                    className="form-control "
                     placeholder="Username"
                     onChange={(e) => SetUserName(e.target.value)}
                   />
                 </div>
 
                 {/* Password */}
+                <label htmlFor="" className="label">
+                  Password
+                </label>
                 <div className="input-group">
-                  <span className="input-group-text border-0 bg-primary text-white">
+                  <span className="input-group-text border icons">
                     <RiLockPasswordFill />
                   </span>
                   <input
                     type={PasswordEye ? "password" : "text"}
-                    className="form-control border border-end-0 border-primary"
+                    className="form-control border-end-0"
                     placeholder="Password"
                     onChange={(e) => SetPassword(e.target.value)}
                   />
                   <span
-                    className="input-group-text  border-1 bg-white eye border-primary border-start-0 "
+                    className="input-group-text rounded rounded-start-0 icons "
                     style={{ cursor: "pointer" }}
                     onClick={() => SetPasswordEye(!PasswordEye)}
                   >
                     {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
                   </span>
+                  <p className=""> </p>
                 </div>
               </div>
 
-              <div className="card-footer  border-0 text-center">
+              <div className="card-footer mt-2  border-0 text-center">
                 <button
-                  className="btn btn-primary text-uppercase fw-bold w-100 py-2"
+                  className="rounded logbtn text-uppercase fw-bold w-100 py-2"
                   onClick={login}
                 >
                   {isloading ? (
