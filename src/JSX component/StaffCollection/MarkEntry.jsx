@@ -277,7 +277,7 @@ const MarkEntry = () => {
           mark1: dbmark1,
           mark2: dbmark2,
           markState: "true",
-          TorL : selectedSubject.TorL
+          TorL: selectedSubject.TorL,
         });
         toast.dismiss();
         toast.success("Mark Successfully Complited");
@@ -361,7 +361,7 @@ const MarkEntry = () => {
           Assignment: dbAssignment,
           Seminar: dbSeminar,
           markState: "true",
-          TorL : selectedSubject.TorL
+          TorL: selectedSubject.TorL,
         });
         toast.dismiss();
         for (let ObjectRender in initialize) {
@@ -672,7 +672,7 @@ const MarkEntry = () => {
             <h4>📊 Calculated Marks</h4>
             <table style="width: 100%; line-height: 1.8;">
               <tr><td><b>Best Internal - I:</b></td><td>${
-               MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og 
+                MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
               }</td></tr>
               <tr><td><b>Best Internal - II:</b></td><td>${
                 MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
@@ -729,7 +729,7 @@ const MarkEntry = () => {
                 MarkList.mark2 ?? "Absent"
               }</td></tr>
               <tr><td><b>Internal - III:</b></td><td>${
-                StudentDetails.ugorpg == "pg" && MarkList.mark3 
+                StudentDetails.ugorpg == "pg" && MarkList.mark3
               }</td></tr>
               <tr><td><b>Assignment:</b></td><td>${
                 MarkList.Assignment
@@ -882,7 +882,7 @@ const MarkEntry = () => {
         Labstate.Observation < 0 ||
         Labstate.Observation > 5
       ) {
-        return toast.error("Internal 1 & 2 - 0 between 30 Only ");
+        return toast.error("LabeRecord and Observation Max Mark of 5");
       }
       toast.loading("Please Wait");
       const labMark1 =
@@ -910,8 +910,7 @@ const MarkEntry = () => {
         Observation: labMarkObservation,
         Totalmark: TotalMark,
         markState: "true",
-        TorL : selectedSubject.TorL
-
+        TorL: selectedSubject.TorL,
       });
       toast.dismiss();
       toast.success("Mark Successfully Upload");
@@ -1058,7 +1057,7 @@ const MarkEntry = () => {
           <FaArrowLeftLong /> Back
         </button>
       </div>
-      
+
       {/* Title */}
       <div className="text-center my-4">
         <h2 className="text-uppercase text-primary fw-bold">Mark Entry</h2>
@@ -1117,7 +1116,7 @@ const MarkEntry = () => {
             <button
               className="btn btn-outline-success"
               onClick={() => {
-                nav("/StaffLayouT/PDFResult");
+                nav("/StaffLayout/PDFResult");
               }}
             >
               All Result
@@ -1131,7 +1130,7 @@ const MarkEntry = () => {
         <h3 className="text-center text-primary text-uppercase mb-4 mt-sm-3">
           Student List
         </h3>
-        <div className="row g-4">
+        <div className="row ">
           {students.length > 0 ? (
             students
               .filter((student) =>
@@ -1142,7 +1141,7 @@ const MarkEntry = () => {
                   <div
                     className={
                       student.active
-                        ? "card shadow-sm border-0 h-100"
+                        ? "card shadow-sm border-0 "
                         : "card shadow-sm border-2 border-danger opacity-50 "
                     }
                   >

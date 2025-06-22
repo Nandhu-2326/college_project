@@ -8,7 +8,7 @@ import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
-// import "./HOD.css"; // Make sure this line exists if styles are in a separate CSS file
+import "../Style Component/HOD.css";
 
 const HOD = () => {
   const nav = useNavigate();

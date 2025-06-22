@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
 import CollegeLogo from "../CollegeLogo";
 import Footer from "../Footer";
-// import "./HOD.css"; // Make sure this line exists if styles are in a separate CSS file
+import "../Style Component/HOD.css";
 
 const AdminLogin = () => {
   const nav = useNavigate();

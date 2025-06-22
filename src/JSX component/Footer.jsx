@@ -2,7 +2,7 @@ import { FaUserShield, FaUserTie, FaUserGraduate } from "react-icons/fa6";
 import { ImUserTie } from "react-icons/im";
 import { FcAbout } from "react-icons/fc";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import "../JSX component/Style Component/footer.css";
 const Footer = () => {
   const nav = useNavigate();
   const location = useLocation();
@@ -19,7 +19,16 @@ const Footer = () => {
                 <ImUserTie
                   style={{ fontSize: "30px", cursor: "pointer" }}
                   className={`footer-icon ${
-                    currentPath === "/HODLayout" ? "active-icon" : ""
+                    [
+                      "/HODLayout",
+                      "/HODLayout/StaffDetails",
+                      "/HODLayout/StudentCSV",
+                      "/HODLayout/SingleStudentdata",
+                      "/HODLayout/StudentList",
+                      "/HODLayout/SubjectAlert",
+                    ].includes(currentPath)
+                      ? "active-icon"
+                      : ""
                   }`}
                   onClick={() => nav("/HODLayout")}
                 />
@@ -57,7 +66,15 @@ const Footer = () => {
                 <FaUserTie
                   style={{ fontSize: "30px", cursor: "pointer" }}
                   className={`footer-icon ${
-                    currentPath === "/StaffLayout" ? "active-icon" : ""
+                    [
+                      "/StaffLayout",
+                      "/StaffLayout/LoginPage",
+                      "/StaffLayout/StaffSubjects",
+                      "/StaffLayout/MarkEntry",
+                      "/StaffLayout/PDFResult",
+                    ].includes(currentPath)
+                      ? "active-icon"
+                      : ""
                   }`}
                   onClick={() => nav("/StaffLayout")}
                 />

@@ -8,7 +8,7 @@ import { RiFileList3Line } from "react-icons/ri";
 import { db } from "./Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
-
+import "./Style Component/firstpage.css";
 const FirstPage = () => {
   const [dob, setDob] = useState("");
   const [rollno, setRollno] = useState("");
@@ -42,7 +42,7 @@ const FirstPage = () => {
     }
 
     try {
-      toast.loading("Please Wait");
+      const loading = toast.loading("Please Wait");
       const rollQuery = query(
         collection(db, "student"),
         where("rollno", "==", rollno.trim().toUpperCase())
@@ -50,6 +50,7 @@ const FirstPage = () => {
       const rollSnap = await getDocs(rollQuery);
 
       if (rollSnap.empty) {
+        toast.dismiss(loading);
         toast.error("Roll number not found");
         return;
       }
@@ -66,6 +67,7 @@ const FirstPage = () => {
       const formattedDob = formatDOB(dob);
 
       if (studentData.dob !== formattedDob) {
+        toast.dismiss(loading);
         toast.error("Date of Birth does not match");
         return;
       }
@@ -81,7 +83,7 @@ const FirstPage = () => {
         setResult(markData);
         console.log(markData);
         console.log(studentData);
-        toast.dismiss();
+        toast.dismiss(loading);
         toast.success("Result");
       } else {
         toast.error("This semester has no result");
@@ -96,89 +98,99 @@ const FirstPage = () => {
     <>
       <Toaster position="top-center" />
       <CollegeLogo />
-      <div
-        className="container-fluid  min-vh-100 "
-        style={{
-          backgroundImage: "url(/room.jpg)",
-          backgroundAttachment: "fixed",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-        }}
-      >
-        <div className="row justify-content-center ">
-          <div className="col-12 text-center mb-4 mt-2">
-            <h2 className="fw-bold text-light text-uppercase">View Result</h2>
-            <p
-              className="text-light fw-semibold fs-6 text-uppercase"
-              style={{ letterSpacing: "2px" }}
-            >
-              Enter your Roll No and DOB to view marks
-            </p>
-          </div>
-
-          <div className="col-12 col-md-6 col-lg-4  mt-3 mt-sm-0 rounded-4  p-4">
-            <div className="d-flex flex-column gap-4">
-              <div className="input-group">
-                <span className="input-group-text border-0 bg-primary text-white">
-                  <FaRegUserCircle />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border border-primary"
-                  placeholder="EX: 22UCS138"
-                  onChange={(e) => setRollno(e.target.value)}
-                />
-              </div>
-
-              <div className="input-group">
-                <span className="input-group-text border-0 bg-primary text-white">
-                  <RiFileList3Line />
-                </span>
-                <select
-                  onChange={(e) => setSem(e.target.value)}
-                  className="form-select border border-primary"
+      <div className="container-fluid  min-vh-100 ">
+        <div className="row justify-content-center mt-5">
+          <div className="col-12 col-md-8 col-lg-6">
+            <div className="card shadow rounded-4 border-0">
+              <div className="card-header bg-white border-0 text-center">
+                <h2 className="fw-bold text-dark text-uppercase">
+                  View Result
+                </h2>
+                <p
+                  className="text-secondary fw-semibold fs-6 text-uppercase mb-0"
+                  style={{ letterSpacing: "2px" }}
                 >
-                  <option value="">Select Semester</option>
-                  {[
-                    "semester_1",
-                    "semester_2",
-                    "semester_3",
-                    "semester_4",
-                    "semester_5",
-                    "semester_6",
-                  ].map((value, index) => (
-                    <option key={index} value={value}>
-                      Semester {index + 1}
-                    </option>
-                  ))}
-                </select>
+                  Enter your Roll No and DOB to view marks
+                </p>
               </div>
+              <div className="card-body">
+                <div className="d-flex flex-column gap-4">
+                  {/* Roll No */}
+                  <label htmlFor="" className="label">
+                    Roll Number
+                  </label>
+                  <div className="input-group">
+                    <span className="input-group-text icons">
+                      <FaRegUserCircle />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control "
+                      placeholder="EX: 22UCS138"
+                      onChange={(e) => setRollno(e.target.value)}
+                    />
+                  </div>
 
-              <div className="input-group">
-                <span className="input-group-text border-0 bg-primary text-white">
-                  <CiCalendarDate />
-                </span>
-                <input
-                  type="date"
-                  className="form-control border border-primary"
-                  onChange={(e) => setDob(e.target.value)}
-                />
+                  {/* Semester */}
+                  <label htmlFor="" className="label">
+                    Semester
+                  </label>
+                  <div className="input-group">
+                    <span className="input-group-text icons">
+                      <RiFileList3Line />
+                    </span>
+                    <select
+                      onChange={(e) => setSem(e.target.value)}
+                      className="form-select"
+                    >
+                      <option value="">Select Semester</option>
+                      {[
+                        "semester_1",
+                        "semester_2",
+                        "semester_3",
+                        "semester_4",
+                        "semester_5",
+                        "semester_6",
+                      ].map((value, index) => (
+                        <option key={index} value={value}>
+                          Semester {index + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* DOB */}
+                  <label htmlFor="" className="label">
+                    D.O.B
+                  </label>
+                  <div className="input-group">
+                    <span className="input-group-text icons ">
+                      <CiCalendarDate />
+                    </span>
+                    <input
+                      type="date"
+                      className="form-control "
+                      onChange={(e) => setDob(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Button */}
+                  <button
+                    className="logbtn rounded fw-bold py-2"
+                    onClick={getResult}
+                  >
+                    View Result
+                  </button>
+                </div>
               </div>
-
-              <button
-                className="btn btn-primary fw-bold py-2 mt-2"
-                onClick={getResult}
-              >
-                View Result
-              </button>
             </div>
           </div>
         </div>
 
         {Array.isArray(result) && result.length > 0 && student && (
-          <div className="row mt-5 text-light " ref={componentRef}>
+          <div className="row mt-5 text-dark" ref={componentRef}>
             <div className="col-12  rounded-4 p-4 shadow-sm">
-              <h5 className="text-center text-uppercase  mb-2">
+              <h5 className="text-center text-uppercase fw-bold  mb-2">
                 {student.Department}
               </h5>
               <div className="row mb-3">
@@ -230,7 +242,7 @@ const FirstPage = () => {
                             : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL !== "Lab"
+                          {doc.TorL != "Lab"
                             ? doc.BothInternal != null
                               ? doc.BothInternal
                               : "Absent"
@@ -239,22 +251,22 @@ const FirstPage = () => {
                             : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL !== "Lab"
+                          {doc.TorL != "Lab"
                             ? doc.Assignment != null
                               ? doc.Assignment
                               : "Absent"
                             : doc.LabRecord != null
-                            ? doc.LabRecord
-                            : "Absent"}
+                              ? doc.LabRecord
+                              : "Absent"}
                         </td>
                         <td>
-                          {doc.TorL !== "Lab"
+                          {doc.TorL != "Lab"
                             ? doc.Seminar != null
                               ? doc.Seminar
                               : "Absent"
                             : doc.Observation != null
-                            ? doc.Observation
-                            : "Absent"}
+                              ? doc.Observation
+                              : "Absent"}
                         </td>
                         <td>
                           {doc.TorL !== "Lab" ? doc.NeetMark : doc.Totalmark}

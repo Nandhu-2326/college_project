@@ -1,0 +1,53 @@
+.topIcons {
+    font-size: 60px;
+    color: rgb(50, 59, 189);
+    background: white;
+    border-radius: 50%;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .h5 {
+    color: rgb(0, 38, 252);
+  }
+
+  .eye{
+    color: rgb(100, 107, 114);
+  }
+  
+  .card {
+   margin-top: 50px;
+   margin-bottom: 100px;
+   box-shadow: 5px 4px 5px 1px rgb(184, 184, 184);
+  }
+
+  .HOD{
+    /* background: #000; */
+    height: 100vh;
+  }
+
+  .icons{
+    background: white;
+  }
+  .label
+  {
+    color:rgb(3, 3, 3);
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .logbtn{
+    background-color: rgb(50, 59, 189);
+    color: white;
+    border:none;
+    outline: 1px solid  rgb(50, 59, 189);
+  }
+  .logbtn:hover{
+    color: white;
+    border:none;
+    outline: 1px solid  rgb(40, 60, 219);
+    background-color: rgb(49, 60, 219);
+  }
+/*   */
+  
+
+ 
