@@ -56,11 +56,16 @@ const AdminLogin = () => {
             <div className="col-12 col-md-6 col-lg-5 mt-4  ">
               <div className="card  position-relative pt-5">
                 {/* Floating Circle Icon */}
-                <FaUserCircle className="position-absolute top-0 start-50 translate-middle topIcons z-1" />
+                <img
+                  src="./admin.png"
+                  alt=""
+                  style={{ width: "70px" }}
+                  className="img img-fluid position-absolute top-0 start-50 translate-middle topIcons z-1"
+                />
 
                 <div className="card-header border-0 text-center">
                   <h4
-                    className="fw-bold text-dark h5 text-uppercase"
+                    className="fw-bold label h5 text-uppercase"
                     style={{ letterSpacing: "1.5px" }}
                   >
                     Admin Login
@@ -74,7 +79,12 @@ const AdminLogin = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text border icons">
-                      <FaUserCircle />
+                      <img
+                        src="./profile.png"
+                        style={{ width: "25px" }}
+                        alt=""
+                        className="img-fluid"
+                      />
                     </span>
                     <input
                       type="text"
@@ -90,7 +100,12 @@ const AdminLogin = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text border icons">
-                      <RiLockPasswordFill />
+                      <img
+                        src="./password.png"
+                        style={{ width: "25px" }}
+                        alt=""
+                        className="img-fluid"
+                      />
                     </span>
                     <input
                       type={PasswordEye ? "password" : "text"}

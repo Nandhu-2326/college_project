@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import { MdAdminPanelSettings, MdSchool } from "react-icons/md"; // Material Icons
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { IoIosInformationCircleOutline } from "react-icons/io";
+
 const Footer = () => {
   const nav = useNavigate();
   const location = useLocation();
@@ -43,15 +40,14 @@ const Footer = () => {
   };
 
   const navItems = [
-    { label: "HOD", icon: HiOutlineUserGroup },
-    { label: "Admin", icon: MdAdminPanelSettings },
-    { label: "Student", icon: MdSchool },
-    { label: "Staff", icon: FaChalkboardTeacher },
-    { label: "About", icon: IoIosInformationCircleOutline },
+    { label: "HOD", icon: "/hod.png" },
+    { label: "Admin", icon: "/admin.png" },
+    { label: "Student", icon: "/student.png" },
+    { label: "Staff", icon: "/staff.png" },
+    { label: "About", icon: "/about.png" },
   ];
-
-  const activeColor = ` rgb(50, 59, 189)`; // Dark Blue
-  const defaultColor = "#333";
+  const activeColor = `rgb(50, 59, 189)`; // Dark Blue
+  // const defaultColor = "#333";
 
   return (
     <Paper
@@ -65,6 +61,7 @@ const Footer = () => {
         boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
         zIndex: 2000,
         overflow: "hidden",
+        padding: "10px",
       }}
     >
       <BottomNavigation
@@ -74,7 +71,7 @@ const Footer = () => {
         sx={{
           backgroundColor: "#ffffff",
           "& .MuiBottomNavigationAction-root": {
-            color: defaultColor,
+            // color: defaultColor,
             transition: "all 0.3s ease",
             py: 1.2,
             minWidth: 60,
@@ -98,11 +95,12 @@ const Footer = () => {
             key={item.label}
             label={item.label}
             icon={
-              <item.icon
-                size={value === idx ? 40 : 45}
+              <img
+                src={item.icon}
+                alt={item.label}
                 style={{
-                  color: value === idx ? activeColor : defaultColor,
-                  transform: value === idx ? "scale(1.15)" : "scale(1)",
+                  width: value === idx ? 45 : 28,
+                  height: value === idx ? 45 : 28,
                   transition: "all 0.3s ease",
                 }}
               />
