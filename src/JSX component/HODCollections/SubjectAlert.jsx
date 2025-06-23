@@ -15,6 +15,10 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+// MUI Components
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+
 const SubjectAlert = () => {
   const [isLoading, setisLoading] = useState(false);
   const [StaffData, setStaffData] = useState([]);
@@ -43,7 +47,7 @@ const SubjectAlert = () => {
   const fetchSubjectDepartmentData = async () => {
     const getSub = await getDocs(collection(db, "Subject"));
     const getData = getSub.docs.flatMap((doc) => Object.values(doc.data()));
-    setSubjectData(getData);
+    setSubjectData(getData.filter((d) => typeof d === "string")); // ensure it's strings
 
     const getDep = await getDocs(collection(db, "Departments"));
     const getDepData = getDep.docs.flatMap((doc) => Object.values(doc.data()));
@@ -219,69 +223,89 @@ const SubjectAlert = () => {
                         <label className="text-uppercase text-primary fw-semibold mb-2">
                           {fieldLabel}
                         </label>
-                        <select
-                          name={fieldName}
-                          value={state[fieldName]}
-                          onChange={(e) =>
-                            dispatch({
-                              field: e.target.name,
-                              value: e.target.value,
-                            })
-                          }
-                          className="form-select"
-                        >
-                          <option value="">-- Select {fieldLabel} --</option>
 
-                          {fieldName === "subject" &&
-                            SubjectData.map((doc, index) => (
-                              <option value={doc} key={index}>
-                                {doc}
-                              </option>
-                            ))}
+                        {fieldName === "subject" ? (
+                          <Autocomplete
+                            size="small"
+                            options={SubjectData}
+                            value={state.subject || null}
+                            onChange={(e, newValue) =>
+                              dispatch({
+                                field: "subject",
+                                value: newValue || "",
+                              })
+                            }
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select Subject"
+                                variant="outlined"
+                              />
+                            )}
+                            fullWidth
+                            disableClearable
+                          />
+                        ) : (
+                          <select
+                            name={fieldName}
+                            value={state[fieldName]}
+                            onChange={(e) =>
+                              dispatch({
+                                field: e.target.name,
+                                value: e.target.value,
+                              })
+                            }
+                            className="form-select"
+                          >
+                            <option value="">-- Select {fieldLabel} --</option>
 
-                          {fieldName === "year" &&
-                            YEAR_OPTIONS.map((no) => (
-                              <option value={no} key={no}>
-                                {no}
-                              </option>
-                            ))}
+                            {fieldName === "year" &&
+                              YEAR_OPTIONS.map((no) => (
+                                <option value={no} key={no}>
+                                  {no}
+                                </option>
+                              ))}
 
-                          {fieldName === "department" &&
-                            DepartmentData.map((dep, index) => (
-                              <option value={dep} key={index}>
-                                {dep}
-                              </option>
-                            ))}
+                            {fieldName === "department" &&
+                              DepartmentData.map((dep, index) => (
+                                <option value={dep} key={index}>
+                                  {dep}
+                                </option>
+                              ))}
 
-                          {fieldName === "class" &&
-                            CLASS_OPTIONS.map((cls) => (
-                              <option value={cls} key={cls}>
-                                {cls}
-                              </option>
-                            ))}
-                          {fieldName === "TorL" &&
-                            ["Theory", "Lab"].map((subs, index) => (
-                              <option value={subs} key={index}>
-                                {" "}
-                                {subs}{" "}
-                              </option>
-                            ))}
-                          {fieldName === "ugorpg" &&
-                            ["ug", "pg"].map((ugorpg) => (
-                              <option value={ugorpg}>
-                                {" "}
-                                {ugorpg.toUpperCase()}{" "}
-                              </option>
-                            ))}
-                          {fieldName === "rs" &&
-                            ["regular", "self"].map((rs) => (
-                              <option value={rs}> {rs.toUpperCase()} </option>
-                            ))}
-                          {fieldName === "semester" &&
-                            [1, 2, 3, 4, 5, 6].map((sem) => (
-                              <option value={`semester_${sem}`}> {sem} </option>
-                            ))}
-                        </select>
+                            {fieldName === "class" &&
+                              CLASS_OPTIONS.map((cls) => (
+                                <option value={cls} key={cls}>
+                                  {cls}
+                                </option>
+                              ))}
+                            {fieldName === "TorL" &&
+                              ["Theory", "Lab"].map((subs, index) => (
+                                <option value={subs} key={index}>
+                                  {" "}
+                                  {subs}{" "}
+                                </option>
+                              ))}
+                            {fieldName === "ugorpg" &&
+                              ["ug", "pg"].map((ugorpg, i) => (
+                                <option value={ugorpg} key={i}>
+                                  {ugorpg.toUpperCase()}
+                                </option>
+                              ))}
+                            {fieldName === "rs" &&
+                              ["regular", "self"].map((rs, i) => (
+                                <option value={rs} key={i}>
+                                  {rs.toUpperCase()}
+                                </option>
+                              ))}
+                            {fieldName === "semester" &&
+                              [1, 2, 3, 4, 5, 6].map((sem) => (
+                                <option value={`semester_${sem}`} key={sem}>
+                                  {sem}
+                                </option>
+                              ))}
+                          </select>
+                        )}
                       </div>
                     );
                   })}
@@ -296,12 +320,7 @@ const SubjectAlert = () => {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <ThreeDot
-                      color="#ffffff"
-                      size="medium"
-                      text=""
-                      textColor=""
-                    />
+                    <ThreeDot color="#ffffff" size="medium" />
                   ) : (
                     "Save Subject"
                   )}
@@ -326,7 +345,6 @@ const SubjectAlert = () => {
                         SavedSubjects.map((value, index) => (
                           <tr className="text-center" key={value.id}>
                             <td>{index + 1}</td>
-
                             <td className="fw-semibold">
                               <div className="d-flex flex-column justify-content-around">
                                 <div className="text-center">
@@ -335,7 +353,6 @@ const SubjectAlert = () => {
                                 <div>{value.TorL}</div>
                               </div>
                             </td>
-
                             <td className="fw-semibold">
                               <div className="d-flex flex-column">
                                 <div>{value.department}</div>
@@ -350,14 +367,12 @@ const SubjectAlert = () => {
                                 <div>{value.semester}</div>
                               </div>
                             </td>
-
                             <td className="fw-semibold">
                               <div className="d-flex justify-content-around ">
                                 <div className="">{value.class}</div>
                                 <div>{value.ugorpg.toUpperCase()}</div>
                               </div>
                             </td>
-
                             <td>
                               <RiDeleteBin3Fill
                                 onClick={() =>

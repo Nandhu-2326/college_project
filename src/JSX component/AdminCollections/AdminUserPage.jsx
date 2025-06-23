@@ -62,7 +62,6 @@ const AdminUserPage = () => {
               <p className="text-muted ms-4">
                 Use the menu to manage student, user, and admin data.
               </p>
-              {/* <div id="SingleStudent"><SingleStudent /></div> */}
               <div></div>
               <Outlet />
             </div>
@@ -91,7 +90,7 @@ const MenuItems = ({ handleClose }) => {
             <Dropdown.Item
               href=""
               onClick={() => {
-                nav("/AdminUserPage/SingleStudent");
+                nav("/AdminLayout/AdminUserPage/SingleStudent");
                 handleClose();
               }}
             >
@@ -99,7 +98,7 @@ const MenuItems = ({ handleClose }) => {
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                nav("/AdminUserPage/MultipleStudentCSV"), handleClose();
+                nav("/AdminLayout/AdminUserPage/MultipleStudentCSV"), handleClose();
               }}
             >
               Multiple Student
@@ -113,15 +112,15 @@ const MenuItems = ({ handleClose }) => {
             className=" text-start d-flex align-items-center"
           >
             <FaUserPlus className="me-2" />
-            User Details
+            HOD Details
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {nav("/AdminUserPage/StaffAddorUpdatePage"),
+              onClick={() => {nav("/AdminLayout/AdminUserPage/StaffAddorUpdatePage"),
               handleClose()
             }}
             >
-              User Details
+              HOD Details
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -137,7 +136,7 @@ const MenuItems = ({ handleClose }) => {
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => {nav("/AdminUserPage/AdminUserDetails"),
+              onClick={() => {nav("/AdminLayout/AdminUserPage/AdminUserDetails"),
               handleClose()
             }}
             >
@@ -156,7 +155,7 @@ const MenuItems = ({ handleClose }) => {
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => {nav("/AdminUserPage/Departments"), 
+              onClick={() => {nav("/AdminLayout/AdminUserPage/Departments"), 
               handleClose()
             }}
             >
@@ -164,7 +163,7 @@ const MenuItems = ({ handleClose }) => {
             </Dropdown.Item>
             <Dropdown.Item
               href="#"
-              onClick={() =>{ nav("/AdminUserPage/Subject"),
+              onClick={() =>{ nav("/AdminLayout/AdminUserPage/Subject"),
               handleClose()
             }}
             >

@@ -37,7 +37,7 @@ const AdminLogin = () => {
 
         if (!querySnapshot.empty) {
           toast.success("Login Success", { id: toastId });
-          nav("/AdminUserPage");
+          nav("AdminLayout/AdminUserPage");
         } else {
           toast.error("Invalid Username or Password", { id: toastId });
           setisLoading(false);
@@ -52,7 +52,6 @@ const AdminLogin = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
 
-      <CollegeLogo />
       <div className="HOD ">
         <div className="container mb-5 hod-bg">
           <div className="row justify-content-center ">
@@ -129,7 +128,6 @@ const AdminLogin = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
