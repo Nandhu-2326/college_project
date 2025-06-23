@@ -18,7 +18,7 @@
   .card {
    margin-top: 50px;
    margin-bottom: 100px;
-   box-shadow: 5px 4px 5px 1px rgb(184, 184, 184);
+   box-shadow: 2px 3px 5px 5px rgb(184, 184, 184);
   }
 
   .HOD{
@@ -31,7 +31,7 @@
   }
   .label
   {
-    color:rgb(3, 3, 3);
+    color:rgb(19, 0, 192);
     font-weight: bold;
     letter-spacing: 2px;
   }
@@ -53,6 +53,4 @@
     background: white;
     color: black;
   }
-  .hod-bg{
-    /* background: rgb(242, 243, 243); */
-  }
+  

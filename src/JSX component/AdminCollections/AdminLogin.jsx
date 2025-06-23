@@ -9,8 +9,6 @@ import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
-import CollegeLogo from "../CollegeLogo";
-import Footer from "../Footer";
 import "../Style Component/HOD.css";
 
 const AdminLogin = () => {
@@ -37,7 +35,7 @@ const AdminLogin = () => {
 
         if (!querySnapshot.empty) {
           toast.success("Login Success", { id: toastId });
-          nav("AdminLayout/AdminUserPage");
+          nav("/AdminLayout/AdminUserPage");
         } else {
           toast.error("Invalid Username or Password", { id: toastId });
           setisLoading(false);
@@ -55,7 +53,10 @@ const AdminLogin = () => {
       <div className="HOD ">
         <div className="container mb-5 hod-bg">
           <div className="row justify-content-center ">
-            <div className="col-12 col-md-6 col-lg-5 mt-4">
+            <div
+              className="col-12 col-md-6 col-lg-5 mt-4 d-flex justify-content-center "
+              style={{ width: "90%" }}
+            >
               <div className="card  position-relative pt-5">
                 {/* Floating Circle Icon */}
                 <FaUserCircle className="position-absolute top-0 start-50 translate-middle topIcons z-1" />

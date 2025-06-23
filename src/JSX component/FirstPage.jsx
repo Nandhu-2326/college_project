@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
+import html2pdf from "html2pdf.js";
 import CollegeLogo from "./CollegeLogo";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -9,31 +9,27 @@ import { db } from "./Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
 import "./Style Component/firstpage.css";
+import { ImDownload2 } from "react-icons/im";
+
 const FirstPage = () => {
   const [dob, setDob] = useState("");
   const [rollno, setRollno] = useState("");
   const [sem, setSem] = useState("");
   const [result, setResult] = useState([]);
   const [student, setStudent] = useState(null);
+  const pdfRef = useRef();
 
-  const componentRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: "Mark Statement",
-    removeAfterPrint: true,
-    pageStyle: `
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-        table {
-          border-collapse: collapse;
-        }
-      }
-    `,
-  });
+  const handleDownloadPDF = () => {
+    const element = pdfRef.current;
+    const opt = {
+      margin: 0.3,
+      filename: `MarkSheet_${result?.Name}_${Date.now()}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+    };
+    html2pdf().set(opt).from(element).save();
+  };
 
   const getResult = async () => {
     if (!rollno || !dob || !sem) {
@@ -188,17 +184,19 @@ const FirstPage = () => {
         </div>
 
         {Array.isArray(result) && result.length > 0 && student && (
-          <div className="row mt-5 text-dark" ref={componentRef}>
+          <div ref={pdfRef} className="row mt-5 text-dark">
             <div className="col-12  rounded-4 p-4 shadow-sm">
               <h5 className="text-center text-uppercase fw-bold  mb-2">
                 {student.Department}
               </h5>
-              <div className="row mb-3">
-                <div className="col-4 fw-semibold">Year: {student.year}</div>
+              <div className="row mb-3 ">
+                <div className="col-4 text-end fw-semibold">
+                  Year: {student.year}
+                </div>
                 <div className="col-4 text-center fw-semibold">
                   Semester: {sem.slice(9)}
                 </div>
-                <div className="col-4 text-end fw-semibold">
+                <div className="col-4 text-start fw-semibold">
                   Class: {student.class}
                 </div>
               </div>
@@ -256,8 +254,8 @@ const FirstPage = () => {
                               ? doc.Assignment
                               : "Absent"
                             : doc.LabRecord != null
-                              ? doc.LabRecord
-                              : "Absent"}
+                            ? doc.LabRecord
+                            : "Absent"}
                         </td>
                         <td>
                           {doc.TorL != "Lab"
@@ -265,8 +263,8 @@ const FirstPage = () => {
                               ? doc.Seminar
                               : "Absent"
                             : doc.Observation != null
-                              ? doc.Observation
-                              : "Absent"}
+                            ? doc.Observation
+                            : "Absent"}
                         </td>
                         <td>
                           {doc.TorL !== "Lab" ? doc.NeetMark : doc.Totalmark}
@@ -276,15 +274,15 @@ const FirstPage = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="d-flex w-100 justify-content-center mb-3">
-                <button
-                  className="btn btn-dark text-uppercase"
-                  style={{ letterSpacing: "2px" }}
-                  onClick={handlePrint}
-                >
-                  PRINT
-                </button>
-              </div>
+            </div>
+            <div className="d-flex w-100 mt-3 justify-content-center align-items-center mb-5">
+              <button
+                className="btn btn-outline-success text-uppercase"
+                style={{ letterSpacing: "2px" }}
+                onClick={handleDownloadPDF}
+              >
+                <ImDownload2 /> PDF
+              </button>
             </div>
           </div>
         )}

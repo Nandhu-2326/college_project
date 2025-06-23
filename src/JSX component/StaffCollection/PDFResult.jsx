@@ -22,6 +22,7 @@ const PDFResult = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [studentDetails, setStudentDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [times, setTimes] = useState("");
   const pdfRef = useRef();
 
   useEffect(() => {
@@ -93,8 +94,15 @@ const PDFResult = () => {
       toast.error(e.message);
     }
   };
-
-  const CurrentDataTime = new Date().toLocaleString();
+  const TimeStamp = () => {
+    var CurrentDataTime = new Date().toLocaleString();
+    setTimes(CurrentDataTime);
+  };
+  
+  useEffect(()=>{
+    TimeStamp()
+  },[TimeStamp])
+  setInterval(TimeStamp, 1000);
 
   const handleDownloadPDF = () => {
     const element = pdfRef.current;
@@ -191,7 +199,7 @@ const PDFResult = () => {
             className="col-12 text-end fw-semibold"
             style={{ letterSpacing: "1.5px" }}
           >
-            Date: {CurrentDataTime}
+            Date: {times}
           </div>
         </div>
 
@@ -307,15 +315,14 @@ const PDFResult = () => {
             </tbody>
           </table>
         </div>
-        
-        <div className="mt-5">
-              <div className="row">
-                <div className="col-4 text-end">STAFF</div>
-                <div className="col-4 text-center">HOD </div>
-                <div className="col-4">PRINCIPAL</div>
-              </div>
-        </div>
 
+        <div className="mt-5">
+          <div className="row">
+            <div className="col-4 text-end">STAFF</div>
+            <div className="col-4 text-center">HOD </div>
+            <div className="col-4">PRINCIPAL</div>
+          </div>
+        </div>
       </div>
     </>
   );

@@ -13,7 +13,7 @@ const Footer = () => {
   useEffect(() => {
     const path = location.pathname;
     if (path === "/") setValue(2);
-    else if (path === "/AdminLogin") setValue(1);
+    else if (path.startsWith("/AdminLayout")) setValue(1);
     else if (path.startsWith("/HODLayout")) setValue(0);
     else if (path.startsWith("/StaffLayout")) setValue(3);
     else if (path === "/About") setValue(4);
@@ -88,8 +88,8 @@ const Footer = () => {
             },
           },
           "& .MuiBottomNavigationAction-label": {
-            fontSize: "10px",
-            mt: "1px",
+            fontSize: "11px",
+            mt: "0px",
           },
         }}
       >
@@ -99,7 +99,7 @@ const Footer = () => {
             label={item.label}
             icon={
               <item.icon
-                size={value === idx ? 26 : 22}
+                size={value === idx ? 40 : 45}
                 style={{
                   color: value === idx ? activeColor : defaultColor,
                   transform: value === idx ? "scale(1.15)" : "scale(1)",

@@ -16,7 +16,6 @@ const AdminUserPage = () => {
 
   return (
     <>
-      <CollegeLogo />
       {/* Mobile Nav */}
       <div className="container my-3 d-sm-none">
         <div className="bg-primary  d-flex justify-content-sm-between justify-content-between align-items-center  p-2 rounded">
@@ -68,7 +67,6 @@ const AdminUserPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
@@ -98,7 +96,8 @@ const MenuItems = ({ handleClose }) => {
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                nav("/AdminLayout/AdminUserPage/MultipleStudentCSV"), handleClose();
+                nav("/AdminLayout/AdminUserPage/MultipleStudentCSV"),
+                  handleClose();
               }}
             >
               Multiple Student
@@ -116,9 +115,10 @@ const MenuItems = ({ handleClose }) => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {nav("/AdminLayout/AdminUserPage/StaffAddorUpdatePage"),
-              handleClose()
-            }}
+              onClick={() => {
+                nav("/AdminLayout/AdminUserPage/StaffAddorUpdatePage"),
+                  handleClose();
+              }}
             >
               HOD Details
             </Dropdown.Item>
@@ -136,9 +136,10 @@ const MenuItems = ({ handleClose }) => {
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => {nav("/AdminLayout/AdminUserPage/AdminUserDetails"),
-              handleClose()
-            }}
+              onClick={() => {
+                nav("/AdminLayout/AdminUserPage/AdminUserDetails"),
+                  handleClose();
+              }}
             >
               Admin Details
             </Dropdown.Item>
@@ -155,17 +156,17 @@ const MenuItems = ({ handleClose }) => {
           <Dropdown.Menu>
             <Dropdown.Item
               href="#"
-              onClick={() => {nav("/AdminLayout/AdminUserPage/Departments"), 
-              handleClose()
-            }}
+              onClick={() => {
+                nav("/AdminLayout/AdminUserPage/Departments"), handleClose();
+              }}
             >
               Department
             </Dropdown.Item>
             <Dropdown.Item
               href="#"
-              onClick={() =>{ nav("/AdminLayout/AdminUserPage/Subject"),
-              handleClose()
-            }}
+              onClick={() => {
+                nav("/AdminLayout/AdminUserPage/Subject"), handleClose();
+              }}
             >
               Subject
             </Dropdown.Item>
