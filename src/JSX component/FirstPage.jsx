@@ -77,6 +77,7 @@ const FirstPage = () => {
           id: doc.id,
         }));
         setResult(markData);
+        
         console.log(markData);
         console.log(studentData);
         toast.dismiss(loading);
@@ -245,8 +246,8 @@ const FirstPage = () => {
                               ? doc.BothInternal
                               : "Absent"
                             : doc.AverageMark != null
-                            ? doc.AverageMark
-                            : "Absent"}
+                              ? doc.AverageMark
+                              : "Absent"}
                         </td>
                         <td>
                           {doc.TorL != "Lab"

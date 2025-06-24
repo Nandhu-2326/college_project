@@ -500,6 +500,8 @@ const MarkEntry = () => {
           Seminar: dbSeminar,
           mark1: dbmark1,
           mark2: dbmark2,
+          TorL: selectedSubject.TorL,
+
         });
         toast.dismiss();
         toast.success("Update Successfully");
@@ -587,6 +589,8 @@ const MarkEntry = () => {
           NeetMark: NeetMark,
           Assignment: dbAssignment,
           Seminar: dbSeminar,
+          TorL: selectedSubject.TorL,
+
         });
         toast.dismiss();
         for (let ObjectRender in updateObject) {

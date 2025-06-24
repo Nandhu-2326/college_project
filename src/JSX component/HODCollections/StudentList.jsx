@@ -549,44 +549,66 @@ const StudentList = () => {
         </div>
       </div>
 
-      <div className="container mt-2">
+      <div className="container mt-2" style={{ width: "90%" }}>
         <div className="card bg-light">
-          <div className="card-header text-center text-primary fs-3 text-uppercase">
+          <div
+            className="card-header text-center fs-3 text-uppercase"
+            style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+          >
             Student Details
           </div>
           <div className="card-body d-flex justify-content-center">
             <div className="row g-2 text-dark text-uppercase fw-semibold text-center">
-              <div className="col-12">
+              <div
+                className="col-12"
+                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+              >
                 I - Year -{" "}
                 {studentState.filter((s) => s.year == 1).length -
                   inactiveCounts[1]}
               </div>
-              <div className="col-6">
+              <div
+                className="col-6"
+                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+              >
                 II - Year -{" "}
                 {studentState.filter((s) => s.year == 2).length -
                   inactiveCounts[2]}
               </div>
-              <div className="col-6">
+              <div
+                className="col-6"
+                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+              >
                 III - Year -{" "}
                 {studentState.filter((s) => s.year == 3).length -
                   inactiveCounts[3]}
               </div>
             </div>
           </div>
-          <div className="card-footer text-center fw-semibold text-uppercase">
+          <div
+            className="card-footer text-center fw-semibold text-uppercase"
+            style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+          >
             Total Student - {activeStudent.length}
           </div>
         </div>
       </div>
 
       <div className="container mt-5 mb-5 ">
-        <h5 className="text-center mb-4">🎯 Student Year Change</h5>
+        <h5
+          className="text-center mb-4 text-uppercase"
+          style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+        >
+          {" "}
+          Student Year Change
+        </h5>
         {ugorpg == "ug" ? (
           <div className="container mb-5">
             <div className="row g-3 justify-content-center">
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
+                  style={{ background: "rgb(26, 51, 208)", color: "white" }}
+                  className="btn border-0 bg-gradient shadow fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -600,7 +622,8 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
+                  style={{ background: "rgb(26, 51, 208)", color: "white" }}
+                  className="btn border-0 bg-gradient shadow fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}
@@ -614,13 +637,20 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-danger bg-gradient shadow-sm fw-semibold"
+                  style={{ background: "red", color: "white" }}
+                  className="btn border-0 bg-gradient shadow fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(3);
                   }}
                 >
                   <div className="d-flex justify-content-center align-items-center gap-2">
-                    <RiDeleteBin2Line /> <span>Delete 3rd Year</span>
+                    <img
+                      src="/dataserver.png"
+                      alt=""
+                      width={25}
+                      className="img img-fluid"
+                    />{" "}
+                    <span>Delete 3rd Year</span>
                   </div>
                 </button>
               </div>
@@ -631,7 +661,8 @@ const StudentList = () => {
             <div className="row g-3 justify-content-center">
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-success bg-gradient shadow-sm fw-semibold"
+                  style={{ background: "rgb(26, 51, 208)", color: "white" }}
+                  className="btn border-0 bg-gradient shadow fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -645,13 +676,20 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  className="btn btn-danger bg-gradient shadow-sm fw-semibold"
+                  style={{ background: "red", color: "white" }}
+                  className="btn border-0 bg-gradient shadow fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}
                 >
                   <div className="d-flex justify-content-center align-items-center gap-2">
-                    <RiDeleteBin2Line /> <span>Delete 2rd Year</span>
+                    <img
+                      src="/dataserver.png"
+                      alt=""
+                      width={25}
+                      className="img img-fluid"
+                    />{" "}
+                    <span>Delete 2rd Year</span>
                   </div>
                 </button>
               </div>
@@ -665,7 +703,12 @@ const StudentList = () => {
           );
           return studentsOfYear.length > 0 ? (
             <div key={year} className="mb-4">
-              <h5 className="text-center fw-bold">YEAR - {year}</h5>
+              <h5
+                className="text-center fw-bold"
+                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+              >
+                YEAR - {year}
+              </h5>
               <div className="table-responsive">
                 <table className="table table-responsive table-bordered table-striped  shadow table-hover">
                   <thead className="text-center text-uppercase">
@@ -692,8 +735,8 @@ const StudentList = () => {
                             onClick={() => viewStudent(student.id)}
                           >
                             <img
-                              src="/skills.png"
-                              width={30}
+                              src="/open-folder.png"
+                              width={35}
                               alt=""
                               className="img img-fluid"
                             />
@@ -721,12 +764,11 @@ const StudentList = () => {
                             className="btn border-0"
                             onClick={() => handleShowModal(student.id)}
                           >
-                            {/* <MdOutlinePublishedWithChanges /> */}
                             <img
-                              src="/db-reload.png"
-                              width={35}
+                              src="/updated.png"
+                              width={30}
                               alt=""
-                              className="img img-fluid"
+                              className="img img-fluid "
                             />
                           </button>
                         </td>
@@ -741,7 +783,6 @@ const StudentList = () => {
                               )
                             }
                           >
-                            {/* <FaPencilAlt /> */}
                             <img
                               src="/edit.png"
                               width={25}
