@@ -24,7 +24,6 @@ import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 
-
 const AddStaff = () => {
   const nav = useNavigate();
 
@@ -207,17 +206,22 @@ const AddStaff = () => {
       </div>
 
       {/* Main Card */}
-      <div className="d-flex mt-4 justify-content-center align-items-center mb-5">
-        <div className="card shadow-lg rounded-4" style={{ width: "500px" }}>
-          <div className="card-header text-uppercase bg-primary text-light fw-semibold text-center py-3">
-            <h3 style={{ letterSpacing: "2.5px" }}>
-              {isUpdate ? "Update Staff" : "Create Staff"}
-            </h3>
-          </div>
-
-          <div className="card-body px-4 py-4">
-            <div className="row g-4">
-              {[1, 2, 3].map((staff, index) => {
+      <div className="d-flex  justify-content-center align-items-center mb-5 mt-5">
+        <div>
+          <div className="card border rounded">
+            <div
+              className="card-header border-0"
+              style={{ background: "rgb(26, 51, 208)", color: "white" }}
+            >
+              <h3
+                className="text-uppercase fw-bold text-center "
+                style={{ letterSpacing: "2.5px" }}
+              >
+                {isUpdate ? "Update Staff" : "Create Staff"}
+              </h3>
+            </div>
+            <div className="card-body">
+              {[1, 2, 3].map((staff) => {
                 const fieldName =
                   staff === 1
                     ? "staffName"
@@ -233,30 +237,39 @@ const AddStaff = () => {
                     : "Enter Password";
 
                 const icon =
-                  staff === 1 ? (
-                    <FaUser />
-                  ) : staff === 2 ? (
-                    <FaUser />
-                  ) : (
-                    <FaUserLock />
-                  );
+                  staff === 1
+                    ? "/user.png"
+                    : staff === 2
+                    ? "/profile.png"
+                    : "/password.png";
 
                 return (
                   <div
                     className="d-flex justify-content-center align-items-center flex-column"
                     key={staff}
                   >
-                    <div className="col-12 col-sm-12">
+                    <div className="col-12">
                       <label
                         htmlFor=""
-                        style={{ letterSpacing: "1.5px" }}
-                        className="form-label text-uppercase text-primary fw-semibold"
+                        style={{
+                          color: "#1A33D0",
+                          letterSpacing: "1.5px",
+                        }}
+                        className="form-label text-uppercase fw-semibold"
                       >
                         {fieldName}
                       </label>
                       <div className="input-group">
-                        <span className="input-group-text bg-primary text-light">
-                          {icon}
+                        <span
+                          className="input-group-text "
+                          style={{ background: "white" }}
+                        >
+                          <img
+                            src={icon}
+                            alt=""
+                            className="img img-fluid"
+                            width={20}
+                          />
                         </span>
                         <input
                           type={
@@ -280,7 +293,7 @@ const AddStaff = () => {
                               return (
                                 <button
                                   key={nums}
-                                  className="input-group-text btn btn-primary"
+                                  className="input-group-text "
                                 >
                                   {nums === 1 ? (
                                     <IoEyeOffSharp
@@ -305,30 +318,35 @@ const AddStaff = () => {
                 );
               })}
             </div>
-          </div>
 
-          {/* Button */}
-          <div className="card-footer bg-light d-flex justify-content-center mb-4">
-            <button
-              className="btn btn-primary text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
-              style={{ minWidth: "180px", fontWeight: "600" }}
-              onClick={
-                isUpdate
-                  ? () => {
-                      UpdateStaff(staffId);
-                    }
-                  : AddStaff
-              }
-              disabled={isloading}
-            >
-              {isloading ? (
-                <ThreeDot color="#ffffff" size="medium" text="" textColor="" />
-              ) : isUpdate ? (
-                "Update Staff"
-              ) : (
-                "Add Staff"
-              )}
-            </button>
+            <div className="card-footer bg-light d-flex justify-content-center mb-2">
+              <button
+            
+                className="btn border-0 text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
+                style={{ minWidth: "180px", fontWeight: "600", background:"#1A33D0" , color:"white" }}
+                onClick={
+                  isUpdate
+                    ? () => {
+                        UpdateStaff(staffId);
+                      }
+                    : AddStaff
+                }
+                disabled={isloading}
+              >
+                {isloading ? (
+                  <ThreeDot
+                    color="#ffffff"
+                    size="medium"
+                    text=""
+                    textColor=""
+                  />
+                ) : isUpdate ? (
+                  "Update Staff"
+                ) : (
+                  "Add Staff"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
