@@ -763,7 +763,7 @@ const StudentList = () => {
                               src="/delete.png"
                               width={25}
                               alt=""
-                              className="img img-fluid"
+                              className="img img-fluid "
                             />
                           )}
                         </td>

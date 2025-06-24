@@ -50,7 +50,7 @@ const HOD = () => {
   return (
     <div className="HOD ">
       <div className="container mb-5 hod-bg" style={{ width: "90%" }}>
-        <div className="row justify-content-center d-flex">
+        <div className="row justify-content-center d-flex mt-5">
           <div className="col-12 col-md-6 col-lg-5 mt-4">
             <div className="card  position-relative pt-5 ">
               {/* Floating Circle Icon */}
@@ -77,12 +77,12 @@ const HOD = () => {
                 </label>
                 <div className="input-group">
                   <span className="input-group-text border icons">
-                  <img
-                        src="./profile.png"
-                        style={{ width: "25px" }}
-                        alt=""
-                        className="img-fluid"
-                      />
+                    <img
+                      src="./profile.png"
+                      style={{ width: "25px" }}
+                      alt=""
+                      className="img-fluid"
+                    />
                   </span>
                   <input
                     type="text"
@@ -98,12 +98,12 @@ const HOD = () => {
                 </label>
                 <div className="input-group">
                   <span className="input-group-text border icons">
-                  <img
-                        src="./password.png"
-                        style={{ width: "25px" }}
-                        alt=""
-                        className="img-fluid"
-                      />
+                    <img
+                      src="./password.png"
+                      style={{ width: "25px" }}
+                      alt=""
+                      className="img-fluid"
+                    />
                   </span>
                   <input
                     type={PasswordEye ? "password" : "text"}

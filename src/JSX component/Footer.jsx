@@ -59,7 +59,6 @@ const Footer = () => {
         right: 10,
         borderRadius: "10px",
         boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
-        zIndex: 2000,
         overflow: "hidden",
         padding: "10px",
       }}

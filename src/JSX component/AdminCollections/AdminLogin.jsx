@@ -52,7 +52,7 @@ const AdminLogin = () => {
 
       <div className="HOD ">
         <div className="container mb-5 hod-bg" style={{ width: "90%" }}>
-          <div className="row justify-content-center d-flex">
+          <div className="row justify-content-center d-flex mt-5">
             <div className="col-12 col-md-6 col-lg-5 mt-4  ">
               <div className="card  position-relative pt-5">
                 {/* Floating Circle Icon */}
