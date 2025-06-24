@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { BsUpload } from "react-icons/bs";
 import { db } from "../Database";
 import { collection, addDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const StudentCSV = () => {
@@ -93,52 +91,63 @@ const StudentCSV = () => {
   };
 
   return (
-    <div className="d-flex flex-column justify-content-center container align-items-center mt-2 mb-5">
-      <div className="container p-3 d-flex justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-4"
-          onClick={() => nav("/HODLayout/StaffDetails")}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
-      </div>
-
+    <>
       <div
-        className="card p-4 shadow-lg rounded-4 w-100"
-        style={{ maxWidth: "500px" }}
+        style={{ backgroundColor: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
-        <h3 className="text-primary text-center fw-bold mb-4">
-          📄 Upload CSV File
-        </h3>
-
-        <div className="mb-3">
-          <label htmlFor="csvUpload" className="form-label fw-semibold">
-            Select CSV File
-          </label>
-          <input
-            className="form-control"
-            type="file"
-            id="csvUpload"
-            accept=".csv"
-            onChange={handleChange}
-          />
-        </div>
-
-        {csvfile && (
-          <div className="alert alert-success fw-semibold">
-            ✅ Selected: {csvfile.name}
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
           </div>
-        )}
-
-        <button
-          className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 mt-3"
-          onClick={handleUpload}
-        >
-          <BsUpload />
-          Upload
-        </button>
+        </div>
       </div>
-    </div>
+      <div className="container d-flex justify-content-center align-items-center">
+        <div
+          className="card p-4 shadow-lg rounded-4 w-100"
+          style={{ maxWidth: "500px" }}
+        >
+          <h3 className="text-primary text-center fw-bold mb-4">
+            📄 Upload CSV File
+          </h3>
+
+          <div className="mb-3">
+            <label htmlFor="csvUpload" className="form-label fw-semibold">
+              Select CSV File
+            </label>
+            <input
+              className="form-control"
+              type="file"
+              id="csvUpload"
+              accept=".csv"
+              onChange={handleChange}
+            />
+          </div>
+
+          {csvfile && (
+            <div className="alert alert-success fw-semibold">
+              ✅ Selected: {csvfile.name}
+            </div>
+          )}
+
+          <button
+            style={{ backgroundColor: "rgb(26, 51, 208)", color: "white" }}
+            className="btn border-0 w-100 d-flex align-items-center justify-content-center gap-2 mt-3"
+            onClick={handleUpload}
+          >
+            <img src="/upload.png" width={25} alt="" className="img img-flui" />
+            Upload
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -207,145 +207,151 @@ const AddStaff = () => {
 
       {/* Main Card */}
       <div className="d-flex  justify-content-center align-items-center mb-5 mt-5">
-        <div>
-          <div className="card border rounded">
-            <div
-              className="card-header border-0"
-              style={{ background: "rgb(26, 51, 208)", color: "white" }}
-            >
-              <h3
-                className="text-uppercase fw-bold text-center "
-                style={{ letterSpacing: "2.5px" }}
+        <div className="row rounded ">
+          <div className="col-12">
+            <div className="card border rounded">
+              <div
+                className="card-header border-0"
+                style={{ color: "rgb(26, 51, 208)" }}
               >
-                {isUpdate ? "Update Staff" : "Create Staff"}
-              </h3>
-            </div>
-            <div className="card-body">
-              {[1, 2, 3].map((staff) => {
-                const fieldName =
-                  staff === 1
-                    ? "staffName"
-                    : staff === 2
-                    ? "UserName"
-                    : "Password";
+                <h3
+                  className="text-uppercase fw-bold text-center "
+                  style={{ letterSpacing: "2.5px" }}
+                >
+                  {isUpdate ? "Update Staff" : "Create Staff"}
+                </h3>
+              </div>
+              <div className="card-body">
+                {[1, 2, 3].map((staff) => {
+                  const fieldName =
+                    staff === 1
+                      ? "staffName"
+                      : staff === 2
+                      ? "UserName"
+                      : "Password";
 
-                const placeholder =
-                  staff === 1
-                    ? "Enter Staff Name"
-                    : staff === 2
-                    ? "Enter Username"
-                    : "Enter Password";
+                  const placeholder =
+                    staff === 1
+                      ? "Enter Staff Name"
+                      : staff === 2
+                      ? "Enter Username"
+                      : "Enter Password";
 
-                const icon =
-                  staff === 1
-                    ? "/user.png"
-                    : staff === 2
-                    ? "/profile.png"
-                    : "/password.png";
+                  const icon =
+                    staff === 1
+                      ? "/user.png"
+                      : staff === 2
+                      ? "/profile.png"
+                      : "/password.png";
 
-                return (
-                  <div
-                    className="d-flex justify-content-center align-items-center flex-column"
-                    key={staff}
-                  >
-                    <div className="col-12">
-                      <label
-                        htmlFor=""
-                        style={{
-                          color: "#1A33D0",
-                          letterSpacing: "1.5px",
-                        }}
-                        className="form-label text-uppercase fw-semibold"
-                      >
-                        {fieldName}
-                      </label>
-                      <div className="input-group">
-                        <span
-                          className="input-group-text "
-                          style={{ background: "white" }}
-                        >
-                          <img
-                            src={icon}
-                            alt=""
-                            className="img img-fluid"
-                            width={20}
-                          />
-                        </span>
-                        <input
-                          type={
-                            fieldName === "Password" && eyeNumber == 1
-                              ? "password"
-                              : "text"
-                          }
-                          className="form-control"
-                          placeholder={placeholder}
-                          name={fieldName}
-                          value={state[fieldName]}
-                          onChange={(e) => {
-                            dispatch({
-                              field: e.target.name,
-                              value: e.target.value,
-                            });
+                  return (
+                    <div
+                      className="d-flex justify-content-center align-items-center flex-column"
+                      key={staff}
+                    >
+                      <div className="col-12">
+                        <label
+                          htmlFor=""
+                          style={{
+                            color: "#1A33D0",
+                            letterSpacing: "1.5px",
                           }}
-                        />
-                        {staff === 3
-                          ? [eyeNumber].map((nums) => {
-                              return (
-                                <button
-                                  key={nums}
-                                  className="input-group-text "
-                                >
-                                  {nums === 1 ? (
-                                    <IoEyeOffSharp
-                                      onClick={() => {
-                                        seteyeNumber(2);
-                                      }}
-                                    />
-                                  ) : (
-                                    <IoMdEye
-                                      onClick={() => {
-                                        seteyeNumber(1);
-                                      }}
-                                    />
-                                  )}
-                                </button>
-                              );
-                            })
-                          : ""}
+                          className="form-label text-uppercase fw-semibold"
+                        >
+                          {fieldName}
+                        </label>
+                        <div className="input-group">
+                          <span
+                            className="input-group-text "
+                            style={{ background: "white" }}
+                          >
+                            <img
+                              src={icon}
+                              alt=""
+                              className="img img-fluid"
+                              width={20}
+                            />
+                          </span>
+                          <input
+                            type={
+                              fieldName === "Password" && eyeNumber == 1
+                                ? "password"
+                                : "text"
+                            }
+                            className="form-control"
+                            placeholder={placeholder}
+                            name={fieldName}
+                            value={state[fieldName]}
+                            onChange={(e) => {
+                              dispatch({
+                                field: e.target.name,
+                                value: e.target.value,
+                              });
+                            }}
+                          />
+                          {staff === 3
+                            ? [eyeNumber].map((nums) => {
+                                return (
+                                  <button
+                                    key={nums}
+                                    className="input-group-text "
+                                  >
+                                    {nums === 1 ? (
+                                      <IoEyeOffSharp
+                                        onClick={() => {
+                                          seteyeNumber(2);
+                                        }}
+                                      />
+                                    ) : (
+                                      <IoMdEye
+                                        onClick={() => {
+                                          seteyeNumber(1);
+                                        }}
+                                      />
+                                    )}
+                                  </button>
+                                );
+                              })
+                            : ""}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
-            <div className="card-footer bg-light d-flex justify-content-center mb-2">
-              <button
-            
-                className="btn border-0 text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
-                style={{ minWidth: "180px", fontWeight: "600", background:"#1A33D0" , color:"white" }}
-                onClick={
-                  isUpdate
-                    ? () => {
-                        UpdateStaff(staffId);
-                      }
-                    : AddStaff
-                }
-                disabled={isloading}
-              >
-                {isloading ? (
-                  <ThreeDot
-                    color="#ffffff"
-                    size="medium"
-                    text=""
-                    textColor=""
-                  />
-                ) : isUpdate ? (
-                  "Update Staff"
-                ) : (
-                  "Add Staff"
-                )}
-              </button>
+              <div className="card-footer border-0  d-flex justify-content-center mb-2">
+                <button
+                  className="btn border-0 text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
+                  style={{
+                    minWidth: "180px",
+                    fontWeight: "600",
+                    background: "#1A33D0",
+                    color: "white",
+                  }}
+                  onClick={
+                    isUpdate
+                      ? () => {
+                          UpdateStaff(staffId);
+                        }
+                      : AddStaff
+                  }
+                  disabled={isloading}
+                >
+                  {isloading ? (
+                    <ThreeDot
+                      color="#ffffff"
+                      size="medium"
+                      text=""
+                      textColor=""
+                    />
+                  ) : isUpdate ? (
+                    "Update Staff"
+                  ) : (
+                    "Add Staff"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
