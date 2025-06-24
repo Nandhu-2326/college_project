@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { FaUserLock } from "react-icons/fa6";
-import { InformationError, UserAdd, showWarning } from "../SweetAlert";
+import { showWarning } from "../SweetAlert";
 import { db } from "../Database";
 import {
   addDoc,
@@ -16,9 +16,14 @@ import {
 } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
-import { FaArrowLeftLong } from "react-icons/fa6";
+
 import { IoEyeOffSharp } from "react-icons/io5";
 import { IoMdEye } from "react-icons/io";
+// mui
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+
 
 const AddStaff = () => {
   const nav = useNavigate();
@@ -157,20 +162,48 @@ const AddStaff = () => {
   return (
     <>
       {/* Top Bar */}
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-2 px-4">
-        <p className="fw-semibold m-0">HOD: {HODName}</p>
-        <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
-      </div>
-
-      <div className="container  d-felx  p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/HODLayout/StaffDetails");
-          }}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {HODName?.slice(0, 1)}
+                  </Avatar>
+                }
+                label={HODName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              {Department?.slice(14)}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Main Card */}

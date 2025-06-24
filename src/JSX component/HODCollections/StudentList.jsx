@@ -21,11 +21,12 @@ import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { FaRotate } from "react-icons/fa6";
 import { RiDeleteBin2Line } from "react-icons/ri";
-
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 const initialStudentState = [];
 const studentReducer = (state, action) => {
   switch (action.type) {
@@ -504,19 +505,48 @@ const StudentList = () => {
 
   return (
     <>
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold mb-0">HOD : {HODName}</p>
-        <p className="fw-semibold mb-0">Department : {Department?.slice(14)}</p>
-      </div>
-      <div className="container  d-felx  p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/HODLayout/StaffDetails");
-          }}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {HODName?.slice(0, 1)}
+                  </Avatar>
+                }
+                label={HODName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              {Department?.slice(14)}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="container mt-2">
@@ -637,7 +667,7 @@ const StudentList = () => {
             <div key={year} className="mb-4">
               <h5 className="text-center fw-bold">YEAR - {year}</h5>
               <div className="table-responsive">
-                <table className="table table-responsive table-bordered table-striped table-secondary shadow table-hover">
+                <table className="table table-responsive table-bordered table-striped  shadow table-hover">
                   <thead className="text-center text-uppercase">
                     <tr>
                       <th>S.No</th>
@@ -658,10 +688,15 @@ const StudentList = () => {
                         <td>{index + 1}</td>
                         <td>
                           <button
-                            className="btn btn-outline-primary"
+                            className="btn border-0 "
                             onClick={() => viewStudent(student.id)}
                           >
-                            <GiSpellBook />
+                            <img
+                              src="/skills.png"
+                              width={30}
+                              alt=""
+                              className="img img-fluid"
+                            />
                           </button>
                         </td>
                         <td>{student.rollno?.toUpperCase()}</td>
@@ -670,23 +705,34 @@ const StudentList = () => {
                         <td>{student.year}</td>
                         <td className="">
                           <button
-                            className="btn btn-outline-success"
+                            className="btn border-0"
                             onClick={() => handleOpenModalWhats(student)}
                           >
-                            <FaWhatsapp />
+                            <img
+                              src="/whatsapp.png"
+                              alt=""
+                              width={30}
+                              className="img img-fluid"
+                            />
                           </button>
                         </td>
                         <td>
                           <button
-                            className="btn btn-outline-success"
+                            className="btn border-0"
                             onClick={() => handleShowModal(student.id)}
                           >
-                            <MdOutlinePublishedWithChanges />
+                            {/* <MdOutlinePublishedWithChanges /> */}
+                            <img
+                              src="/db-reload.png"
+                              width={35}
+                              alt=""
+                              className="img img-fluid"
+                            />
                           </button>
                         </td>
                         <td>
                           <button
-                            className="btn btn-outline-danger"
+                            className="btn border-0"
                             onClick={() =>
                               ActiveProcess(
                                 student.id,
@@ -695,14 +741,30 @@ const StudentList = () => {
                               )
                             }
                           >
-                            <FaPencilAlt />
+                            {/* <FaPencilAlt /> */}
+                            <img
+                              src="/edit.png"
+                              width={25}
+                              alt=""
+                              className="img img-fluid"
+                            />
                           </button>
                         </td>
-                        <td>
+                        <td className="">
                           {student.active ? (
-                            <TiTickOutline className="text-success fs-1" />
+                            <img
+                              src="/check-mark.png"
+                              width={25}
+                              alt=""
+                              className="img img-fluid"
+                            />
                           ) : (
-                            <HiOutlineArchiveBoxXMark className="text-danger fs-1" />
+                            <img
+                              src="/delete.png"
+                              width={25}
+                              alt=""
+                              className="img img-fluid"
+                            />
                           )}
                         </td>
                       </tr>

@@ -9,11 +9,12 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { CiEdit } from "react-icons/ci";
-import { FcDeleteDatabase } from "react-icons/fc";
+
 import toast from "react-hot-toast";
-import { IoPersonAdd } from "react-icons/io5";
-import { FaUsersGear } from "react-icons/fa6";
+
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 import Swal from "sweetalert2";
 import { HashLoader } from "react-spinners";
 
@@ -125,7 +126,7 @@ const StaffDetails = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageLoad(false);
-    }, 2500);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -144,9 +145,48 @@ const StaffDetails = () => {
   // Main content
   return (
     <>
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold mb-0"> HOD : {HODName}</p>
-        <p className="fw-semibold mb-0">Department : {Department?.slice(14)}</p>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {HODName?.slice(0, 1)}
+                  </Avatar>
+                }
+                label={HODName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              {Department?.slice(14)}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="container mt-4">
@@ -169,66 +209,82 @@ const StaffDetails = () => {
 
         <div className="container py-4">
           <div className="row gy-3">
-            {/* Add Staff */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
               <button
-                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
                 onClick={AddStfun}
               >
-                <IoPersonAdd />
-                Add Staff
+                <img
+                  src="/addstaff.png"
+                  alt=""
+                  className="img img-fluid me-3"
+                  style={{ width: "30px" }}
+                />
+                <span className="fw-semibold">Add Staff</span>
               </button>
             </div>
-
             {/* Students */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
               <button
-                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
                 onClick={() => {
                   nav("/HODLayout/StudentList");
                 }}
               >
-                <FaUsersGear />
-                Students
+                <img
+                  src="/check-list.png"
+                  alt=""
+                  className="img img-fluid me-3"
+                  width={30}
+                />
+                <span className="fw-semibold"> Students</span>
               </button>
             </div>
-
             {/* Multiple Students */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
               <button
-                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
                 onClick={() => {
                   nav("/HODLayout/StudentCSV");
                 }}
               >
-                <FaUsersGear />
-                Multiple Students
+                <img
+                  src="/college.png"
+                  alt=""
+                  className="img img-fluid me-3"
+                  width={30}
+                />
+                <span className="fw-semibold">Multiple Students</span>
               </button>
             </div>
-
             {/* Single Student */}
             <div className="col-md-3 col-sm-6 d-flex justify-content-center">
               <button
-                className="btn btn-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
                 onClick={() => {
                   nav("/HODLayout/SingleStudentdata");
                 }}
               >
-                <IoPersonAdd />
-                Single Student
+                <img
+                  src="/student.png"
+                  alt=""
+                  className="img img-fluid me-2"
+                  width={30}
+                />
+                <span className="fw-semibold">single Student</span>
               </button>
             </div>
           </div>
         </div>
 
         <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
-          <table className="table table-striped table-bordered mb-5">
-            <thead className="table-primary text-uppercase text-center">
+          <table className="table  table-hover table-striped table-bordered mb-5">
+            <thead className=" text-uppercase table-primary text-center">
               <tr>
                 <th>S.No</th>
                 <th>Name</th>
                 <th>Subject</th>
-                <th>Edit</th>
+                <th>Edit Staff</th>
                 <th>Delete</th>
               </tr>
             </thead>
@@ -247,24 +303,34 @@ const StaffDetails = () => {
                         Subject
                       </button>
                     </td>
-                    <td>
+                    <td className="">
                       <button
-                        className="btn btn-outline-secondary"
+                        className="btn  border-0"
                         onClick={() => fetchEdit(value)}
                         title="Edit Staff"
                       >
-                        <CiEdit size={20} />
+                        <img
+                          src="/peopleEdit.png"
+                          alt=""
+                          className="img img-fluid"
+                          width={40}
+                        />
                       </button>
                     </td>
                     <td>
                       <button
-                        className="btn btn-outline-danger"
+                        className="btn border-0"
                         onClick={() =>
                           DeletStaffAlert(value.id, value.staffName)
                         }
                         title="Delete Staff"
                       >
-                        <FcDeleteDatabase size={22} />
+                        <img
+                          src="/dataserver.png"
+                          alt=""
+                          className="img img-fluid"
+                          width={30}
+                        />
                       </button>
                     </td>
                   </tr>
