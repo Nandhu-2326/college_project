@@ -206,9 +206,9 @@ const AddStaff = () => {
       </div>
 
       {/* Main Card */}
-      <div className="d-flex  justify-content-center align-items-center mb-5 mt-5">
-        <div className="row rounded ">
-          <div className="col-12">
+      <div style={{ width: "90%" }} className=" mb-5 mt-5 container">
+        <div className="row rounded d-flex justify-content-center align-items-center">
+          <div className="col-12 col-md-6 col-lg-5">
             <div className="card border rounded">
               <div
                 className="card-header border-0"
