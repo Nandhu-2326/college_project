@@ -128,7 +128,12 @@ const FirstPage = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text icons">
-                   <img src="" alt="" className="img img-fluid" />
+                      <img
+                        src="/list.png"
+                        width={20}
+                        alt=""
+                        className="img img-fluid"
+                      />
                     </span>
                     <select
                       onChange={(e) => setSem(e.target.value)}
@@ -156,7 +161,12 @@ const FirstPage = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text icons ">
-                      <CiCalendarDate />
+                      <img
+                        src="/birthday.png"
+                        width={20}
+                        alt=""
+                        className="img img-fluid"
+                      />
                     </span>
                     <input
                       type="date"

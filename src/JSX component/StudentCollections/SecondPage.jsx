@@ -38,12 +38,15 @@ const SecondPage = () => {
 
   return (
     <>
-      <CollegeLogo />
+      {/* <CollegeLogo /> */}
 
-      <div className="container mb-5">
+      <div className="container mb-5" style={{ width: "100%" }}>
         {result.length > 0 && student && (
-          <div ref={pdfRef} className="row mt-5 text-dark">
-            <div className="col-12 rounded-4 p-4 shadow-sm">
+          <div ref={pdfRef} className="row mt-5  rounded  text-dark  p-1">
+            <div className="container">
+              <img src="/collegeLogo.png" alt="" className="img img-fluid" />
+            </div>
+            <div className="col-12 rounded-4 p-4 ">
               <h5 className="text-center text-uppercase fw-bold mb-2">
                 {student.Department}
               </h5>
@@ -139,10 +142,10 @@ const SecondPage = () => {
               </div>
             </div>
 
-            <div className="d-flex w-100 mt-3 justify-content-center  align-items-center mb-5">
-              <div>
+            <div className="d-flex  w-100 mt-3 justify-content-center  align-items-center mb-5">
+              <div className="">
                 <button
-                  className="btn me-3"
+                  className="btn me-3 "
                   onClick={() => {
                     nav("/");
                   }}
