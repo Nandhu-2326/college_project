@@ -1,35 +1,24 @@
-import React, { useRef, useState } from "react";
-import html2pdf from "html2pdf.js";
-import CollegeLogo from "./CollegeLogo";
+import React, {  useState } from "react";
+
+import CollegeLogo from "../CollegeLogo";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
-import Footer from "./Footer";
+import Footer from "../Footer";
 import { RiFileList3Line } from "react-icons/ri";
-import { db } from "./Database";
+import { db } from "../Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
-import "./Style Component/firstpage.css";
-import { ImDownload2 } from "react-icons/im";
+import "../Style Component/firstpage.css";
+import { useNavigate } from "react-router-dom";
 
 const FirstPage = () => {
   const [dob, setDob] = useState("");
   const [rollno, setRollno] = useState("");
   const [sem, setSem] = useState("");
-  const [result, setResult] = useState([]);
-  const [student, setStudent] = useState(null);
-  const pdfRef = useRef();
 
-  const handleDownloadPDF = () => {
-    const element = pdfRef.current;
-    const opt = {
-      margin: 0.3,
-      filename: `MarkSheet_${result?.Name}_${Date.now()}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
-    };
-    html2pdf().set(opt).from(element).save();
-  };
+
+  const nav = useNavigate();
+
 
   const getResult = async () => {
     if (!rollno || !dob || !sem) {
@@ -54,7 +43,7 @@ const FirstPage = () => {
       const studentDoc = rollSnap.docs[0];
       const studentData = studentDoc.data();
       setStudent(studentData);
-
+      sessionStorage.setItem("student", JSON.stringify(studentData))
       const formatDOB = (inputDate) => {
         const [year, month, day] = inputDate.split("-");
         return `${day}-${month}-${year}`;
@@ -76,12 +65,11 @@ const FirstPage = () => {
           ...doc.data(),
           id: doc.id,
         }));
-        setResult(markData);
-
-        console.log(markData);
-        console.log(studentData);
+         sessionStorage.setItem("Marks", JSON.stringify(markData))
+         sessionStorage.setItem("sem", JSON.stringify(sem))
         toast.dismiss(loading);
         toast.success("Result");
+        nav("/SecondPage");
       } else {
         toast.error("This semester has no result");
       }
@@ -183,110 +171,6 @@ const FirstPage = () => {
             </div>
           </div>
         </div>
-
-        {Array.isArray(result) && result.length > 0 && student && (
-          <div ref={pdfRef} className="row mt-5 text-dark">
-            <div className="col-12  rounded-4 p-4 shadow-sm">
-              <h5 className="text-center text-uppercase fw-bold  mb-2">
-                {student.Department}
-              </h5>
-              <div className="row mb-3 ">
-                <div className="col-4 text-end fw-semibold">
-                  Year: {student.year}
-                </div>
-                <div className="col-4 text-center fw-semibold">
-                  Semester: {sem.slice(9)}
-                </div>
-                <div className="col-4 text-start fw-semibold">
-                  Class: {student.class}
-                </div>
-              </div>
-              <div className="text-center fw-bold text-uppercase fs-5">
-                {student.Name}
-              </div>
-              <div className="text-center fw-semibold  mb-3">
-                {student.rollno}
-              </div>
-
-              <div className="table-responsive">
-                <table className="table table-bordered table-hover text-center align-middle">
-                  <thead className="table-primary">
-                    <tr>
-                      <th>S.No</th>
-                      <th>Subject</th>
-                      <th>Type</th>
-                      <th>Internal 1</th>
-                      <th>Internal 2</th>
-                      <th>Average</th>
-                      <th>Lab Record or Assignment</th>
-
-                      <th>Observation or Seminar</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.map((doc, index) => (
-                      <tr key={doc.id}>
-                        <td>{index + 1}</td>
-                        <td>{doc.id}</td>
-                        <td>{doc.TorL}</td>
-                        <td>
-                          {doc.Internal_1Og != null
-                            ? doc.Internal_1Og
-                            : "Absent"}
-                        </td>
-                        <td>
-                          {doc.Internal_2Og != null
-                            ? doc.Internal_2Og
-                            : "Absent"}
-                        </td>
-                        <td>
-                          {doc.TorL != "Lab"
-                            ? doc.BothInternal != null
-                              ? doc.BothInternal
-                              : "Absent"
-                            : doc.AverageMark != null
-                            ? doc.AverageMark
-                            : "Absent"}
-                        </td>
-                        <td>
-                          {doc.TorL != "Lab"
-                            ? doc.Assignment != null
-                              ? doc.Assignment
-                              : "Absent"
-                            : doc.LabRecord != null
-                            ? doc.LabRecord
-                            : "Absent"}
-                        </td>
-                        <td>
-                          {doc.TorL != "Lab"
-                            ? doc.Seminar != null
-                              ? doc.Seminar
-                              : "Absent"
-                            : doc.Observation != null
-                            ? doc.Observation
-                            : "Absent"}
-                        </td>
-                        <td>
-                          {doc.TorL !== "Lab" ? doc.NeetMark : doc.Totalmark}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="d-flex w-100 mt-3 justify-content-center align-items-center mb-5">
-              <button
-                className="btn btn-outline-success text-uppercase"
-                style={{ letterSpacing: "2px" }}
-                onClick={handleDownloadPDF}
-              >
-                <ImDownload2 /> PDF
-              </button>
-            </div>
-          </div>
-        )}
         <div className="mt-5">
           <Footer />
         </div>

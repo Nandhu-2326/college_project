@@ -1,0 +1,181 @@
+import React, { useRef, useState, useEffect } from "react";
+import html2pdf from "html2pdf.js";
+import CollegeLogo from "../CollegeLogo";
+import Footer from "../Footer";
+import { useNavigate } from "react-router-dom";
+
+const SecondPage = () => {
+  const pdfRef = useRef();
+  const nav = useNavigate();
+  const [result, setResult] = useState([]);
+  const [student, setStudent] = useState(null);
+  const [sem, setSem] = useState(""); // ✅ Track semester separately
+
+  useEffect(() => {
+    const marks = sessionStorage.getItem("Marks");
+    const AllMark = marks ? JSON.parse(marks) : [];
+    setResult(AllMark);
+
+    const studentData = sessionStorage.getItem("student");
+    const Alldata = studentData ? JSON.parse(studentData) : null;
+    setStudent(Alldata);
+
+    const semVal = sessionStorage.getItem("sem");
+    setSem(semVal || "");
+  }, []);
+
+  const handleDownloadPDF = () => {
+    const element = pdfRef.current;
+    const opt = {
+      margin: 0.3,
+      filename: `MarkSheet_${sem}_${student?.Name}_${Date.now()}.pdf`, // ✅ use student.Name, not result
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+    };
+    html2pdf().set(opt).from(element).save();
+  };
+
+  return (
+    <>
+      <CollegeLogo />
+
+      <div className="container mb-5">
+        {result.length > 0 && student && (
+          <div ref={pdfRef} className="row mt-5 text-dark">
+            <div className="col-12 rounded-4 p-4 shadow-sm">
+              <h5 className="text-center text-uppercase fw-bold mb-2">
+                {student.Department}
+              </h5>
+              <div className="row mb-3">
+                <div className="col-4 text-end fw-semibold">
+                  Year: {student.year}
+                </div>
+                <div className="col-4 text-center fw-semibold">
+                  Semester: {sem?.slice(9)}
+                </div>
+                <div className="col-4 text-start fw-semibold">
+                  Class: {student.class}
+                </div>
+              </div>
+              <div className="text-center fw-bold text-uppercase fs-5">
+                {student.Name}
+              </div>
+              <div className="text-center fw-semibold mb-3">
+                {student.rollno}
+              </div>
+
+              <div className="table-responsive">
+                <table className="table table-bordered table-hover text-center align-middle">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>S.No</th>
+                      <th>Subject</th>
+                      <th>Type</th>
+                      <th>Internal 1</th>
+                      <th>Internal 2</th>
+                      <th>Average</th>
+                      <th>Lab Record or Assignment</th>
+                      <th>Observation or Seminar</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.map((doc, index) => (
+                      <tr key={doc.id || index}>
+                        <td>{index + 1}</td>
+                        <td>{doc.id}</td>
+                        <td>{doc.TorL}</td>
+                        <td>
+                          {doc.Internal_1Og != null
+                            ? doc.Internal_1Og
+                            : "Absent"}
+                        </td>
+                        <td>
+                          {doc.Internal_2Og != null
+                            ? doc.Internal_2Og
+                            : "Absent"}
+                        </td>
+                        <td>
+                          {doc.TorL !== "Lab"
+                            ? doc.BothInternal != null
+                              ? doc.BothInternal
+                              : "Absent"
+                            : doc.AverageMark != null
+                            ? doc.AverageMark
+                            : "Absent"}
+                        </td>
+                        <td>
+                          {doc.TorL !== "Lab"
+                            ? doc.Assignment != null
+                              ? doc.Assignment
+                              : "Absent"
+                            : doc.LabRecord != null
+                            ? doc.LabRecord
+                            : "Absent"}
+                        </td>
+                        <td>
+                          {doc.TorL !== "Lab"
+                            ? doc.Seminar != null
+                              ? doc.Seminar
+                              : "Absent"
+                            : doc.Observation != null
+                            ? doc.Observation
+                            : "Absent"}
+                        </td>
+                        <td>
+                          {doc.TorL !== "Lab" ? doc.NeetMark : doc.Totalmark}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="d-flex w-100 mt-3 justify-content-center  align-items-center mb-5">
+              <div>
+                <button
+                  className="btn me-3"
+                  onClick={() => {
+                    nav("/");
+                  }}
+                  style={{
+                    letterSpacing: "2px",
+                    background: "black",
+                    color: "white",
+                  }}
+                >
+                  Back
+                </button>
+              </div>
+              <div>
+                <button
+                  className="btn text-uppercase"
+                  style={{
+                    letterSpacing: "2px",
+                    background: "black",
+                    color: "white",
+                  }}
+                  onClick={handleDownloadPDF}
+                >
+                  <img
+                    src="/pdf.png"
+                    width={20}
+                    alt=""
+                    className="img img-fluid"
+                  />
+                  PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </>
+  );
+};
+
+export default SecondPage;

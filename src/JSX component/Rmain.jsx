@@ -6,7 +6,8 @@ import {
 } from "react-router-dom";
 
 // === Student Page ===
-import FirstPage from "./FirstPage";
+import FirstPage from "./StudentCollections/FirstPage";
+
 
 // === Admin Pages ===
 import AdminLayout from "./AdminCollections/AdminLayout";
@@ -35,6 +36,7 @@ import LoginPage from "./StaffCollection/LoginPage";
 import StaffSubjects from "./StaffCollection/StaffSubjects";
 import MarkEntry from "./StaffCollection/MarkEntry";
 import PDFResult from "./StaffCollection/PDFResult";
+import SecondPage from "./StudentCollections/SecondPage";
 
 const Rmain = () => {
   return (
@@ -42,6 +44,7 @@ const Rmain = () => {
       <Routes>
         {/* === Student Main Page === */}
         <Route path="/" element={<FirstPage />} />
+        <Route path="/SecondPage" element={<SecondPage/> } />
 
         {/* === Staff Section === */}
         <Route path="/StaffLayout" element={<StaffLayout />}>
@@ -50,11 +53,11 @@ const Rmain = () => {
           <Route path="MarkEntry" element={<MarkEntry />} />
           <Route path="PDFResult" element={<PDFResult />} />
         </Route>
-
+    
         {/* === HOD Section === */}
         <Route path="/HODLayout" element={<HODLayout />}>
           <Route index element={<HOD />} />
-          <Route path="StudentList" element={<StudentList />} />
+          <Route path="StudentList" element={<StudentList /> } />
           <Route path="StaffDetails" element={<StaffDetails />} />
           <Route path="AddStaff" element={<AddStaff />} />
           <Route path="SubjectAlert" element={<SubjectAlert />} />
