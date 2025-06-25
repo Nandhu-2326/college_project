@@ -18,6 +18,9 @@ import Swal from "sweetalert2";
 // MUI Components
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 
 const SubjectAlert = () => {
   const [isLoading, setisLoading] = useState(false);
@@ -158,27 +161,57 @@ const SubjectAlert = () => {
 
   return (
     <>
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold m-0"> HOD: {HODName}</p>
-        <p className="fw-semibold m-0">Department: {Department?.slice(14)}</p>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {HODName?.slice(0, 1)}
+                  </Avatar>
+                }
+                label={HODName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              {Department?.slice(14)}
+            </p>
+          </div>
+        </div>
       </div>
-
-      <div className="container  d-felx p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/HODLayout/StaffDetails");
-          }}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
-      </div>
-
       <div className="container ">
         <div className="row mb-5 justify-content-center">
           <div className="col-lg-8">
-            <div className="card shadow border-primary">
-              <div className="card-header bg-primary text-light text-center text-uppercase fw-bold fs-6">
+            <div className="card shadow">
+              <div
+                className="card-header  text-light text-center text-uppercase fw-bold fs-6"
+                style={{ background: "rgb(26, 51, 208)", color: "white" }}
+              >
                 Subject Alert <br /> for <br />
                 {StaffData.staffName}
               </div>
@@ -220,7 +253,9 @@ const SubjectAlert = () => {
                         : "Semester";
                     return (
                       <div className="col-md-6 mt-3" key={doc}>
-                        <label className="text-uppercase text-primary fw-semibold mb-2">
+                        <label className="text-uppercase fw-semibold mb-2"
+        style={{ color: "rgb(26, 51, 208)"}}
+        >
                           {fieldLabel}
                         </label>
 
@@ -314,8 +349,8 @@ const SubjectAlert = () => {
 
               <div className="card-footer d-flex justify-content-center p-3">
                 <button
-                  className="btn btn-primary text-uppercase mb-3 px-4 py-2"
-                  style={{ letterSpacing: "2px" }}
+                  className="btn text-uppercase mb-3 px-4 py-2"
+                  style={{ letterSpacing: "2px", background:"rgb(29, 51, 208)", color:"white" }}
                   onClick={AddStaffData}
                   disabled={isLoading}
                 >

@@ -1,16 +1,7 @@
-import { FaUsers, FaUser, FaUserGraduate } from "react-icons/fa";
-import { SiGoogleclassroom } from "react-icons/si";
-import { FcDepartment } from "react-icons/fc";
-import { TbNumber } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import { db } from "../Database.js";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeftLong } from "react-icons/fa6";
-import { PiStudentDuotone } from "react-icons/pi";
-import { CiCalendarDate } from "react-icons/ci";
-import { MdPermPhoneMsg } from "react-icons/md";
 import toast from "react-hot-toast";
 
 const SingleStudentdata = () => {
@@ -26,32 +17,6 @@ const SingleStudentdata = () => {
   const [Actives, setActives] = useState(true);
   const [Dob, setDob] = useState();
   const [PNumber, setPNumber] = useState();
-  // console.log(Dob);
-  const loading = () => {
-    Swal.fire({
-      html: "Loading...",
-      timer: 2000,
-      timerProgressBar: false,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
-
-  const InformationError = () => {
-    Swal.fire({
-      html: "Please Fill All Information",
-      icon: "error",
-      timer: 1000,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
-
-  const success = () => {
-    Swal.fire({
-      html: "Success",
-      icon: "success",
-      timer: 1000,
-    });
-  };
 
   useEffect(() => {
     FetchDepartment();
@@ -76,19 +41,14 @@ const SingleStudentdata = () => {
       !Dob ||
       !PNumber
     ) {
-     return InformationError();
+      return toast.error("Please fill All Requirement");
     } else {
-      if(!PNumber)
-      {
-        return toast.error("Phone Number Not")
+      if (!PNumber) {
+        return toast.error("Phone Number Not");
+      } else if (PNumber.length > 10 || PNumber.length < 10) {
+        return toast.error("10 Digite Only");
       }
-      else if(PNumber.length > 10 || PNumber.length < 10)
-      {
-        return toast.error("10 Digite Only")
-      }
-    
-      console.log(Actives);
-      loading();
+      toast.loading("Please Wait")
       await addDoc(collection(db, "student"), {
         Department: Departments,
         Name: Name,
@@ -99,8 +59,10 @@ const SingleStudentdata = () => {
         year: Number(Year),
         active: Boolean(Actives),
         dob: Dob,
-        PH : PNumber
+        PH: PNumber,
       });
+      toast.dismiss()
+      toast.success("Student Uploaded")
       setRollno("");
       setDepartment("");
       setName("");
@@ -110,36 +72,59 @@ const SingleStudentdata = () => {
       setYear("");
       setActives("");
       setDob("");
-      setPNumber("")
-      success();
+      setPNumber("");
+
     }
   };
 
   return (
     <>
-      <div className="container  d-felx p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/HODLayout/StaffDetails");
-          }}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
+      <div
+        style={{ backgroundColor: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+        </div>
       </div>
       <div className="container py-5 mb-5">
         <div>
-          <h4 className="text-primary mb-4 text-center fw-bold">
-            🎓 Student Information Form
+          <h4
+            className="text-uppercase mb-4 text-center fw-bold"
+            style={{ color: "rgb(29, 51, 208)" }}
+          >
+            Student Information Form
           </h4>
 
           <div className="row g-4">
             {/* UG / PG */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">UG / PG</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51, 208)" }}
+              >
+                UG / PG
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUserGraduate />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/degree.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   className="form-select"
@@ -157,10 +142,23 @@ const SingleStudentdata = () => {
 
             {/* Class */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Class</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Class
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <SiGoogleclassroom />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/classroom.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   className="form-select"
@@ -178,10 +176,23 @@ const SingleStudentdata = () => {
 
             {/* Department */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Department</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Department
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FcDepartment />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/department.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   className="form-select"
@@ -204,10 +215,23 @@ const SingleStudentdata = () => {
 
             {/* Year */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Year</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Year
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUsers />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/school.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   className="form-select"
@@ -226,10 +250,23 @@ const SingleStudentdata = () => {
 
             {/* Self or Regular */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Self / Regular</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Self / Regular
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white fw-bold">
-                  RS
+                <span
+                  className="input-group-text fw-bold"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/rs.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   className="form-select"
@@ -247,10 +284,23 @@ const SingleStudentdata = () => {
 
             {/* Student Name */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Student Name</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Student Name
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUser />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/student.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <input
                   type="text"
@@ -266,10 +316,23 @@ const SingleStudentdata = () => {
 
             {/* Roll Number */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Roll Number</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Roll Number
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <TbNumber />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/no.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <input
                   type="text"
@@ -283,10 +346,23 @@ const SingleStudentdata = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Active Or Not</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                Active or Not
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <PiStudentDuotone />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/active.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <select
                   name=""
@@ -304,10 +380,23 @@ const SingleStudentdata = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">D.O.B</label>
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
+                D.O.B
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <CiCalendarDate />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/birthday.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <input
                   type="date"
@@ -319,12 +408,23 @@ const SingleStudentdata = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">
+              <label
+                className="form-label fw-semibold"
+                style={{ color: "rgb(29, 51,208)" }}
+              >
                 Parent Phone Number
               </label>
               <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <MdPermPhoneMsg />
+                <span
+                  className="input-group-text"
+                  style={{ background: "white" }}
+                >
+                  <img
+                    src="/telephone.png"
+                    width={30}
+                    alt=""
+                    className="img img-fluid"
+                  />
                 </span>
                 <input
                   type="number"
@@ -340,7 +440,8 @@ const SingleStudentdata = () => {
             {/* Submit Button */}
             <div className="col-12 text-center mt-4">
               <button
-                className="btn btn-primary  px-5 shadow-sm rounded"
+                style={{ color: "white", background: "rgb(29, 51, 208)" }}
+                className="btn  px-5 shadow-sm rounded"
                 onClick={Add}
               >
                 Add Student

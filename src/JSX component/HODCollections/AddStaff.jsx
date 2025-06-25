@@ -1,7 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
-import { FaUserLock } from "react-icons/fa6";
 import { showWarning } from "../SweetAlert";
 import { db } from "../Database";
 import {
@@ -209,7 +207,7 @@ const AddStaff = () => {
       <div style={{ width: "90%" }} className=" mb-5 mt-5 container">
         <div className="row rounded d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-6 col-lg-5">
-            <div className="card border rounded">
+            <div className="card border rounded ">
               <div
                 className="card-header border-0"
                 style={{ color: "rgb(26, 51, 208)" }}
@@ -232,10 +230,10 @@ const AddStaff = () => {
 
                   const placeholder =
                     staff === 1
-                      ? "Enter Staff Name"
+                      ? " Staff Name"
                       : staff === 2
-                      ? "Enter Username"
-                      : "Enter Password";
+                      ? " Username"
+                      : " Password";
 
                   const icon =
                     staff === 1
@@ -282,6 +280,7 @@ const AddStaff = () => {
                             placeholder={placeholder}
                             name={fieldName}
                             value={state[fieldName]}
+                            style={staff === 3 ? { borderRight: "none" } : {}}
                             onChange={(e) => {
                               dispatch({
                                 field: e.target.name,
@@ -294,7 +293,7 @@ const AddStaff = () => {
                                 return (
                                   <button
                                     key={nums}
-                                    className="input-group-text "
+                                    className="input-group-text  border-start-0 border btn"
                                   >
                                     {nums === 1 ? (
                                       <IoEyeOffSharp

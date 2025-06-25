@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { FaUserCircle } from "react-icons/fa";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";

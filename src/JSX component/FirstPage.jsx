@@ -77,7 +77,7 @@ const FirstPage = () => {
           id: doc.id,
         }));
         setResult(markData);
-        
+
         console.log(markData);
         console.log(studentData);
         toast.dismiss(loading);
@@ -95,9 +95,9 @@ const FirstPage = () => {
     <>
       <Toaster position="top-center" />
       <CollegeLogo />
-      <div className="container-fluid  min-vh-100" style={{ width: "92%" }}>
+      <div className="container-fluid  min-vh-100" style={{ width: "90%" }}>
         <div className="row justify-content-center mt-5">
-          <div className="col-12 col-md-8 col-lg-6">
+          <div className="col-12 col-md-5 col-lg-4">
             <div className="card shadow rounded-4 border-0">
               <div className="card-header bg-white border-0 text-center">
                 <h2 className="fw-bold text-dark text-uppercase">
@@ -246,8 +246,8 @@ const FirstPage = () => {
                               ? doc.BothInternal
                               : "Absent"
                             : doc.AverageMark != null
-                              ? doc.AverageMark
-                              : "Absent"}
+                            ? doc.AverageMark
+                            : "Absent"}
                         </td>
                         <td>
                           {doc.TorL != "Lab"

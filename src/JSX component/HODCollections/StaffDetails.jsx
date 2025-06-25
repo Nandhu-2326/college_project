@@ -192,8 +192,8 @@ const StaffDetails = () => {
       <div className="container mt-4">
         <div className="d-flex flex-column align-items-center mb-4">
           <h1
-            className="display-6 fw-bold text-uppercase text-primary mb-2"
-            style={{ letterSpacing: "1px" }}
+            className="display-6 fw-bold text-uppercase  mb-2"
+            style={{ letterSpacing: "1px", color: "rgb(29, 51, 208)" }}
           >
             View Staff
           </h1>
