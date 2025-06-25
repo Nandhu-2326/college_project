@@ -9,8 +9,7 @@ const SecondPage = () => {
   const nav = useNavigate();
   const [result, setResult] = useState([]);
   const [student, setStudent] = useState(null);
-  const [sem, setSem] = useState(""); // ✅ Track semester separately
-
+  const [sem, setSem] = useState("");
   useEffect(() => {
     const marks = sessionStorage.getItem("Marks");
     const AllMark = marks ? JSON.parse(marks) : [];
@@ -22,6 +21,7 @@ const SecondPage = () => {
 
     const semVal = sessionStorage.getItem("sem");
     setSem(semVal || "");
+    console.log(semVal);
   }, []);
 
   const handleDownloadPDF = () => {
@@ -30,7 +30,7 @@ const SecondPage = () => {
       margin: 0.3,
       filename: `MarkSheet_${sem}_${student?.Name}_${Date.now()}.pdf`, // ✅ use student.Name, not result
       image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { scale: 4 },
       jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
     };
     html2pdf().set(opt).from(element).save();
@@ -52,7 +52,7 @@ const SecondPage = () => {
                   Year: {student.year}
                 </div>
                 <div className="col-4 text-center fw-semibold">
-                  Semester: {sem?.slice(9)}
+                  Semester: {sem?.slice(10, 11)}
                 </div>
                 <div className="col-4 text-start fw-semibold">
                   Class: {student.class}
@@ -66,8 +66,11 @@ const SecondPage = () => {
               </div>
 
               <div className="table-responsive">
-                <table className="table table-bordered table-hover text-center align-middle">
-                  <thead className="table-primary">
+                <table
+                  style={{ borderCollapse: "collapse" }}
+                  className="table table-bordered border border-1 border-dark table-hover text-center align-middle"
+                >
+                  <thead className="table-primary border-1 border-dark">
                     <tr>
                       <th>S.No</th>
                       <th>Subject</th>
@@ -82,7 +85,10 @@ const SecondPage = () => {
                   </thead>
                   <tbody>
                     {result.map((doc, index) => (
-                      <tr key={doc.id || index}>
+                      <tr
+                        key={doc.id || index}
+                        className="border border-dark border-1"
+                      >
                         <td>{index + 1}</td>
                         <td>{doc.id}</td>
                         <td>{doc.TorL}</td>

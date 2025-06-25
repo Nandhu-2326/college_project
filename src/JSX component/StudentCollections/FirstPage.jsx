@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 
 import CollegeLogo from "../CollegeLogo";
 import { CiCalendarDate } from "react-icons/ci";
@@ -16,9 +16,7 @@ const FirstPage = () => {
   const [rollno, setRollno] = useState("");
   const [sem, setSem] = useState("");
 
-
   const nav = useNavigate();
-
 
   const getResult = async () => {
     if (!rollno || !dob || !sem) {
@@ -42,8 +40,6 @@ const FirstPage = () => {
 
       const studentDoc = rollSnap.docs[0];
       const studentData = studentDoc.data();
-      setStudent(studentData);
-      sessionStorage.setItem("student", JSON.stringify(studentData))
       const formatDOB = (inputDate) => {
         const [year, month, day] = inputDate.split("-");
         return `${day}-${month}-${year}`;
@@ -65,16 +61,18 @@ const FirstPage = () => {
           ...doc.data(),
           id: doc.id,
         }));
-         sessionStorage.setItem("Marks", JSON.stringify(markData))
-         sessionStorage.setItem("sem", JSON.stringify(sem))
+        sessionStorage.setItem("student", JSON.stringify(studentData));
+        sessionStorage.setItem("Marks", JSON.stringify(markData));
+        sessionStorage.setItem("sem", JSON.stringify(sem));
         toast.dismiss(loading);
         toast.success("Result");
         nav("/SecondPage");
       } else {
+        toast.dismiss();
         toast.error("This semester has no result");
       }
     } catch (err) {
-      console.error(err);
+      toast.dismiss();
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -88,7 +86,10 @@ const FirstPage = () => {
           <div className="col-12 col-md-5 col-lg-4">
             <div className="card shadow rounded-4 border-0">
               <div className="card-header bg-white border-0 text-center">
-                <h2 className="fw-bold text-dark text-uppercase">
+                <h2
+                  className="fw-bold text-uppercase"
+                  style={{ color: "rgb(29,51,208)" }}
+                >
                   View Result
                 </h2>
                 <p
@@ -106,7 +107,12 @@ const FirstPage = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text icons">
-                      <FaRegUserCircle />
+                      <img
+                        src="/student.png"
+                        width={20}
+                        alt=""
+                        className="img img-fluid"
+                      />
                     </span>
                     <input
                       type="text"
@@ -122,7 +128,7 @@ const FirstPage = () => {
                   </label>
                   <div className="input-group">
                     <span className="input-group-text icons">
-                      <RiFileList3Line />
+                   <img src="" alt="" className="img img-fluid" />
                     </span>
                     <select
                       onChange={(e) => setSem(e.target.value)}
