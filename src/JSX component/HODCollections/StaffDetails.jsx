@@ -32,18 +32,25 @@ const StaffDetails = () => {
   };
 
   const getDataFromAllstaffs = async () => {
-    if (!DepartmentCode) return;
-    const q = query(
-      collection(db, "Allstaffs"),
-      where("DepartmentCode", "==", DepartmentCode)
-    );
-    const querySnapshot = await getDocs(q);
-    const filteredStaff = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setStaffData(filteredStaff);
+    try {
+      if (!DepartmentCode) return;
+      const q = query(
+        collection(db, "Allstaffs"),
+        where("DepartmentCode", "==", DepartmentCode)
+      );
+      const querySnapshot = await getDocs(q);
+      const filteredStaff = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setStaffData(filteredStaff);
+      setPageLoad(false);
+    } catch (e) {
+      setPageLoad(false);
+      toast.error("No data");
+    }
   };
+
   const DeletStaffAlert = (id, stName) => {
     Swal.fire({
       title: "Delete Staff?",
@@ -115,22 +122,14 @@ const StaffDetails = () => {
     fetchData();
   }, []);
 
-  // Once HOD data is available, fetch staff
   useEffect(() => {
     if (DepartmentCode) {
       getDataFromAllstaffs();
+      setPageLoad(true);
     }
   }, [DepartmentCode]);
 
-  // Manage page load timeout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPageLoad(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
-  // Show loader while loading
   if (PageLoad) {
     return (
       <div

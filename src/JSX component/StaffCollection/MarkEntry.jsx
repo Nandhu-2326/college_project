@@ -14,10 +14,13 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import { TiTick } from "react-icons/ti";
+
 import { RiUserSearchLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeftLong } from "react-icons/fa6";
+
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 
 const MarkEntry = () => {
   //
@@ -501,7 +504,6 @@ const MarkEntry = () => {
           mark1: dbmark1,
           mark2: dbmark2,
           TorL: selectedSubject.TorL,
-
         });
         toast.dismiss();
         toast.success("Update Successfully");
@@ -590,7 +592,6 @@ const MarkEntry = () => {
           Assignment: dbAssignment,
           Seminar: dbSeminar,
           TorL: selectedSubject.TorL,
-
         });
         toast.dismiss();
         for (let ObjectRender in updateObject) {
@@ -1045,26 +1046,54 @@ const MarkEntry = () => {
   const nav = useNavigate();
   return (
     <div className="bg-light min-vh-100">
-      {/* Header */}
-      <header className="bg-primary text-light sticky-top py-3 px-4 d-flex justify-content-between align-items-center">
-        <h6 className="mb-0">STAFF: {staffData?.staffName || "N/A"}</h6>
-        <h6 className="mb-0">D-Code: {staffData?.DepartmentCode || "N/A"}</h6>
-      </header>
-      {/* Back Page */}
-      <div className="container  d-felx p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => {
-            nav("/StaffLayout/StaffSubjects");
-          }}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/StaffLayout/StaffSubjects");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {staffData?.staffName?.slice(0, 1) || ""}
+                  </Avatar>
+                }
+                label={staffData?.staffName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              D-Code {staffData?.DepartmentCode || ""}
+            </p>
+          </div>
+        </div>
       </div>
-
       {/* Title */}
       <div className="text-center my-4">
-        <h2 className="text-uppercase text-primary fw-bold">Mark Entry</h2>
+        <h2 className="text-uppercase fw-bold" style={{ color: "#1D33D0" }}>
+          Mark Entry
+        </h2>
       </div>
 
       {/* Subject Info */}
@@ -1102,10 +1131,15 @@ const MarkEntry = () => {
           <div className="col-12 col-sm-5 ">
             <div className="input-group ">
               <span
-                className="input-group-text fw-bold bg-primary text-light"
-                style={{ fontSize: "20px" }}
+                className="input-group-text fw-bold"
+                style={{ background: "white", fontSize: "20px" }}
               >
-                <RiUserSearchLine />
+                <img
+                  src="/student.png"
+                  width={20}
+                  alt=""
+                  className="img img-fluid "
+                />
               </span>
               <input
                 type="search"
@@ -1123,7 +1157,7 @@ const MarkEntry = () => {
                 nav("/StaffLayout/PDFResult");
               }}
             >
-              All Result
+              All RESULT
             </button>
           </div>
         </div>
@@ -1131,7 +1165,10 @@ const MarkEntry = () => {
 
       {/* Student List */}
       <div className="container">
-        <h3 className="text-center text-primary text-uppercase mb-4 mt-sm-3">
+        <h3
+          className="text-center text-uppercase mb-4 mt-sm-3"
+          style={{ color: "	#1D33D0" }}
+        >
           Student List
         </h3>
         <div className="row ">
@@ -1157,18 +1194,32 @@ const MarkEntry = () => {
                       ) : (
                         <div className="w-100">
                           <button
-                            className="btn btn-sm btn-outline-success"
+                            className="btn border-0 d-flex align-items-center"
                             onClick={() => {
                               ResultAlert(student.id);
                             }}
                           >
-                            Result
+                            <img
+                              src="/open-folder.png"
+                              className="img img-fluid me-2"
+                              width={20}
+                              alt=""
+                            />
+                            <span
+                              style={{
+                                color: "	#28a745",
+                                fontWeight: "bold",
+                                letterSpacing: "1.5px",
+                              }}
+                            >
+                              RESULT
+                            </span>
                           </button>
                         </div>
                       )}
                     </div>
                     <div className="card-body">
-                      <h5 className="card-title text-primary">
+                      <h5 className="card-title " style={{ color: "#1D33D0" }}>
                         {student.Name}
                       </h5>
                       <p className="card-text fw-semibold">
@@ -1183,9 +1234,13 @@ const MarkEntry = () => {
                         Non active Student
                       </h3>
                     ) : (
-                      <div className="card-footer bg-white d-flex justify-content-between">
+                      <div className="card-footer bg-white d-flex justify-content-between align-items-center">
                         {markedStudents.includes(student.id) ? (
-                          <TiTick color="green" style={{ fontSize: "30px" }} />
+                          <img
+                            src="/check-mark.png"
+                            width={30}
+                            className="img img-fluid"
+                          />
                         ) : (
                           <button
                             className="btn btn-success btn-sm px-3"
@@ -1200,14 +1255,30 @@ const MarkEntry = () => {
                         )}
 
                         <button
-                          className="btn btn-danger btn-sm px-3"
+                          className="btn d-flex border-0 align-items-center  px-3"
                           onClick={() =>
                             selectedSubject.TorL !== "Lab"
                               ? UpdateMark(student)
                               : LabUpdateMark(student)
                           }
                         >
-                          Edit
+                          <span
+                            className="me-2"
+                            style={{
+                              color: "	#e74c3c",
+                              fontWeight: "bold",
+                              letterSpacing: "1.5px",
+                            }}
+                          >
+                            {" "}
+                            EDIT
+                          </span>
+                          <img
+                            src="/edits.png"
+                            className="img img-fluid me-2"
+                            width={30}
+                            alt=""
+                          />
                         </button>
                       </div>
                     )}

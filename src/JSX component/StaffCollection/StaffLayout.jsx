@@ -6,10 +6,10 @@ import { Toaster } from "react-hot-toast";
 
 const StaffLayout = () => {
   const [loading, setLoading] = useState(true);
-  const [zoom, setZoom] = useState(false); // for scale effect
+  const [zoom, setZoom] = useState(false); 
 
   useEffect(() => {
-    // Trigger zoom and set loading timeout
+
     setZoom(true);
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);

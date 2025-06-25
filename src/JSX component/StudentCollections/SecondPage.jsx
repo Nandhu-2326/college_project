@@ -42,11 +42,11 @@ const SecondPage = () => {
 
       <div className="container mb-5" style={{ width: "100%" }}>
         {result.length > 0 && student && (
-          <div ref={pdfRef} className="row mt-5  rounded  text-dark  p-1">
+          <div className="row mt-5  rounded  text-dark  p-1">
+            <div className="col-12 rounded-4 p-4 "  ref={pdfRef}>
             <div className="container">
               <img src="/collegeLogo.png" alt="" className="img img-fluid" />
             </div>
-            <div className="col-12 rounded-4 p-4 ">
               <h5 className="text-center text-uppercase fw-bold mb-2">
                 {student.Department}
               </h5>

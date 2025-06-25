@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../Database";
 import { collection, doc, getDocs } from "firebase/firestore";
-import { FaPenAlt } from "react-icons/fa";
-import { ClipLoader } from "react-spinners";
+import { HashLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+
 const StaffSubjects = () => {
   const nav = useNavigate();
   const [StaffData, setStaffData] = useState({});
@@ -19,54 +23,93 @@ const StaffSubjects = () => {
     const staffdata = JSON.parse(data);
     setStaffData(staffdata);
   };
+
   const getSTubject = async (id) => {
-    const stDoc = doc(db, "Allstaffs", id);
-    const stCollection = await getDocs(collection(stDoc, "subject"));
-    const stData = stCollection.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setSTsubject(stData);
+    try {
+      const stDoc = doc(db, "Allstaffs", id);
+      const stCollection = await getDocs(collection(stDoc, "subject"));
+      const stData = stCollection.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSTsubject(stData);
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      toast.error("No data");
+    }
   };
+
   useEffect(() => {
     fetchData();
+    setIsLoading(true);
   }, []);
   useEffect(() => {
     if (StaffData.id) {
       getSTubject(StaffData.id);
     }
   }, [StaffData]);
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000); // 1 second
-    return () => clearTimeout(timer);
-  }, []);
 
   if (isLoading) {
     return (
-      <div className="d-flex justify-content-center align-items-center mt-5">
-        <div className="text-center mt-5">
-          <ClipLoader size={60} color="#0000FF" />
-          <p className="text-primary mt-3 fw-bold">Loading Subjects...</p>
-        </div>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "75vh" }}
+      >
+        <HashLoader color="#1e90ff" size={75} />
       </div>
     );
   }
   return (
     <>
-      <div className="container-fluid bg-primary bg-gradient text-light sticky-top d-flex justify-content-between align-items-center p-3">
-        <p className="fw-semibold mb-0">
-          {" "}
-          STAFF : {StaffData?.staffName || ""}
-        </p>
-        <p className="fw-semibold mb-0">
-          D-Code : {StaffData?.DepartmentCode || ""}
-        </p>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/StaffLayout");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar
+                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
+                  >
+                    {StaffData?.staffName?.slice(0, 1) || ""}
+                  </Avatar>
+                }
+                label={StaffData?.staffName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p className="fw-semibold m-0 text-center">
+              D-Code {StaffData?.DepartmentCode || ""}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="container mt-4 p-2">
         <h3
-          className="h3 text-uppercase text-center text-primary fw-semibold"
-          style={{ letterSpacing: "2px" }}
+          className="h3 text-uppercase text-center fw-bold"
+          style={{ letterSpacing: "2px", color: "rgb(29, 51, 208)" }}
         >
           {" "}
           Your Subjects{" "}
@@ -74,7 +117,7 @@ const StaffSubjects = () => {
       </div>
       <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
         <table className="table table-striped table-bordered mb-5">
-          <thead className="table-primary text-uppercase text-center">
+          <thead className=" text-uppercase text-center table-primary">
             <tr>
               <th>S.No</th>
               <th>Subject</th>
@@ -119,12 +162,17 @@ const StaffSubjects = () => {
                     </td>
                     <td>
                       <button
-                        className="btn btn-outline-success"
+                        className="btn border-0"
                         onClick={() => {
                           SendValue(value);
                         }}
                       >
-                        <FaPenAlt />
+                        <img
+                          src="/edit.png"
+                          width={30}
+                          alt=""
+                          className="img img-fluid"
+                        />
                       </button>
                     </td>
                   </tr>
