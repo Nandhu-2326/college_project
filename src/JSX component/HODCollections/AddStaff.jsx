@@ -205,9 +205,9 @@ const AddStaff = () => {
 
       {/* Main Card */}
       <div style={{ width: "90%" }} className=" mb-5 mt-5 container">
-        <div className="row rounded d-flex justify-content-center align-items-center">
-          <div className="col-12 col-md-6 col-lg-5">
-            <div className="card border rounded ">
+        <div className="row rounded d-flex justify-content-center  align-items-center">
+          <div className="col-12 col-md-6 col-lg-5 ">
+            <div className="card border rounded  ">
               <div
                 className="card-header border-0"
                 style={{ color: "rgb(26, 51, 208)" }}
@@ -219,7 +219,7 @@ const AddStaff = () => {
                   {isUpdate ? "Update Staff" : "Create Staff"}
                 </h3>
               </div>
-              <div className="card-body">
+              <div className="card-body ">
                 {[1, 2, 3].map((staff) => {
                   const fieldName =
                     staff === 1
@@ -235,19 +235,12 @@ const AddStaff = () => {
                       ? " Username"
                       : " Password";
 
-                  const icon =
-                    staff === 1
-                      ? "/user.png"
-                      : staff === 2
-                      ? "/profile.png"
-                      : "/password.png";
-
                   return (
                     <div
-                      className="d-flex justify-content-center align-items-center flex-column"
+                      className="d-flex  justify-content-center align-items-center flex-column"
                       key={staff}
                     >
-                      <div className="col-12">
+                      <div className="col-12 mb-3">
                         <label
                           htmlFor=""
                           style={{
@@ -259,17 +252,6 @@ const AddStaff = () => {
                           {fieldName}
                         </label>
                         <div className="input-group">
-                          <span
-                            className="input-group-text "
-                            style={{ background: "white" }}
-                          >
-                            <img
-                              src={icon}
-                              alt=""
-                              className="img img-fluid"
-                              width={20}
-                            />
-                          </span>
                           <input
                             type={
                               fieldName === "Password" && eyeNumber == 1
@@ -280,7 +262,6 @@ const AddStaff = () => {
                             placeholder={placeholder}
                             name={fieldName}
                             value={state[fieldName]}
-                            style={staff === 3 ? { borderRight: "none" } : {}}
                             onChange={(e) => {
                               dispatch({
                                 field: e.target.name,
@@ -291,9 +272,10 @@ const AddStaff = () => {
                           {staff === 3
                             ? [eyeNumber].map((nums) => {
                                 return (
-                                  <button
+                                  <span
                                     key={nums}
-                                    className="input-group-text  border-start-0 border btn"
+                                    className="input-group-text"
+                                    style={{ background: "white" }}
                                   >
                                     {nums === 1 ? (
                                       <IoEyeOffSharp
@@ -308,7 +290,7 @@ const AddStaff = () => {
                                         }}
                                       />
                                     )}
-                                  </button>
+                                  </span>
                                 );
                               })
                             : ""}
@@ -319,7 +301,7 @@ const AddStaff = () => {
                 })}
               </div>
 
-              <div className="card-footer border-0  d-flex justify-content-center mb-2">
+              <div className="card-footer border-0  d-flex justify-content-center">
                 <button
                   className="btn border-0 text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
                   style={{

@@ -129,7 +129,6 @@ const StaffDetails = () => {
     }
   }, [DepartmentCode]);
 
-
   if (PageLoad) {
     return (
       <div
@@ -295,12 +294,21 @@ const StaffDetails = () => {
                     <td>{index + 1}</td>
                     <td className="fw-semibold">{value.staffName}</td>
                     <td>
-                      <button
-                        className="btn btn-outline-success text-uppercase"
-                        onClick={() => fetchSubject(value)}
-                      >
-                        Subject
-                      </button>
+                      <div className="d-flex justify-content-center ">
+                        <button
+                          style={{ color: "rgb(29, 51, 208)" }}
+                          className="btn btn-sm border-0 text-uppercase"
+                          onClick={() => fetchSubject(value)}
+                        >
+                          Subject
+                          {/* <img
+                          width={20}
+                          src="/share.png"
+                          alt=""
+                          className="img img-fluid"
+                          /> */}
+                        </button>
+                      </div>
                     </td>
                     <td className="">
                       <button
@@ -309,10 +317,10 @@ const StaffDetails = () => {
                         title="Edit Staff"
                       >
                         <img
-                          src="/peopleEdit.png"
+                          src="/noteEdit.png"
                           alt=""
                           className="img img-fluid"
-                          width={40}
+                          width={30}
                         />
                       </button>
                     </td>
@@ -325,7 +333,7 @@ const StaffDetails = () => {
                         title="Delete Staff"
                       >
                         <img
-                          src="/dataserver.png"
+                          src="/deletes.png"
                           alt=""
                           className="img img-fluid"
                           width={30}

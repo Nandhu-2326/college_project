@@ -14,7 +14,8 @@ import {
 import CollegeLogo from "../CollegeLogo";
 import toast from "react-hot-toast";
 import html2pdf from "html2pdf.js";
-import { ThreeDot } from "react-loading-indicators";
+import { HashLoader } from "react-spinners";
+
 
 const PDFResult = () => {
   const nav = useNavigate();
@@ -24,6 +25,7 @@ const PDFResult = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [times, setTimes] = useState("");
   const pdfRef = useRef();
+  const [logo, setLogo] = useState(false);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -42,6 +44,7 @@ const PDFResult = () => {
   useEffect(() => {
     if (selectedSubject) {
       fetchStudentMark();
+      setIsLoading(true)
     }
   }, [selectedSubject]);
 
@@ -90,6 +93,7 @@ const PDFResult = () => {
       );
 
       setStudentDetails(allStudentData);
+      setIsLoading(false)
     } catch (e) {
       toast.error(e.message);
     }
@@ -98,22 +102,26 @@ const PDFResult = () => {
     var CurrentDataTime = new Date().toLocaleString();
     setTimes(CurrentDataTime);
   };
-  
-  useEffect(()=>{
-    TimeStamp()
-  },[TimeStamp])
+
+  useEffect(() => {
+    TimeStamp();
+  }, [TimeStamp]);
   setInterval(TimeStamp, 1000);
 
   const handleDownloadPDF = () => {
-    const element = pdfRef.current;
-    const opt = {
-      margin: 0.3,
-      filename: `MarkSheet_${selectedSubject?.subject}_${Date.now()}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
-    };
-    html2pdf().set(opt).from(element).save();
+    setLogo(true);
+    setTimeout(() => {
+      const element = pdfRef.current;
+      const opt = {
+        margin: 0.3,
+        filename: `MarkSheet_${selectedSubject?.subject}_${Date.now()}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 4 },
+        jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+      };
+      html2pdf().set(opt).from(element).save();
+      setLogo(false);
+    }, 1);
   };
 
   useEffect(() => {
@@ -125,53 +133,44 @@ const PDFResult = () => {
   if (isLoading) {
     return (
       <div
-        className="d-flex justify-content-center flex-column align-items-center"
-        style={{
-          height: "100vh",
-          background: "rgba(25, 150, 25, 0.2)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <ThreeDot
-          variant="bounce"
-          color="#111111"
-          size="medium"
-          text=""
-          textColor=""
-        />
-        <h1
-          className="mt-4 fw-bold"
-          style={{
-            color: "#000001", // Deep Sky Blue
-            letterSpacing: "4px",
-            fontSize: "2rem",
-            textShadow: "0 0 10px rgba(0, 0, 1, 0.7)",
-          }}
-        >
-          RESULT PLEASE WAIT
-        </h1>
-      </div>
+      className="d-flex justify-content-center align-items-center"
+      style={{ height: "75vh" }}
+    >
+      <HashLoader color="#1e90ff" size={75} />
+    </div>
     );
   }
   return (
     <>
-      <div className="container d-flex p-3 justify-content-start align-items-center">
-        <button
-          className="btn text-primary border-0 fs-3"
-          onClick={() => nav("/StaffLayout/MarkEntry")}
-        >
-          <FaArrowLeftLong /> Back
-        </button>
+      <div
+        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row d-flex align-items-center justify-content-between">
+          <div className="col-2 ">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/StaffLayout/MarkEntry");
+              }}
+            >
+              <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+          <div className="col-6 text-end ">
+            <button
+              className="btn btn-success bg-gradient"
+              // style={{ background: "rgb(290,101,20)", color: "white" }}
+              onClick={handleDownloadPDF}
+            >
+              Download PDF
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="container my-3 p-2">
-        <button className="btn btn-outline-success" onClick={handleDownloadPDF}>
-          Download PDF
-        </button>
-      </div>
-
-      <div className="container border p-3 mb-5" ref={pdfRef}>
-        <CollegeLogo />
+      <div className="container border mb-5 mt-5" ref={pdfRef}>
+        {logo && <CollegeLogo />}
 
         {/* Header Info */}
         <div className="row mt-3 g-2">
@@ -206,8 +205,8 @@ const PDFResult = () => {
         {/* Table */}
         <div className="table-responsive mt-4">
           <table className="table table-bordered table-hover text-center align-middle">
-            <thead className="table-dark text-uppercase">
-              <tr>
+            <thead className="table-dark text-uppercase border border-2 border-dark">
+              <tr className="border border-2 border-dark">
                 <th>S.No</th>
                 <th>Name</th>
                 <th>Roll No</th>
@@ -229,7 +228,7 @@ const PDFResult = () => {
             </thead>
             <tbody>
               {studentDetails.map((student, index) => (
-                <tr key={student.id}>
+                <tr key={student.id} className="border border-2 border-dark">
                   <td>{index + 1}</td>
                   <td>{student.Name}</td>
                   <td>{student.rollno.toUpperCase()}</td>
@@ -316,7 +315,7 @@ const PDFResult = () => {
           </table>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 py-3">
           <div className="row">
             <div className="col-4 text-end">STAFF</div>
             <div className="col-4 text-center">HOD </div>
@@ -324,6 +323,7 @@ const PDFResult = () => {
           </div>
         </div>
       </div>
+      <div className="container p-5"></div>
     </>
   );
 };

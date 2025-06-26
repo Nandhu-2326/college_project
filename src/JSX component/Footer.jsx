@@ -50,64 +50,76 @@ const Footer = () => {
   // const defaultColor = "#333";
 
   return (
-    <Paper
-      elevation={10}
-      sx={{
-        position: "fixed",
-        bottom: 4,
-        left: 10,
-        right: 10,
-        borderRadius: "10px",
-        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
-        overflow: "hidden",
-        padding: "10px",
-      }}
-    >
-      <BottomNavigation
-        showLabels
-        value={value}
-        onChange={(e, newValue) => handleNav(newValue)}
-        sx={{
-          backgroundColor: "#ffffff",
-          "& .MuiBottomNavigationAction-root": {
-            // color: defaultColor,
-            transition: "all 0.3s ease",
-            py: 1.2,
-            minWidth: 60,
-            flex: 1,
-            "&.Mui-selected": {
-              color: activeColor,
-              fontWeight: "bold",
+    <>
+      <div className="container-fluid" style={{ width: "100vw" }}>
+        {/* <Paper
+          elevation={10}
+          sx={{
+            position: "fixed",
+            bottom: 4,
+            left: 10,
+            right: 10,
+            borderRadius: "10px",
+            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+            overflow: "hidden",
+            padding: "10px ",
+          }}
+        > */}
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(e, newValue) => handleNav(newValue)}
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 10,
+            right: 10,
+            borderRadius: "10px",
+            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+            overflow: "hidden",
+            padding: "10px ",
+            backgroundColor: "#ffffff",
+            "& .MuiBottomNavigationAction-root": {
+              // color: defaultColor,
+              transition: "all 0.3s ease",
+              py: 1.2,
+              minWidth: 60,
+              flex: 1,
+              "&.Mui-selected": {
+                color: activeColor,
+                fontWeight: "bold",
+              },
+              "&:hover": {
+                backgroundColor: "#f3f3f3",
+              },
             },
-            "&:hover": {
-              backgroundColor: "#f3f3f3",
+            "& .MuiBottomNavigationAction-label": {
+              fontSize: "11px",
+              mt: "0px",
             },
-          },
-          "& .MuiBottomNavigationAction-label": {
-            fontSize: "11px",
-            mt: "0px",
-          },
-        }}
-      >
-        {navItems.map((item, idx) => (
-          <BottomNavigationAction
-            key={item.label}
-            label={item.label}
-            icon={
-              <img
-                src={item.icon}
-                alt={item.label}
-                style={{
-                  width: value === idx ? 45 : 28,
-                  height: value === idx ? 45 : 28,
-                  transition: "all 0.3s ease",
-                }}
-              />
-            }
-          />
-        ))}
-      </BottomNavigation>
-    </Paper>
+          }}
+        >
+          {navItems.map((item, idx) => (
+            <BottomNavigationAction
+              key={item.label}
+              label={item.label}
+              icon={
+                <img
+                  src={item.icon}
+                  alt={item.label}
+                  style={{
+                    width: value === idx ? 45 : 28,
+                    height: value === idx ? 45 : 28,
+                    transition: "all 0.3s ease",
+                  }}
+                />
+              }
+            />
+          ))}
+        </BottomNavigation>
+        {/* </Paper> */}
+      </div>
+    </>
   );
 };
 

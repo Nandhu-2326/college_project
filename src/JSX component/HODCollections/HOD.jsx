@@ -47,9 +47,9 @@ const HOD = () => {
 
   return (
     <div className="container " style={{ width: "90%" }}>
-      <div className="row justify-content-center d-flex mt-5 ">
-        <div className="col-12 col-md-6 col-lg-5 mt-4">
-          <div className="card ">
+      <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
+        <div className="col-12 col-md-6 col-lg-5 mt-4 mt-md-0">
+          <div className="cards card">
             <div className="card-header border-0 text-center">
               <h4
                 className="fw-bold lable h5 text-uppercase"
@@ -80,12 +80,12 @@ const HOD = () => {
               <div className="input-group">
                 <input
                   type={PasswordEye ? "password" : "text"}
-                  className="form-control border-end-0"
+                  className="form-control "
                   placeholder="Password"
                   onChange={(e) => SetPassword(e.target.value)}
                 />
                 <span
-                  className="input-group-text rounded rounded-start-0 icons "
+                  className="input-group-text icons rounded-end"
                   style={{ cursor: "pointer" }}
                   onClick={() => SetPasswordEye(!PasswordEye)}
                 >

@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { FaUserCircle } from "react-icons/fa";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -53,91 +51,66 @@ const LoginPage = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="HOD ">
-        <div className="container mb-5 hod-bg" style={{ width: "90%" }}>
-          <div className="row justify-content-center d-flex">
-            <div className="col-12 col-md-6 col-lg-5 mt-4  ">
-              <div className="card  position-relative pt-5">
-                {/* Floating Circle Icon */}
-                <img
-                  src="./staff.png"
-                  alt=""
-                  style={{ width: "70px" }}
-                  className="img img-fluid position-absolute top-0 start-50 translate-middle topIcons z-1"
+      <div className="container mb-5 hod-bg" style={{ width: "90%" }}>
+        <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
+          <div className="col-12 col-md-6 col-lg-5 mt-4 mt-md-0 ">
+            <div className="card cards ">
+              {/* Floating Circle Icon */}
+
+              <div className="card-header border-0 text-center">
+                <h4
+                  className="fw-bold h5 label text-uppercase"
+                  style={{ letterSpacing: "1.5px" }}
+                >
+                  Staff Login
+                </h4>
+              </div>
+
+              <div className="card-body d-flex flex-column gap-3">
+                {/* Username */}
+                <label htmlFor="" className="label">
+                  Username
+                </label>
+
+                <input
+                  type="text"
+                  className="form-control "
+                  placeholder="Username"
+                  onChange={(e) => SetUserName(e.target.value)}
                 />
 
-                <div className="card-header border-0 text-center">
-                  <h4
-                    className="fw-bold h5 label text-uppercase"
-                    style={{ letterSpacing: "1.5px" }}
+                {/* Password */}
+                <label htmlFor="" className="label">
+                  Password
+                </label>
+                <div className="input-group">
+                  <input
+                    type={PasswordEye ? "password" : "text"}
+                    className="form-control "
+                    placeholder="Password"
+                    onChange={(e) => SetPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text rounded-end icons "
+                    style={{ cursor: "pointer" }}
+                    onClick={() => SetPasswordEye(!PasswordEye)}
                   >
-                    Staff Login
-                  </h4>
+                    {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
+                  </span>
                 </div>
+              </div>
 
-                <div className="card-body d-flex flex-column gap-3">
-                  {/* Username */}
-                  <label htmlFor="" className="label">
-                    Username
-                  </label>
-                  <div className="input-group">
-                    <span className="input-group-text border icons">
-                      <img
-                        src="./profile.png"
-                        style={{ width: "25px" }}
-                        alt=""
-                        className="img-fluid"
-                      />
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control "
-                      placeholder="Username"
-                      onChange={(e) => SetUserName(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Password */}
-                  <label htmlFor="" className="label">
-                    Password
-                  </label>
-                  <div className="input-group">
-                    <span className="input-group-text border icons">
-                      <img
-                        src="./password.png"
-                        style={{ width: "25px" }}
-                        alt=""
-                        className="img-fluid"
-                      />
-                    </span>
-                    <input
-                      type={PasswordEye ? "password" : "text"}
-                      className="form-control border-end-0"
-                      placeholder="Password"
-                      onChange={(e) => SetPassword(e.target.value)}
-                    />
-                    <span
-                      className="input-group-text rounded rounded-start-0 icons "
-                      style={{ cursor: "pointer" }}
-                      onClick={() => SetPasswordEye(!PasswordEye)}
-                    >
-                      {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="card-footer mt-2  border-0 text-center">
-                  <button
-                    className="rounded logbtn text-uppercase fw-bold w-100 py-2"
-                    onClick={login}
-                  >
-                    {isloading ? (
-                      <ThreeDot color="#ffffff" size="medium" text="" />
-                    ) : (
-                      "Login"
-                    )}
-                  </button>
-                </div>
+              <div className="card-footer mt-2  border-0 text-center">
+                <button
+                  className="rounded logbtn text-uppercase fw-bold w-100 py-2"
+                  onClick={login}
+                >
+                  {isloading ? (
+                    <ThreeDot color="#ffffff" size="medium" text="" />
+                  ) : (
+                    "Login"
+                  )}
+                </button>
               </div>
             </div>
           </div>

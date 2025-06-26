@@ -46,9 +46,9 @@ const SingleStudentdata = () => {
       if (!PNumber) {
         return toast.error("Phone Number Not");
       } else if (PNumber.length > 10 || PNumber.length < 10) {
-        return toast.error("10 Digite Only");
+        return toast.error("Phone Number 10 Digite Only");
       }
-      toast.loading("Please Wait")
+      toast.loading("Please Wait");
       await addDoc(collection(db, "student"), {
         Department: Departments,
         Name: Name,
@@ -61,8 +61,8 @@ const SingleStudentdata = () => {
         dob: Dob,
         PH: PNumber,
       });
-      toast.dismiss()
-      toast.success("Student Uploaded")
+      toast.dismiss();
+      toast.success("Student Uploaded");
       setRollno("");
       setDepartment("");
       setName("");
@@ -73,7 +73,6 @@ const SingleStudentdata = () => {
       setActives("");
       setDob("");
       setPNumber("");
-
     }
   };
 
@@ -115,17 +114,6 @@ const SingleStudentdata = () => {
                 UG / PG
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/degree.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   className="form-select"
                   onChange={(e) => {
@@ -149,17 +137,6 @@ const SingleStudentdata = () => {
                 Class
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/classroom.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   className="form-select"
                   onChange={(e) => {
@@ -183,17 +160,6 @@ const SingleStudentdata = () => {
                 Department
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/department.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   className="form-select"
                   onChange={(e) => {
@@ -222,17 +188,6 @@ const SingleStudentdata = () => {
                 Year
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/school.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   className="form-select"
                   onChange={(e) => {
@@ -257,17 +212,6 @@ const SingleStudentdata = () => {
                 Self / Regular
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text fw-bold"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/rs.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   className="form-select"
                   onChange={(e) => {
@@ -291,17 +235,6 @@ const SingleStudentdata = () => {
                 Student Name
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/student.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <input
                   type="text"
                   className="form-control"
@@ -323,17 +256,6 @@ const SingleStudentdata = () => {
                 Roll Number
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/no.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <input
                   type="text"
                   className="form-control"
@@ -353,17 +275,6 @@ const SingleStudentdata = () => {
                 Active or Not
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/active.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <select
                   name=""
                   id=""
@@ -387,17 +298,6 @@ const SingleStudentdata = () => {
                 D.O.B
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/birthday.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <input
                   type="date"
                   className="form-control"
@@ -415,17 +315,6 @@ const SingleStudentdata = () => {
                 Parent Phone Number
               </label>
               <div className="input-group">
-                <span
-                  className="input-group-text"
-                  style={{ background: "white" }}
-                >
-                  <img
-                    src="/telephone.png"
-                    width={30}
-                    alt=""
-                    className="img img-fluid"
-                  />
-                </span>
                 <input
                   type="number"
                   className="form-control"

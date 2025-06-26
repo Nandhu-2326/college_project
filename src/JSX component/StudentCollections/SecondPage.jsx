@@ -10,6 +10,7 @@ const SecondPage = () => {
   const [result, setResult] = useState([]);
   const [student, setStudent] = useState(null);
   const [sem, setSem] = useState("");
+  const [logo, setLogo] = useState(false);
   useEffect(() => {
     const marks = sessionStorage.getItem("Marks");
     const AllMark = marks ? JSON.parse(marks) : [];
@@ -25,28 +26,38 @@ const SecondPage = () => {
   }, []);
 
   const handleDownloadPDF = () => {
-    const element = pdfRef.current;
-    const opt = {
-      margin: 0.3,
-      filename: `MarkSheet_${sem}_${student?.Name}_${Date.now()}.pdf`, // ✅ use student.Name, not result
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 4 },
-      jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
-    };
-    html2pdf().set(opt).from(element).save();
+    setLogo(true);
+    setTimeout(() => {
+      const element = pdfRef.current;
+      const opt = {
+        margin: 0.3,
+        filename: `InternalMarks_${sem}_${student?.Name}_${Date.now()}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 4 },
+        jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+      };
+      html2pdf().set(opt).from(element).save();
+      setLogo(false);
+    }, 500);
   };
 
   return (
     <>
-      {/* <CollegeLogo /> */}
+      <CollegeLogo />
 
       <div className="container mb-5" style={{ width: "100%" }}>
         {result.length > 0 && student && (
           <div className="row mt-5  rounded  text-dark  p-1">
-            <div className="col-12 rounded-4 p-4 "  ref={pdfRef}>
-            <div className="container">
-              <img src="/collegeLogo.png" alt="" className="img img-fluid" />
-            </div>
+            <div className="col-12 rounded-4 p-4 " ref={pdfRef}>
+              {logo && (
+                <div className="container">
+                  <img
+                    src="/collegeLogo.png"
+                    alt=""
+                    className="img img-fluid"
+                  />
+                </div>
+              )}
               <h5 className="text-center text-uppercase fw-bold mb-2">
                 {student.Department}
               </h5>

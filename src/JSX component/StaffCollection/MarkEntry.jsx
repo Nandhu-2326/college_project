@@ -1130,24 +1130,24 @@ const MarkEntry = () => {
         <div className="row d-felx justify-content-sm-around align-items-sm-center">
           <div className="col-12 col-sm-5 ">
             <div className="input-group ">
+              <input
+                type="search"
+                className="form-control"
+                placeholder="Search  Student Roll Number"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <span
                 className="input-group-text fw-bold"
                 style={{ background: "white", fontSize: "20px" }}
               >
                 <img
-                  src="/student.png"
+                  src="/people.png"
                   width={20}
                   alt=""
                   className="img img-fluid "
                 />
               </span>
-              <input
-                type="search"
-                className="form-control"
-                placeholder="Roll Number"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
             </div>
           </div>
           <div className="col-12 col-sm-6 text-end mt-4 mb-3 mt-sm-0">
@@ -1164,14 +1164,14 @@ const MarkEntry = () => {
       </div>
 
       {/* Student List */}
-      <div className="container">
+      <div className="container ">
         <h3
           className="text-center text-uppercase mb-4 mt-sm-3"
           style={{ color: "	#1D33D0" }}
         >
           Student List
         </h3>
-        <div className="row ">
+        <div className="row g-4">
           {students.length > 0 ? (
             students
               .filter((student) =>

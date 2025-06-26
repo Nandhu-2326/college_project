@@ -12,21 +12,18 @@ import {
 import React, { useEffect, useReducer, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { db } from "../Database";
-import { TiTickOutline } from "react-icons/ti";
-import { HiOutlineArchiveBoxXMark } from "react-icons/hi2";
-import { FaPencilAlt } from "react-icons/fa";
-import { MdOutlinePublishedWithChanges } from "react-icons/md";
-import { GiSpellBook } from "react-icons/gi";
-import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import { FaRotate } from "react-icons/fa6";
-import { RiDeleteBin2Line } from "react-icons/ri";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import Swal from "sweetalert2";
+
 const initialStudentState = [];
 const studentReducer = (state, action) => {
   switch (action.type) {
@@ -480,7 +477,7 @@ const StudentList = () => {
 
     // Create message
     if (sendstate.PH) {
-      let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n📅 *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
+      let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
 
       for (let i = 1; i <= 8; i++) {
         const subjectKey = `subject${i}`;
@@ -550,51 +547,61 @@ const StudentList = () => {
       </div>
 
       <div className="container mt-2" style={{ width: "90%" }}>
-        <div className="card bg-light">
-          <div
-            className="card-header text-center fs-3 text-uppercase"
-            style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-          >
-            Student Details
-          </div>
-          <div className="card-body d-flex justify-content-center">
-            <div className="row g-2 text-dark text-uppercase fw-semibold text-center">
+        <div className="row d-flex justify-content-center">
+          <div className="col-12 col-sm-5 col-lg-4">
+            <div className="card bg-light">
               <div
-                className="col-12"
+                className="card-header text-center fs-3 text-uppercase"
                 style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
               >
-                I - Year -{" "}
-                {studentState.filter((s) => s.year == 1).length -
-                  inactiveCounts[1]}
+                Student Details
+              </div>
+              <div className="card-body d-flex justify-content-center">
+                <div className="row g-2 text-dark text-uppercase fw-semibold text-center">
+                  <div
+                    className="col-4 border py-3 "
+                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+                  >
+                    <span style={{ fontSize: "13px" }}>1-Year</span>
+                    <div className="fw-bold fs-3 ">
+                      {studentState.filter((s) => s.year == 1).length -
+                        inactiveCounts[1]}
+                    </div>
+                  </div>
+                  <div
+                    className="col-4 border py-3"
+                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+                  >
+                    <span style={{ fontSize: "13px" }}>2-Year</span>
+                    <div className="fs-3">
+                      {studentState.filter((s) => s.year == 2).length -
+                        inactiveCounts[2]}
+                    </div>
+                  </div>
+                  <div
+                    className="col-4 border py-3"
+                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+                  >
+                    <span style={{ fontSize: "13px" }}>3-Year</span>
+                    <div className="fs-3">
+                      {studentState.filter((s) => s.year == 3).length -
+                        inactiveCounts[3]}
+                    </div>
+                  </div>
+                </div>
               </div>
               <div
-                className="col-6"
+                className="card-footer text-center fw-semibold text-uppercase"
                 style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
               >
-                II - Year -{" "}
-                {studentState.filter((s) => s.year == 2).length -
-                  inactiveCounts[2]}
-              </div>
-              <div
-                className="col-6"
-                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-              >
-                III - Year -{" "}
-                {studentState.filter((s) => s.year == 3).length -
-                  inactiveCounts[3]}
+                Total Student - {activeStudent.length}
               </div>
             </div>
-          </div>
-          <div
-            className="card-footer text-center fw-semibold text-uppercase"
-            style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-          >
-            Total Student - {activeStudent.length}
           </div>
         </div>
       </div>
 
-      <div className="container mt-5 mb-5 ">
+      <div className="container  mb-5 ">
         <h5
           className="text-center mb-4 text-uppercase"
           style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
@@ -602,6 +609,7 @@ const StudentList = () => {
           {" "}
           Student Year Change
         </h5>
+
         {ugorpg == "ug" ? (
           <div className="container mb-5">
             <div className="row g-3 justify-content-center">
@@ -645,7 +653,7 @@ const StudentList = () => {
                 >
                   <div className="d-flex justify-content-center align-items-center gap-2">
                     <img
-                      src="/dataserver.png"
+                      src="/delete.png"
                       alt=""
                       width={25}
                       className="img img-fluid"
@@ -684,7 +692,7 @@ const StudentList = () => {
                 >
                   <div className="d-flex justify-content-center align-items-center gap-2">
                     <img
-                      src="/dataserver.png"
+                      src="/delete.png"
                       alt=""
                       width={25}
                       className="img img-fluid"
@@ -696,136 +704,154 @@ const StudentList = () => {
             </div>
           </div>
         )}
+        <Tabs
+          defaultActiveKey="year-1"
+          id="student-tabs"
+          className="mb-3"
+          style={{ color: "#1a33d0" }}
+          justify
+        >
+          {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
+            const studentsOfYear = studentState.filter(
+              (std) => Number(std.year) === year
+            );
 
-        {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
-          const studentsOfYear = studentState.filter(
-            (std) => Number(std.year) == year
-          );
-          return studentsOfYear.length > 0 ? (
-            <div key={year} className="mb-4">
-              <h5
-                className="text-center fw-bold"
-                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+            return (
+              <Tab
+                key={`year-${year}`}
+                eventKey={`year-${year}`}
+                title={`Year ${year}`}
               >
-                YEAR - {year}
-              </h5>
-              <div className="table-responsive">
-                <table className="table table-responsive table-bordered table-striped  shadow table-hover">
-                  <thead className="text-center text-uppercase">
-                    <tr>
-                      <th>S.No</th>
-                      <th>View</th>
-                      <th>Roll No</th>
-                      <th>Name</th>
-                      <th>Class</th>
-                      <th>Year</th>
-                      <th>WhatApp</th>
-                      <th>Update</th>
-                      <th>Change Active</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {studentsOfYear.map((student, index) => (
-                      <tr key={student.id} className="text-center">
-                        <td>{index + 1}</td>
-                        <td>
-                          <button
-                            className="btn border-0 "
-                            onClick={() => viewStudent(student.id)}
-                          >
-                            <img
-                              src="/open-folder.png"
-                              width={35}
-                              alt=""
-                              className="img img-fluid"
-                            />
-                          </button>
-                        </td>
-                        <td>{student.rollno?.toUpperCase()}</td>
-                        <td>{student.Name}</td>
-                        <td>{student.class}</td>
-                        <td>{student.year}</td>
-                        <td className="">
-                          <button
-                            className="btn border-0"
-                            onClick={() => handleOpenModalWhats(student)}
-                          >
-                            <img
-                              src="/whatsapp.png"
-                              alt=""
-                              width={30}
-                              className="img img-fluid"
-                            />
-                          </button>
-                        </td>
-                        <td>
-                          <button
-                            className="btn border-0"
-                            onClick={() => handleShowModal(student.id)}
-                          >
-                            <img
-                              src="/updated.png"
-                              width={30}
-                              alt=""
-                              className="img img-fluid "
-                            />
-                          </button>
-                        </td>
-                        <td>
-                          <button
-                            className="btn border-0"
-                            onClick={() =>
-                              ActiveProcess(
-                                student.id,
-                                student.Name,
-                                student.rollno
-                              )
-                            }
-                          >
-                            <img
-                              src="/edit.png"
-                              width={25}
-                              alt=""
-                              className="img img-fluid"
-                            />
-                          </button>
-                        </td>
-                        <td className="">
-                          {student.active ? (
-                            <img
-                              src="/check-mark.png"
-                              width={25}
-                              alt=""
-                              className="img img-fluid"
-                            />
-                          ) : (
-                            <img
-                              src="/delete.png"
-                              width={25}
-                              alt=""
-                              className="img img-fluid "
-                            />
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : (
-            <div
-              key={year}
-              className="alert alert-warning d-flex align-items-center justify-content-center gap-2 text-dark fw-semibold shadow-sm border-0 rounded-3 text-center"
-              role="alert"
-            >
-              <span style={{ letterSpacing: "1.5px" }}>
-                No students found for <strong>Year {year}</strong>
-              </span>
-            </div>
-          );
-        })}
+                {studentsOfYear.length > 0 ? (
+                  <div className="mb-4">
+                    <h5
+                      className="text-center fw-bold"
+                      style={{
+                        color: "rgb(26, 51, 208)",
+                        letterSpacing: "2px",
+                      }}
+                    >
+                      YEAR - {year}
+                    </h5>
+                    <div className="table-responsive">
+                      <table className="table table-bordered table-striped table-hover">
+                        <thead className="text-center text-uppercase">
+                          <tr>
+                            <th>S.No</th>
+                            <th>View</th>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Year</th>
+                            <th>WhatsApp</th>
+                            <th>Update</th>
+                            <th>Change Active</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {studentsOfYear.map((student, index) => (
+                            <tr key={student.id} className="text-center">
+                              <td>{index + 1}</td>
+                              <td>
+                                <button
+                                  className="btn border-0"
+                                  onClick={() => viewStudent(student.id)}
+                                >
+                                  <img
+                                    src="/open-folder.png"
+                                    width={35}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                </button>
+                              </td>
+                              <td>{student.rollno?.toUpperCase()}</td>
+                              <td>{student.Name}</td>
+                              <td>{student.class}</td>
+                              <td>{student.year}</td>
+                              <td>
+                                <button
+                                  className="btn border-0"
+                                  onClick={() => handleOpenModalWhats(student)}
+                                >
+                                  <img
+                                    src="/whatsapp.png"
+                                    alt=""
+                                    width={30}
+                                    className="img-fluid"
+                                  />
+                                </button>
+                              </td>
+                              <td>
+                                <button
+                                  className="btn border-0"
+                                  onClick={() => handleShowModal(student.id)}
+                                >
+                                  <img
+                                    src="/updated.png"
+                                    width={30}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                </button>
+                              </td>
+                              <td>
+                                <button
+                                  className="btn border-0"
+                                  onClick={() =>
+                                    ActiveProcess(
+                                      student.id,
+                                      student.Name,
+                                      student.rollno
+                                    )
+                                  }
+                                >
+                                  <img
+                                    src="/edit.png"
+                                    width={25}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                </button>
+                              </td>
+                              <td>
+                                {student.active ? (
+                                  <img
+                                    src="/check-mark.png"
+                                    width={25}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                ) : (
+                                  <img
+                                    src="/remove.png"
+                                    width={25}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="alert alert-warning d-flex align-items-center justify-content-center gap-2 text-dark fw-semibold shadow-sm border-0 rounded-3 text-center"
+                    role="alert"
+                  >
+                    <span style={{ letterSpacing: "1.5px" }}>
+                      No students found for <strong>Year {year}</strong>
+                    </span>
+                  </div>
+                )}
+              </Tab>
+            );
+          })}
+        </Tabs>
       </div>
 
       <Modal show={showModal} onHide={handleCloseModal}>

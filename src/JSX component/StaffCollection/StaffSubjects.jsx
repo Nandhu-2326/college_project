@@ -115,6 +115,7 @@ const StaffSubjects = () => {
           Your Subjects{" "}
         </h3>
       </div>
+
       <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
         <table className="table table-striped table-bordered mb-5">
           <thead className=" text-uppercase text-center table-primary">
@@ -148,9 +149,7 @@ const StaffSubjects = () => {
                     </td>
                     <td className="fw-semibold">
                       <div className="d-flex justify-content-around flex-column">
-                        <div className="border-bottom border-3 border-secondary">
-                          {value.year}
-                        </div>
+                        <div className="">Year : {value.year}</div>
                         <div>{value.semester}</div>
                       </div>
                     </td>

@@ -81,10 +81,10 @@ const FirstPage = () => {
     <>
       <Toaster position="top-center" />
       <CollegeLogo />
-      <div className="container-fluid  min-vh-100" style={{ width: "90%" }}>
-        <div className="row justify-content-center mt-5">
+      <div className="container-fluid  " style={{ width: "90%" }}>
+        <div className="row justify-content-center mt-xm-5 mt-md-0">
           <div className="col-12 col-md-5 col-lg-4">
-            <div className="card shadow rounded-4 border-0">
+            <div className="card cards shadow rounded-4 border-0">
               <div className="card-header bg-white border-0 text-center">
                 <h2
                   className="fw-bold text-uppercase"
@@ -100,20 +100,12 @@ const FirstPage = () => {
                 </p>
               </div>
               <div className="card-body">
-                <div className="d-flex flex-column gap-4">
+                <div className="d-flex flex-column gap-2">
                   {/* Roll No */}
                   <label htmlFor="" className="label">
                     Roll Number
                   </label>
-                  <div className="input-group">
-                    <span className="input-group-text icons">
-                      <img
-                        src="/student.png"
-                        width={20}
-                        alt=""
-                        className="img img-fluid"
-                      />
-                    </span>
+                  <div className="">
                     <input
                       type="text"
                       className="form-control "
@@ -126,15 +118,7 @@ const FirstPage = () => {
                   <label htmlFor="" className="label">
                     Semester
                   </label>
-                  <div className="input-group">
-                    <span className="input-group-text icons">
-                      <img
-                        src="/list.png"
-                        width={20}
-                        alt=""
-                        className="img img-fluid"
-                      />
-                    </span>
+                  <div className="">
                     <select
                       onChange={(e) => setSem(e.target.value)}
                       className="form-select"
@@ -159,15 +143,7 @@ const FirstPage = () => {
                   <label htmlFor="" className="label">
                     D.O.B
                   </label>
-                  <div className="input-group">
-                    <span className="input-group-text icons ">
-                      <img
-                        src="/birthday.png"
-                        width={20}
-                        alt=""
-                        className="img img-fluid"
-                      />
-                    </span>
+                  <div className="">
                     <input
                       type="date"
                       className="form-control "
