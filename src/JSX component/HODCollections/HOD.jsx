@@ -46,9 +46,9 @@ const HOD = () => {
   };
 
   return (
-    <div className="container" style={{ width: "90%" }}>
+    <div className="container " style={{ width: "90%" }}>
       <div className="row justify-content-center d-flex mt-5 ">
-        <div className="col-12 col-md-6 col-lg-5 mt-md-4">
+        <div className="col-12 col-md-6 col-lg-5 mt-4">
           <div className="card ">
             <div className="card-header border-0 text-center">
               <h4
