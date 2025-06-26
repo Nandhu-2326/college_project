@@ -81,7 +81,7 @@ const FirstPage = () => {
     <>
       <Toaster position="top-center" />
       <CollegeLogo />
-      <div className="container-fluid  " style={{ width: "90%" }}>
+      <div className="container mt-3" style={{ width: "90%" }}>
         <div className="row justify-content-center mt-xm-5 mt-md-0">
           <div className="col-12 col-md-5 col-lg-4">
             <div className="card cards shadow rounded-4 border-0">

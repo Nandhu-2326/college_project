@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { FaUserCircle } from "react-icons/fa";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -50,7 +48,7 @@ const AdminLogin = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="container " style={{ width: "90%" }}>
+      <div className="container mt-5" style={{ width: "90%" }}>
         <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
           <div className="col-12 col-md-6 col-lg-5 mt-4  mt-md-0">
             <div className="card cards position-relative ">

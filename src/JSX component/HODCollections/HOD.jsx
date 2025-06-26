@@ -46,7 +46,7 @@ const HOD = () => {
   };
 
   return (
-    <div className="container " style={{ width: "90%" }}>
+    <div className="container mt-5" style={{ width: "90%" }}>
       <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
         <div className="col-12 col-md-6 col-lg-5 mt-4 mt-md-0">
           <div className="cards card">
