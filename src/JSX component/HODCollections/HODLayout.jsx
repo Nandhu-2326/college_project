@@ -21,15 +21,6 @@ const HODLayout = () => {
         className="d-flex justify-content-center flex-column align-items-center"
         style={{ height: "100vh" }}
       >
-        <img
-          src="/hod.png"
-          className="img img-fluid"
-          alt="HOD Logo"
-          style={{
-            transform: zoom ? "scale(0.7)" : "scale(0.1) ",
-            transition: "transform 1s ease-in-out",
-          }}
-        />
         <h1
           className="h1 text-dark mt-3"
           style={{ letterSpacing: "3px", fontWeight: "bold" }}
