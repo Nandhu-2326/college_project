@@ -7,28 +7,47 @@ const Footer = () => {
   const location = useLocation();
   const [value, setValue] = useState(2); // Default to Student
 
-  const navItems = [
-    { label: "HOD", icon: "/hod.png", path: "/HODLayout" },
-    { label: "Admin", icon: "/admin.png", path: "/AdminLayout" },
-    { label: "Student", icon: "/student.png", path: "/" },
-    { label: "Staff", icon: "/staff.png", path: "/StaffLayout" },
-    { label: "About", icon: "/about.png", path: "/About" },
-  ];
-
   useEffect(() => {
-    const currentPath = location.pathname;
-    const foundIndex = navItems.findIndex((item) =>
-      currentPath.startsWith(item.path)
-    );
-    setValue(foundIndex !== -1 ? foundIndex : 2);
+    const path = location.pathname;
+    if (path === "/") setValue(2);
+    else if (path.startsWith("/AdminLayout")) setValue(1);
+    else if (path.startsWith("/HODLayout")) setValue(0);
+    else if (path.startsWith("/StaffLayout")) setValue(3);
+    else if (path === "/About") setValue(4);
   }, [location.pathname]);
 
   const handleNav = (newValue) => {
     setValue(newValue);
-    nav(navItems[newValue].path);
+    switch (newValue) {
+      case 0:
+        nav("/HODLayout");
+        break;
+      case 1:
+        nav("/AdminLayout");
+        break;
+      case 2:
+        nav("/");
+        break;
+      case 3:
+        nav("/StaffLayout");
+        break;
+      case 4:
+        nav("/About");
+        break;
+      default:
+        break;
+    }
   };
 
-  const activeColor = "rgb(50, 59, 189)";
+  const navItems = [
+    { label: "HOD", icon: "/hod.png" },
+    { label: "Admin", icon: "/admin.png" },
+    { label: "Student", icon: "/student.png" },
+    { label: "Staff", icon: "/staff.png" },
+    // { label: "About", icon: "/about.png" },
+  ];
+
+  const activeColor = `rgb(50, 59, 189)`; // Dark Blue
 
   return (
     <Paper
@@ -43,7 +62,6 @@ const Footer = () => {
         boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
         overflow: "hidden",
         padding: "10px 0",
-        zIndex: 1300,
       }}
     >
       <BottomNavigation
