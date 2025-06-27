@@ -1,0 +1,22 @@
+.Mcardhead{
+    border-bottom:3px solid rgb(163, 163, 163) !important; 
+}
+.rollNumber{
+padding: 5px;
+border-radius: 5px;
+font-size: 13px;
+box-shadow: 0px 2px 2px 1px rgb(163, 163, 163);
+}
+.tick{
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+.MarkCard{
+    border: none;
+    background: #1A33D0
+    ;
+    color: #faf7f0 !important;
+    border-radius: 10px !important;
+    margin: 2px;
+    box-shadow: 0px 1px 1px 1px #2136c0;
+}

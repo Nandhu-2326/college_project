@@ -63,7 +63,7 @@ const StaffSubjects = () => {
   return (
     <>
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ backgroundColor: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
@@ -81,9 +81,7 @@ const StaffSubjects = () => {
             <Stack direction="row" spacing={2}>
               <Chip
                 avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
                     {StaffData?.staffName?.slice(0, 1) || ""}
                   </Avatar>
                 }

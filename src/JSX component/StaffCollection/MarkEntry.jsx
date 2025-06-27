@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import "../Style Component/MarkEntry.css";
 
 const MarkEntry = () => {
   //
@@ -694,7 +695,7 @@ const MarkEntry = () => {
             </table>
           </div>
         `,
-            icon: "success",
+
             width: 700,
             confirmButtonText: "Close",
             customClass: {
@@ -763,7 +764,7 @@ const MarkEntry = () => {
             </table>
           </div>
         `,
-            icon: "success",
+
             width: 700,
             confirmButtonText: "Close",
             customClass: {
@@ -828,7 +829,6 @@ const MarkEntry = () => {
             </table>
           </div>
         `,
-          icon: "success",
           width: 700,
           confirmButtonText: "Close",
           customClass: {
@@ -1045,814 +1045,886 @@ const MarkEntry = () => {
   };
   const nav = useNavigate();
   return (
-    <div className="bg-light min-vh-100">
-      <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
-      >
-        <div className="row ">
-          <div className="col-2 text-sm-end">
-            <button
-              className="btn text-white border-0 fs-3"
-              onClick={() => {
-                nav("/StaffLayout/StaffSubjects");
-              }}
-            >
-              <img src="/back.png" width={25} alt="" className="img img-flui" />
-            </button>
-          </div>
-          <div className="col-4 d-flex justify-content-start align-items-center">
-            <Stack direction="row" spacing={2}>
-              <Chip
-                avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
-                    {staffData?.staffName?.slice(0, 1) || ""}
-                  </Avatar>
-                }
-                label={staffData?.staffName}
-                sx={{
-                  width: 100,
-                  bgcolor: "#fff", // white chip background
-                  color: "#000", // black text
-                  border: "1px solid #ccc", // optional subtle border
-                  fontWeight: 500, // optional: stronger text
-                }}
-              />
-            </Stack>
-          </div>
-          <div className="col-6  d-flex justify-content-center align-items-center ">
-            <p className="fw-semibold m-0 text-center">
-              D-Code {staffData?.DepartmentCode || ""}
-            </p>
-          </div>
-        </div>
-      </div>
-      {/* Title */}
-      <div className="text-center my-4">
-        <h2 className="text-uppercase fw-bold" style={{ color: "#1D33D0" }}>
-          Mark Entry
-        </h2>
+    <>
+      <div className="position-fixed bottom-0 start-50 translate-middle-x z-3 mb-5">
+        <img
+          src="/up-arrow.png"
+          width={45}
+          alt="Scroll to top"
+          className="img-fluid mb-2"
+          style={{ cursor: "pointer" }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        />
       </div>
 
-      {/* Subject Info */}
-      <div className="container mb-4">
-        <div className="bg-primary text-light rounded p-3 text-center">
-          <h5 className="text-uppercase mb-2">
-            {selectedSubject?.department || "Department"}
-          </h5>
-          <p className="mb-1 fw-bold text-uppercase">
-            Subject: {selectedSubject?.subject || "Subject"}
-          </p>
-          <p className="mb-1 fw-bold text-uppercase">
-            Semester: {selectedSubject?.semester || "--"}
-          </p>
-          <p className="mb-1 fw-bold text-uppercase">
-            Type: {selectedSubject?.TorL || "Theory/Lab"}
-          </p>
-          <div className="d-flex justify-content-around mt-3 flex-wrap">
-            <p className="mb-0 fw-semibold text-uppercase">
-              Class: {selectedSubject?.class || "-"}
-            </p>
-            <p className="mb-0 fw-semibold text-uppercase">
-              Year: {selectedSubject?.year || "-"}
-            </p>
-            <p className="mb-0 fw-semibold text-uppercase">
-              Degree: {selectedSubject?.ugorpg || "-"}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* search with Allresult */}
-      <div className="container">
-        <div className="row d-felx justify-content-sm-around align-items-sm-center">
-          <div className="col-12 col-sm-5 ">
-            <div className="input-group ">
-              <input
-                type="search"
-                className="form-control"
-                placeholder="Search  Student Roll Number"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <span
-                className="input-group-text fw-bold"
-                style={{ background: "white", fontSize: "20px" }}
-              >
-                <img
-                  src="/people.png"
-                  width={20}
-                  alt=""
-                  className="img img-fluid "
-                />
-              </span>
+      <div className="">
+        <div className="">
+          <div
+            style={{ background: "#d5181c", overflowX: "hidden" }}
+            className="container-fluid  bg-gradient text-light sticky-top p-2 "
+          >
+            <div className="row ">
+              <div className="col-2 text-sm-end">
+                <button
+                  className="btn text-white border-0 fs-3"
+                  onClick={() => {
+                    nav("/StaffLayout/StaffSubjects");
+                  }}
+                >
+                  <img
+                    src="/back.png"
+                    width={25}
+                    alt=""
+                    className="img img-flui"
+                  />
+                </button>
+              </div>
+              <div className="col-4 d-flex justify-content-start align-items-center">
+                <Stack direction="row" spacing={2}>
+                  <Chip
+                    avatar={
+                      <Avatar
+                        style={{
+                          color: "white",
+                          background: "#d5181c",
+                        }}
+                      >
+                        {staffData?.staffName?.slice(0, 1) || ""}
+                      </Avatar>
+                    }
+                    label={staffData?.staffName}
+                    sx={{
+                      width: 100,
+                      bgcolor: "#fff", // white chip background
+                      color: "#000", // black text
+                      border: "1px solid #ccc", // optional subtle border
+                      fontWeight: 500, // optional: stronger text
+                    }}
+                  />
+                </Stack>
+              </div>
+              <div className="col-6  d-flex justify-content-center align-items-center ">
+                <p className="fw-semibold m-0 text-center">
+                  D-Code {staffData?.DepartmentCode || ""}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="col-12 col-sm-6 text-end mt-4 mb-3 mt-sm-0">
-            <button
-              className="btn btn-outline-success"
-              onClick={() => {
-                nav("/StaffLayout/PDFResult");
-              }}
-            >
-              All RESULT
-            </button>
+          {/* Title */}
+          <div className="text-center my-4">
+            <h2 className="text-uppercase fw-bold" style={{ color: "#1D33D0" }}>
+              Mark Entry
+            </h2>
           </div>
-        </div>
-      </div>
+          {/* Subject Info */}
+          <div className="container mb-5 ">
+            <div className="row d-flex justify-content-center ">
+              <div className="col-12 col-sm-4 col-md-5 d-flex justify-content-center">
+                <div className="card  p-sm-2 p-1 MarkCard">
+                  <div className="card-header MarkCard">
+                    <h6 className="text-uppercase text-center mb-2">
+                      {selectedSubject?.department || "Department"}
+                    </h6>
+                  </div>
 
-      {/* Student List */}
-      <div className="container ">
-        <h3
-          className="text-center text-uppercase mb-4 mt-sm-3"
-          style={{ color: "	#1D33D0" }}
-        >
-          Student List
-        </h3>
-        <div className="row g-4">
-          {students.length > 0 ? (
-            students
-              .filter((student) =>
-                student.rollno.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((student) => (
-                <div className="col-12 col-md-6 col-lg-4" key={student.id}>
-                  <div
-                    className={
-                      student.active
-                        ? "card shadow-sm border-0 "
-                        : "card shadow-sm border-2 border-danger opacity-50 "
-                    }
+                  <div className="card-body">
+                    <div>
+                      <p className="mb-1 fw-semibold text-uppercase">
+                        Subject: {selectedSubject?.subject || "Subject"}
+                      </p>
+                      <p className="mb-1 fw-semibold text-uppercase">
+                        Semester: {selectedSubject?.semester?.slice(9) || "--"}
+                      </p>
+                    </div>
+
+                    <div className="d-flex justify-content-between mt-2 align-items-center ">
+                      <p className="mb-1 fw-bold text-uppercase ">
+                        Type: {selectedSubject?.TorL || "Theory/Lab"}
+                      </p>
+                      <p className="mb-0 fw-semibold text-uppercase">
+                        Class: {selectedSubject?.class || "-"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="card-footer MarkCard d-flex justify-content-between align-items-center">
+                    <p className="mb-0 fw-semibold text-uppercase me-3">
+                      Year: {selectedSubject?.year || "-"}
+                    </p>
+                    <p className="mb-0 fw-semibold text-uppercase">
+                      Degree: {selectedSubject?.ugorpg || "-"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* search with Allresult */}
+          <div className="container ">
+            <div className="row d-felx justify-content-sm-around align-items-sm-center">
+              <div className="col-12 col-sm-5 ">
+                <div className="input-group ">
+                  <input
+                    type="search"
+                    className="form-control"
+                    placeholder="Search  Student Roll Number"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text fw-bold"
+                    style={{ background: "white", fontSize: "20px" }}
                   >
-                    <div className="card-header bg-white d-flex justify-content-center align-items-center border-bottom">
-                      {!student.active ? (
-                        <h3 className="h5 text-uppercase text-danger ">
-                          Don't Enter Mark
-                        </h3>
-                      ) : (
-                        <div className="w-100">
-                          <button
-                            className="btn border-0 d-flex align-items-center"
-                            onClick={() => {
-                              ResultAlert(student.id);
-                            }}
-                          >
-                            <img
+                    <img
+                      src="/people.png"
+                      width={20}
+                      alt=""
+                      className="img img-fluid "
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className="col-12 col-sm-6 text-end mt-4 mb-3 mt-sm-0">
+                <button
+                  className="btn btn-outline-success"
+                  onClick={() => {
+                    nav("/StaffLayout/PDFResult");
+                  }}
+                >
+                  All RESULT
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Student List */}
+          <div className="container mt-5">
+            <h3
+              className="text-center text-uppercase mb-4 mt-sm-3"
+              style={{ color: "	#1D33D0" }}
+            >
+              Student List
+            </h3>
+            <span
+              className="text-center mb-3 text-uppercase"
+              style={{ color: "	#1D33D0" }}
+            >
+              Total Student {students.length}
+            </span>
+            <div className="row g-4">
+              {students.length > 0 ? (
+                students
+                  .filter((student) =>
+                    student.rollno
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .map((student) => (
+                    <div className="col-12 col-md-6 col-lg-4" key={student.id}>
+                      <div
+                        className={
+                          student.active
+                            ? "card shadow-sm border-0 "
+                            : "card shadow-sm border-2 non-active border-danger opacity-50 "
+                        }
+                      >
+                        <div className="card-header Mcardhead d-flex justify-content-center align-items-center border-bottom">
+                          {!student.active ? (
+                            <h3 className="h5 text-uppercase text-danger ">
+                              Don't Enter Mark
+                            </h3>
+                          ) : (
+                            <div className="d-flex flex-row align-items-center justify-content-between w-100">
+                              <button
+                                className="btn border-0 d-flex align-items-center"
+                                onClick={() => {
+                                  ResultAlert(student.id);
+                                }}
+                              >
+                                {/* <img
                               src="/open-folder.png"
                               className="img img-fluid me-2"
                               width={20}
                               alt=""
-                            />
-                            <span
-                              style={{
-                                color: "	#28a745",
-                                fontWeight: "bold",
-                                letterSpacing: "1.5px",
-                              }}
-                            >
-                              RESULT
-                            </span>
-                          </button>
+                            /> */}
+                                <span
+                                  style={{
+                                    color: "	#28a745",
+                                    fontWeight: "bold",
+                                    letterSpacing: "1.5px",
+                                  }}
+                                >
+                                  RESULT
+                                </span>
+                              </button>
+                              <p
+                                className="card-text fw-semibold rollNumber"
+                                style={{
+                                  color: "#1A33D0                          ",
+                                }}
+                              >
+                                Roll No: {student.rollno.toUpperCase()}
+                              </p>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <div className="card-body">
-                      <h5 className="card-title " style={{ color: "#1D33D0" }}>
-                        {student.Name}
-                      </h5>
-                      <p className="card-text fw-semibold">
-                        Roll No: {student.rollno.toUpperCase()}
-                      </p>
-                      <p className="text-muted fs-5">
-                        Subject: {selectedSubject?.subject}
-                      </p>
-                    </div>
-                    {!student.active ? (
-                      <h3 className="h3 text-uppercase text-danger text-center">
-                        Non active Student
-                      </h3>
-                    ) : (
-                      <div className="card-footer bg-white d-flex justify-content-between align-items-center">
-                        {markedStudents.includes(student.id) ? (
-                          <img
-                            src="/check-mark.png"
-                            width={30}
-                            className="img img-fluid"
-                          />
-                        ) : (
-                          <button
-                            className="btn btn-success btn-sm px-3"
-                            onClick={() => {
-                              selectedSubject.TorL !== "Lab"
-                                ? handleShowModal(student)
-                                : LabMarkEntry(student);
-                            }}
+                        <div className="card-body">
+                          <h5
+                            className="card-title "
+                            style={{ color: "#1D33D0" }}
                           >
-                            set Mark
-                          </button>
-                        )}
+                            {student.Name}
+                          </h5>
 
-                        <button
-                          className="btn d-flex border-0 align-items-center  px-3"
-                          onClick={() =>
-                            selectedSubject.TorL !== "Lab"
-                              ? UpdateMark(student)
-                              : LabUpdateMark(student)
-                          }
-                        >
-                          <span
-                            className="me-2"
-                            style={{
-                              color: "	#e74c3c",
-                              fontWeight: "bold",
-                              letterSpacing: "1.5px",
-                            }}
-                          >
-                            {" "}
-                            EDIT
-                          </span>
-                          <img
-                            src="/edits.png"
-                            className="img img-fluid me-2"
-                            width={30}
-                            alt=""
-                          />
-                        </button>
+                          <p className="text-muted fs-5">
+                            Subject: {selectedSubject?.subject}
+                          </p>
+                        </div>
+                        {!student.active ? (
+                          <h3 className="h3 text-uppercase pb-3 text-danger text-center">
+                            Non active Student
+                          </h3>
+                        ) : (
+                          <div className="card-footer bg-white d-flex justify-content-between align-items-center">
+                            {markedStudents.includes(student.id) ? (
+                              <div>
+                                <img
+                                  src="/check-mark.png"
+                                  width={30}
+                                  className="img img-fluid"
+                                />
+                                <span className="tick text-success text-uppercase fw-semibold">
+                                  submited
+                                </span>
+                              </div>
+                            ) : (
+                              <button
+                                className="btn btn-success  btn-sm px-3"
+                                onClick={() => {
+                                  selectedSubject.TorL !== "Lab"
+                                    ? handleShowModal(student)
+                                    : LabMarkEntry(student);
+                                }}
+                              >
+                                Enter Mark
+                              </button>
+                            )}
+
+                            <button
+                              className="btn d-flex border-0 align-items-center  px-3"
+                              onClick={() =>
+                                selectedSubject.TorL !== "Lab"
+                                  ? UpdateMark(student)
+                                  : LabUpdateMark(student)
+                              }
+                            >
+                              <span
+                                className="me-2"
+                                style={{
+                                  color: "	#e74c3c",
+                                  fontWeight: "bold",
+                                  letterSpacing: "1.5px",
+                                }}
+                              >
+                                {" "}
+                                EDIT
+                              </span>
+                              <img
+                                src="/edits.png"
+                                className="img img-fluid me-2"
+                                width={24}
+                                alt=""
+                              />
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center">
+                  <h5 className="text-secondary">No students found.</h5>
                 </div>
-              ))
-          ) : (
-            <div className="text-center">
-              <h5 className="text-secondary">No students found.</h5>
+              )}
             </div>
-          )}
+          </div>
+
+          <div className="container mt-5 py-5"></div>
+          {/* Modal */}
+
+          {/* set theory Mark */}
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header
+              closeButton
+              className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+            >
+              <Modal.Title className="text-center text-uppercase">
+                {" "}
+                set mark
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedStudent ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-center ">
+                    <p>
+                      {" "}
+                      <strong>Name: </strong> {selectedStudent.Name}{" "}
+                    </p>
+                    <p>
+                      {" "}
+                      <strong>Roll No: </strong>{" "}
+                      {selectedStudent.rollno.toUpperCase()}{" "}
+                    </p>
+                  </div>
+
+                  {selectedStudent &&
+                    (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
+                      (no) => {
+                        const checkField = `check${no}`;
+                        const markField = `mark${no}`;
+
+                        return (
+                          <div className="mt-3 mb-4" key={no}>
+                            <label
+                              htmlFor=""
+                              className="text-uppercase fw-bold"
+                            >
+                              {no === 1
+                                ? "Internal - I"
+                                : no === 2
+                                ? "Internal - II"
+                                : "Internal - III"}
+                            </label>
+                            <input
+                              type={state[checkField] ? "text" : "number"}
+                              className="form-control"
+                              placeholder={`Internal - ${no}`}
+                              value={state[markField]}
+                              onChange={(e) =>
+                                dispatch({
+                                  field: markField,
+                                  value: e.target.value,
+                                })
+                              }
+                              disabled={state[checkField]}
+                              min={0}
+                              max={30}
+                            />
+                            <div className="form-check mt-2">
+                              <input
+                                type="checkbox"
+                                id={checkField}
+                                className="form-check-input"
+                                name={checkField}
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  dispatch({
+                                    field: checkField,
+                                    value: isChecked,
+                                  });
+                                  dispatch({
+                                    field: markField,
+                                    value: isChecked ? "Absent" : "",
+                                  });
+                                }}
+                                checked={state[checkField]}
+                              />
+                              <label
+                                htmlFor={checkField}
+                                className="fw-semibold ms-2 text-danger"
+                                style={{ letterSpacing: "3px" }}
+                              >
+                                Absent
+                              </label>
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
+
+                  {[1, 2].map((no) => {
+                    return (
+                      <div className={no == 1 ? "" : "mt-4"} key={no}>
+                        <label
+                          htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                          className="fw-bold text-uppercase"
+                          style={{ letterSpacing: "2px" }}
+                        >
+                          {" "}
+                          {no == 1 ? "Assignment" : "Seminar"}{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id={no == 1 ? "Assignment" : "Seminar"}
+                          className="form-control"
+                          placeholder={no == 1 ? "Assignment" : "Seminar"}
+                          name={no == 1 ? "Assignment" : "Seminar"}
+                          onChange={(e) => {
+                            dispatch({
+                              field: e.target.name,
+                              value: e.target.value,
+                            });
+                          }}
+                          value={no == 1 ? state.Assignment : state.Seminar}
+                          max={5}
+                          min={0}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <div className="d-flex justify-content-around mt-3">
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        SubmiteSubjectMark(selectedStudent.id);
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <p>Loading student data...</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
+
+          {/* Update theory Mark */}
+          <Modal show={showModalUP} onHide={handleCloseModalUP}>
+            <Modal.Header
+              closeButton
+              className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+            >
+              <Modal.Title className="text-center text-uppercase">
+                {" "}
+                Update mark
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedStudent && EditStudent ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-center ">
+                    <p>
+                      {" "}
+                      <strong>Name: </strong> {selectedStudent.Name}{" "}
+                    </p>
+                    <p>
+                      {" "}
+                      <strong>Roll No: </strong>{" "}
+                      {selectedStudent.rollno.toUpperCase()}{" "}
+                    </p>
+                  </div>
+
+                  {selectedStudent &&
+                    (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
+                      (no) => {
+                        const checkField = `check${no}`;
+                        const markField = `mark${no}`;
+
+                        return (
+                          <div className="mt-3 mb-4" key={no}>
+                            <label
+                              htmlFor=""
+                              className="text-uppercase fw-bold"
+                            >
+                              {no === 1
+                                ? "Internal - I"
+                                : no === 2
+                                ? "Internal - II"
+                                : "Internal - III"}
+                            </label>
+                            <input
+                              type={updatestate[checkField] ? "text" : "number"}
+                              className="form-control"
+                              placeholder={`Internal - ${no}`}
+                              value={updatestate[markField]}
+                              onChange={(e) =>
+                                updateFun({
+                                  field: markField,
+                                  value: e.target.value,
+                                })
+                              }
+                              disabled={updatestate[checkField]}
+                              min={0}
+                              max={30}
+                            />
+                            <div className="form-check mt-2">
+                              <input
+                                type="checkbox"
+                                id={checkField}
+                                className="form-check-input"
+                                name={checkField}
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+
+                                  updateFun({
+                                    field: checkField,
+                                    value: isChecked,
+                                  });
+
+                                  updateFun({
+                                    field: markField,
+                                    value: isChecked ? "Absent" : "",
+                                  });
+                                }}
+                                checked={updatestate[checkField]}
+                              />
+                              <label
+                                htmlFor={checkField}
+                                className="fw-semibold ms-2 text-danger"
+                                style={{ letterSpacing: "3px" }}
+                              >
+                                Absent
+                              </label>
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
+
+                  {[1, 2].map((no) => {
+                    return (
+                      <div className={no == 1 ? "" : "mt-4"} key={no}>
+                        <label
+                          htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                          className="fw-bold text-uppercase"
+                          style={{ letterSpacing: "2px" }}
+                        >
+                          {" "}
+                          {no == 1 ? "Assignment" : "Seminar"}{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id={no == 1 ? "Assignment" : "Seminar"}
+                          className="form-control"
+                          placeholder={no == 1 ? "Assignment" : "Seminar"}
+                          name={no == 1 ? "Assignment" : "Seminar"}
+                          onChange={(e) => {
+                            updateFun({
+                              field: e.target.name,
+                              value: e.target.value,
+                            });
+                          }}
+                          value={
+                            no == 1
+                              ? updatestate.Assignment
+                              : updatestate.Seminar
+                          }
+                          max={5}
+                          min={0}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <div className="d-flex justify-content-around mt-3">
+                    <Button variant="secondary" onClick={handleCloseModalUP}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        UpdateStudentMark(selectedStudent);
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <p>Please set Mark After Edit</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
+
+          {/* Lab Mark Entry */}
+          <Modal show={showModalLab} onHide={handleCloseModalLab}>
+            <Modal.Header
+              closeButton
+              className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+            >
+              <Modal.Title className="text-center text-uppercase">
+                {" "}
+                Lab Mark
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedStudent ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-center ">
+                    <p>
+                      {" "}
+                      <strong>Name: </strong> {selectedStudent.Name}{" "}
+                    </p>
+                    <p>
+                      {" "}
+                      <strong>Roll No: </strong>{" "}
+                      {selectedStudent.rollno.toUpperCase()}{" "}
+                    </p>
+                  </div>
+
+                  {selectedStudent &&
+                    [1, 2].map((no) => {
+                      const checkField = `check${no}`;
+                      const markField = `mark${no}`;
+
+                      return (
+                        <div className="mt-3 mb-4" key={no}>
+                          <label htmlFor="" className="text-uppercase fw-bold">
+                            {no === 1 ? "Internal - I" : "Internal - II"}
+                          </label>
+                          <input
+                            type={Labstate[checkField] ? "text" : "number"}
+                            className="form-control"
+                            placeholder={`Internal - ${no}`}
+                            value={Labstate[markField]}
+                            onChange={(e) =>
+                              LabFun({
+                                field: markField,
+                                value: e.target.value,
+                              })
+                            }
+                            disabled={Labstate[checkField]}
+                            min={0}
+                            max={30}
+                          />
+                          <div className="form-check mt-2">
+                            <input
+                              type="checkbox"
+                              id={checkField}
+                              className="form-check-input"
+                              name={checkField}
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+
+                                LabFun({
+                                  field: checkField,
+                                  value: isChecked,
+                                });
+
+                                LabFun({
+                                  field: markField,
+                                  value: isChecked ? "Absent" : "",
+                                });
+                              }}
+                              checked={Labstate[checkField]}
+                            />
+                            <label
+                              htmlFor={checkField}
+                              className="fw-semibold ms-2 text-danger"
+                              style={{ letterSpacing: "3px" }}
+                            >
+                              Absent
+                            </label>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                  {[1, 2].map((no) => {
+                    return (
+                      <div className={no == 1 ? "" : "mt-4"} key={no}>
+                        <label
+                          htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                          className="fw-bold text-uppercase"
+                          style={{ letterSpacing: "2px" }}
+                        >
+                          {" "}
+                          {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id={no == 1 ? "LabRecord" : "Observation"}
+                          className="form-control"
+                          placeholder={no == 1 ? "LabRecord" : "Observation"}
+                          name={no == 1 ? "LabRecord" : "Observation"}
+                          onChange={(e) => {
+                            LabFun({
+                              field: e.target.name,
+                              value: e.target.value,
+                            });
+                          }}
+                          value={
+                            no == 1 ? Labstate.LabRecord : Labstate.Observation
+                          }
+                          max={5}
+                          min={0}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <div className="d-flex justify-content-around mt-3">
+                    <Button variant="secondary" onClick={handleCloseModalLab}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        LabMark(selectedStudent);
+                      }}
+                    >
+                      save
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <p>Please set Mark After Edit</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
+
+          {/* Lab Mark Update */}
+          <Modal show={showModalLabUp} onHide={handleCloseModalLabUp}>
+            <Modal.Header
+              closeButton
+              className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
+            >
+              <Modal.Title className="text-center text-uppercase">
+                {" "}
+                Lab Mark Update
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedStudent ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-center ">
+                    <p>
+                      {" "}
+                      <strong>Name: </strong> {selectedStudent.Name}{" "}
+                    </p>
+                    <p>
+                      {" "}
+                      <strong>Roll No: </strong>{" "}
+                      {selectedStudent.rollno.toUpperCase()}{" "}
+                    </p>
+                  </div>
+
+                  {selectedStudent &&
+                    [1, 2].map((no) => {
+                      const checkField = `check${no}`;
+                      const markField = `mark${no}`;
+
+                      return (
+                        <div className="mt-3 mb-4" key={no}>
+                          <label htmlFor="" className="text-uppercase fw-bold">
+                            {no === 1 ? "Internal - I" : "Internal - II"}
+                          </label>
+                          <input
+                            type={LabstateUp[checkField] ? "text" : "number"}
+                            className="form-control"
+                            placeholder={`Internal - ${no}`}
+                            value={LabstateUp[markField]}
+                            onChange={(e) =>
+                              LabFunUp({
+                                field: markField,
+                                value: e.target.value,
+                              })
+                            }
+                            disabled={LabstateUp[checkField]}
+                            min={0}
+                            max={30}
+                          />
+                          <div className="form-check mt-2">
+                            <input
+                              type="checkbox"
+                              id={checkField}
+                              className="form-check-input"
+                              name={checkField}
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+
+                                LabFunUp({
+                                  field: checkField,
+                                  value: isChecked,
+                                });
+
+                                LabFunUp({
+                                  field: markField,
+                                  value: isChecked ? "Absent" : "",
+                                });
+                              }}
+                              checked={LabstateUp[checkField]}
+                            />
+                            <label
+                              htmlFor={checkField}
+                              className="fw-semibold ms-2 text-danger"
+                              style={{ letterSpacing: "3px" }}
+                            >
+                              Absent
+                            </label>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                  {[1, 2].map((no) => {
+                    return (
+                      <div className={no == 1 ? "" : "mt-4"} key={no}>
+                        <label
+                          htmlFor={no == 1 ? "Assignment" : "Seminar"}
+                          className="fw-bold text-uppercase"
+                          style={{ letterSpacing: "2px" }}
+                        >
+                          {" "}
+                          {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id={no == 1 ? "LabRecord" : "Observation"}
+                          className="form-control"
+                          placeholder={no == 1 ? "LabRecord" : "Observation"}
+                          name={no == 1 ? "LabRecord" : "Observation"}
+                          onChange={(e) => {
+                            LabFunUp({
+                              field: e.target.name,
+                              value: e.target.value,
+                            });
+                          }}
+                          value={
+                            no == 1
+                              ? LabstateUp.LabRecord
+                              : LabstateUp.Observation
+                          }
+                          max={5}
+                          min={0}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <div className="d-flex justify-content-around mt-3">
+                    <Button variant="secondary" onClick={handleCloseModalLabUp}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        LabMarkUp(selectedStudent);
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <p>Please set Mark After Edit</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
         </div>
       </div>
-
-      <div className="container mt-5 py-5"></div>
-      {/* Modal */}
-
-      {/* set theory Mark */}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header
-          closeButton
-          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
-        >
-          <Modal.Title className="text-center text-uppercase">
-            {" "}
-            set mark
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedStudent ? (
-            <>
-              <div className="d-flex justify-content-between align-items-center ">
-                <p>
-                  {" "}
-                  <strong>Name: </strong> {selectedStudent.Name}{" "}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Roll No: </strong>{" "}
-                  {selectedStudent.rollno.toUpperCase()}{" "}
-                </p>
-              </div>
-
-              {selectedStudent &&
-                (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
-                  (no) => {
-                    const checkField = `check${no}`;
-                    const markField = `mark${no}`;
-
-                    return (
-                      <div className="mt-3 mb-4" key={no}>
-                        <label htmlFor="" className="text-uppercase fw-bold">
-                          {no === 1
-                            ? "Internal - I"
-                            : no === 2
-                            ? "Internal - II"
-                            : "Internal - III"}
-                        </label>
-                        <input
-                          type={state[checkField] ? "text" : "number"}
-                          className="form-control"
-                          placeholder={`Internal - ${no}`}
-                          value={state[markField]}
-                          onChange={(e) =>
-                            dispatch({
-                              field: markField,
-                              value: e.target.value,
-                            })
-                          }
-                          disabled={state[checkField]}
-                          min={0}
-                          max={30}
-                        />
-                        <div className="form-check mt-2">
-                          <input
-                            type="checkbox"
-                            id={checkField}
-                            className="form-check-input"
-                            name={checkField}
-                            onChange={(e) => {
-                              const isChecked = e.target.checked;
-                              dispatch({ field: checkField, value: isChecked });
-                              dispatch({
-                                field: markField,
-                                value: isChecked ? "Absent" : "",
-                              });
-                            }}
-                            checked={state[checkField]}
-                          />
-                          <label
-                            htmlFor={checkField}
-                            className="fw-semibold ms-2 text-danger"
-                            style={{ letterSpacing: "3px" }}
-                          >
-                            Absent
-                          </label>
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-
-              {[1, 2].map((no) => {
-                return (
-                  <div className={no == 1 ? "" : "mt-4"} key={no}>
-                    <label
-                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
-                      className="fw-bold text-uppercase"
-                      style={{ letterSpacing: "2px" }}
-                    >
-                      {" "}
-                      {no == 1 ? "Assignment" : "Seminar"}{" "}
-                    </label>
-                    <input
-                      type="number"
-                      id={no == 1 ? "Assignment" : "Seminar"}
-                      className="form-control"
-                      placeholder={no == 1 ? "Assignment" : "Seminar"}
-                      name={no == 1 ? "Assignment" : "Seminar"}
-                      onChange={(e) => {
-                        dispatch({
-                          field: e.target.name,
-                          value: e.target.value,
-                        });
-                      }}
-                      value={no == 1 ? state.Assignment : state.Seminar}
-                      max={5}
-                      min={0}
-                    />
-                  </div>
-                );
-              })}
-
-              <div className="d-flex justify-content-around mt-3">
-                <Button variant="secondary" onClick={handleCloseModal}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    SubmiteSubjectMark(selectedStudent.id);
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            </>
-          ) : (
-            <p>Loading student data...</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      {/* Update theory Mark */}
-      <Modal show={showModalUP} onHide={handleCloseModalUP}>
-        <Modal.Header
-          closeButton
-          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
-        >
-          <Modal.Title className="text-center text-uppercase">
-            {" "}
-            Update mark
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedStudent && EditStudent ? (
-            <>
-              <div className="d-flex justify-content-between align-items-center ">
-                <p>
-                  {" "}
-                  <strong>Name: </strong> {selectedStudent.Name}{" "}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Roll No: </strong>{" "}
-                  {selectedStudent.rollno.toUpperCase()}{" "}
-                </p>
-              </div>
-
-              {selectedStudent &&
-                (selectedStudent.ugorpg == "ug" ? [1, 2] : [1, 2, 3]).map(
-                  (no) => {
-                    const checkField = `check${no}`;
-                    const markField = `mark${no}`;
-
-                    return (
-                      <div className="mt-3 mb-4" key={no}>
-                        <label htmlFor="" className="text-uppercase fw-bold">
-                          {no === 1
-                            ? "Internal - I"
-                            : no === 2
-                            ? "Internal - II"
-                            : "Internal - III"}
-                        </label>
-                        <input
-                          type={updatestate[checkField] ? "text" : "number"}
-                          className="form-control"
-                          placeholder={`Internal - ${no}`}
-                          value={updatestate[markField]}
-                          onChange={(e) =>
-                            updateFun({
-                              field: markField,
-                              value: e.target.value,
-                            })
-                          }
-                          disabled={updatestate[checkField]}
-                          min={0}
-                          max={30}
-                        />
-                        <div className="form-check mt-2">
-                          <input
-                            type="checkbox"
-                            id={checkField}
-                            className="form-check-input"
-                            name={checkField}
-                            onChange={(e) => {
-                              const isChecked = e.target.checked;
-
-                              updateFun({
-                                field: checkField,
-                                value: isChecked,
-                              });
-
-                              updateFun({
-                                field: markField,
-                                value: isChecked ? "Absent" : "",
-                              });
-                            }}
-                            checked={updatestate[checkField]}
-                          />
-                          <label
-                            htmlFor={checkField}
-                            className="fw-semibold ms-2 text-danger"
-                            style={{ letterSpacing: "3px" }}
-                          >
-                            Absent
-                          </label>
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-
-              {[1, 2].map((no) => {
-                return (
-                  <div className={no == 1 ? "" : "mt-4"} key={no}>
-                    <label
-                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
-                      className="fw-bold text-uppercase"
-                      style={{ letterSpacing: "2px" }}
-                    >
-                      {" "}
-                      {no == 1 ? "Assignment" : "Seminar"}{" "}
-                    </label>
-                    <input
-                      type="number"
-                      id={no == 1 ? "Assignment" : "Seminar"}
-                      className="form-control"
-                      placeholder={no == 1 ? "Assignment" : "Seminar"}
-                      name={no == 1 ? "Assignment" : "Seminar"}
-                      onChange={(e) => {
-                        updateFun({
-                          field: e.target.name,
-                          value: e.target.value,
-                        });
-                      }}
-                      value={
-                        no == 1 ? updatestate.Assignment : updatestate.Seminar
-                      }
-                      max={5}
-                      min={0}
-                    />
-                  </div>
-                );
-              })}
-
-              <div className="d-flex justify-content-around mt-3">
-                <Button variant="secondary" onClick={handleCloseModalUP}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    UpdateStudentMark(selectedStudent);
-                  }}
-                >
-                  Update
-                </Button>
-              </div>
-            </>
-          ) : (
-            <p>Please set Mark After Edit</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      {/* Lab Mark Entry */}
-      <Modal show={showModalLab} onHide={handleCloseModalLab}>
-        <Modal.Header
-          closeButton
-          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
-        >
-          <Modal.Title className="text-center text-uppercase">
-            {" "}
-            Lab Mark
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedStudent ? (
-            <>
-              <div className="d-flex justify-content-between align-items-center ">
-                <p>
-                  {" "}
-                  <strong>Name: </strong> {selectedStudent.Name}{" "}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Roll No: </strong>{" "}
-                  {selectedStudent.rollno.toUpperCase()}{" "}
-                </p>
-              </div>
-
-              {selectedStudent &&
-                [1, 2].map((no) => {
-                  const checkField = `check${no}`;
-                  const markField = `mark${no}`;
-
-                  return (
-                    <div className="mt-3 mb-4" key={no}>
-                      <label htmlFor="" className="text-uppercase fw-bold">
-                        {no === 1 ? "Internal - I" : "Internal - II"}
-                      </label>
-                      <input
-                        type={Labstate[checkField] ? "text" : "number"}
-                        className="form-control"
-                        placeholder={`Internal - ${no}`}
-                        value={Labstate[markField]}
-                        onChange={(e) =>
-                          LabFun({
-                            field: markField,
-                            value: e.target.value,
-                          })
-                        }
-                        disabled={Labstate[checkField]}
-                        min={0}
-                        max={30}
-                      />
-                      <div className="form-check mt-2">
-                        <input
-                          type="checkbox"
-                          id={checkField}
-                          className="form-check-input"
-                          name={checkField}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-
-                            LabFun({
-                              field: checkField,
-                              value: isChecked,
-                            });
-
-                            LabFun({
-                              field: markField,
-                              value: isChecked ? "Absent" : "",
-                            });
-                          }}
-                          checked={Labstate[checkField]}
-                        />
-                        <label
-                          htmlFor={checkField}
-                          className="fw-semibold ms-2 text-danger"
-                          style={{ letterSpacing: "3px" }}
-                        >
-                          Absent
-                        </label>
-                      </div>
-                    </div>
-                  );
-                })}
-
-              {[1, 2].map((no) => {
-                return (
-                  <div className={no == 1 ? "" : "mt-4"} key={no}>
-                    <label
-                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
-                      className="fw-bold text-uppercase"
-                      style={{ letterSpacing: "2px" }}
-                    >
-                      {" "}
-                      {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
-                    </label>
-                    <input
-                      type="number"
-                      id={no == 1 ? "LabRecord" : "Observation"}
-                      className="form-control"
-                      placeholder={no == 1 ? "LabRecord" : "Observation"}
-                      name={no == 1 ? "LabRecord" : "Observation"}
-                      onChange={(e) => {
-                        LabFun({
-                          field: e.target.name,
-                          value: e.target.value,
-                        });
-                      }}
-                      value={
-                        no == 1 ? Labstate.LabRecord : Labstate.Observation
-                      }
-                      max={5}
-                      min={0}
-                    />
-                  </div>
-                );
-              })}
-
-              <div className="d-flex justify-content-around mt-3">
-                <Button variant="secondary" onClick={handleCloseModalLab}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    LabMark(selectedStudent);
-                  }}
-                >
-                  save
-                </Button>
-              </div>
-            </>
-          ) : (
-            <p>Please set Mark After Edit</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      {/* Lab Mark Update */}
-      <Modal show={showModalLabUp} onHide={handleCloseModalLabUp}>
-        <Modal.Header
-          closeButton
-          className="bg-primary text-light d-flex justify-content-center align-items-center fw-bold"
-        >
-          <Modal.Title className="text-center text-uppercase">
-            {" "}
-            Lab Mark Update
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedStudent ? (
-            <>
-              <div className="d-flex justify-content-between align-items-center ">
-                <p>
-                  {" "}
-                  <strong>Name: </strong> {selectedStudent.Name}{" "}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Roll No: </strong>{" "}
-                  {selectedStudent.rollno.toUpperCase()}{" "}
-                </p>
-              </div>
-
-              {selectedStudent &&
-                [1, 2].map((no) => {
-                  const checkField = `check${no}`;
-                  const markField = `mark${no}`;
-
-                  return (
-                    <div className="mt-3 mb-4" key={no}>
-                      <label htmlFor="" className="text-uppercase fw-bold">
-                        {no === 1 ? "Internal - I" : "Internal - II"}
-                      </label>
-                      <input
-                        type={LabstateUp[checkField] ? "text" : "number"}
-                        className="form-control"
-                        placeholder={`Internal - ${no}`}
-                        value={LabstateUp[markField]}
-                        onChange={(e) =>
-                          LabFunUp({
-                            field: markField,
-                            value: e.target.value,
-                          })
-                        }
-                        disabled={LabstateUp[checkField]}
-                        min={0}
-                        max={30}
-                      />
-                      <div className="form-check mt-2">
-                        <input
-                          type="checkbox"
-                          id={checkField}
-                          className="form-check-input"
-                          name={checkField}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-
-                            LabFunUp({
-                              field: checkField,
-                              value: isChecked,
-                            });
-
-                            LabFunUp({
-                              field: markField,
-                              value: isChecked ? "Absent" : "",
-                            });
-                          }}
-                          checked={LabstateUp[checkField]}
-                        />
-                        <label
-                          htmlFor={checkField}
-                          className="fw-semibold ms-2 text-danger"
-                          style={{ letterSpacing: "3px" }}
-                        >
-                          Absent
-                        </label>
-                      </div>
-                    </div>
-                  );
-                })}
-
-              {[1, 2].map((no) => {
-                return (
-                  <div className={no == 1 ? "" : "mt-4"} key={no}>
-                    <label
-                      htmlFor={no == 1 ? "Assignment" : "Seminar"}
-                      className="fw-bold text-uppercase"
-                      style={{ letterSpacing: "2px" }}
-                    >
-                      {" "}
-                      {no == 1 ? "Lab Record" : "Observation Mark"}{" "}
-                    </label>
-                    <input
-                      type="number"
-                      id={no == 1 ? "LabRecord" : "Observation"}
-                      className="form-control"
-                      placeholder={no == 1 ? "LabRecord" : "Observation"}
-                      name={no == 1 ? "LabRecord" : "Observation"}
-                      onChange={(e) => {
-                        LabFunUp({
-                          field: e.target.name,
-                          value: e.target.value,
-                        });
-                      }}
-                      value={
-                        no == 1 ? LabstateUp.LabRecord : LabstateUp.Observation
-                      }
-                      max={5}
-                      min={0}
-                    />
-                  </div>
-                );
-              })}
-
-              <div className="d-flex justify-content-around mt-3">
-                <Button variant="secondary" onClick={handleCloseModalLabUp}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    LabMarkUp(selectedStudent);
-                  }}
-                >
-                  Update
-                </Button>
-              </div>
-            </>
-          ) : (
-            <p>Please set Mark After Edit</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-    </div>
+    </>
   );
 };
 
