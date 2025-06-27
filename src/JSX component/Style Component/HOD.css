@@ -1,6 +1,6 @@
 /* HOD */
-  .h5 {
-    color: rgb(50, 59, 189);
+  .h5 , .h3{
+    color: rgb(0, 0, 0);
   }
 
   .eye{
@@ -21,9 +21,9 @@
   }
   .labelhod
   {
-    color: rgb(50, 59, 189);
+    color: rgb(0, 0, 0);
     font-weight: bold;
-    letter-spacing: 2px;
+    /* letter-spacing: 2px; */
   }
   .hodbtn{
         background-color: #d5181c;
@@ -43,16 +43,19 @@
     background: white;
     color: black;
   }
+
+  
   /* staffDetails */
   .btnlist {
-      border :1px solid #d5181c;
-      color: #d5181c;
+      border :1px solid #030303;
+      color: #000000;
       background: white;
       border-radius: 10px;
       outline: none;
       padding: 0;
-  }
-  .btnlist:hover{
+    }
+    .btnlist:hover{
+    border :1px solid #d5181c;
     background:#d5181c;
     color: white;
   }

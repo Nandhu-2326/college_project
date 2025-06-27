@@ -6,7 +6,7 @@ import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
-// import "../Style Component/HOD.css"; 
+// import "../Style Component/HOD.css";
 
 const HOD = () => {
   const nav = useNavigate();
@@ -62,7 +62,7 @@ const HOD = () => {
             <div className="card-body d-flex flex-column gap-3">
               {/* Username */}
               <label htmlFor="" className="labelhod">
-                Username
+                User Name
               </label>
               <div className="">
                 <input

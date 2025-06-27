@@ -189,7 +189,7 @@ const StaffDetails = () => {
       <div className="container mt-4">
         <div className="d-flex flex-column align-items-center mb-4">
           <h3
-            style={{ color: "#b11518" }}
+            style={{ color: "#000" }}
             className="text-center text-uppercase fw-semibold"
           >
             {" "}
@@ -339,7 +339,7 @@ const StaffDetails = () => {
           </tbody>
         </table>
       </div>
-      
+
       {/* </div> */}
     </>
   );

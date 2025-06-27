@@ -211,8 +211,8 @@ const AddStaff = () => {
                 style={{ color: "rgb(26, 51, 208)" }}
               >
                 <h3
-                  className="text-uppercase fw-bold text-center "
-                  style={{ letterSpacing: "2.5px" }}
+                  className="text-uppercase fw-bold h3 text-center "
+                  style={{ letterSpacing: "1.5px" }}
                 >
                   {isUpdate ? "Update Staff" : "Create Staff"}
                 </h3>
@@ -221,9 +221,9 @@ const AddStaff = () => {
                 {[1, 2, 3].map((staff) => {
                   const fieldName =
                     staff === 1
-                      ? "staffName"
+                      ? "Staff Name"
                       : staff === 2
-                      ? "UserName"
+                      ? "User Name"
                       : "Password";
 
                   const placeholder =
@@ -242,10 +242,9 @@ const AddStaff = () => {
                         <label
                           htmlFor=""
                           style={{
-                            color: "#1A33D0",
-                            letterSpacing: "1.5px",
+                            color: "#000",
                           }}
-                          className="form-label text-uppercase fw-semibold"
+                          className="form-label  fw-semibold"
                         >
                           {fieldName}
                         </label>
