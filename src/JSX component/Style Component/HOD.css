@@ -1,14 +1,6 @@
-.topIcons {
-    font-size: 60px;
-    color: rgb(50, 59, 189);
-    background: white;
-    border-radius: 50%;
-    padding: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  
+/* HOD */
   .h5 {
-    color: rgb(0, 38, 252);
+    color: rgb(50, 59, 189);
   }
 
   .eye{
@@ -17,40 +9,50 @@
   
   .cards {
    margin-top: 50px;
+   gap: 15px;
+  padding: 5px;
    margin-bottom: 100px;
-   box-shadow: 2px 3px 5px 5px rgb(184, 184, 184);
+   box-shadow: 1px 0px 3px 3px rgb(184, 184, 184);
   }
 
-  .HOD{
-    /* background: #000; */
-    height: 100vh;
-  }
 
   .icons{
     background: white;
   }
-  .label
+  .labelhod
   {
-    color:rgb(19, 0, 192);
+    color: rgb(50, 59, 189);
     font-weight: bold;
     letter-spacing: 2px;
   }
-  .logbtn{
-    background-color: rgb(50, 59, 189);
-    color: white;
-    border:none;
-    outline: 1px solid  rgb(50, 59, 189);
+  .hodbtn{
+        background-color: #d5181c;
+        color: white;
+        border:none;
+        outline: none;
+        
+      }
+  .hodbtn:hover{
+        color: white;
+        border:none;
+        background-color: #b11518;
   }
-  .logbtn:hover{
-    color: white;
-    border:none;
-    outline: 1px solid  rgb(40, 60, 219);
-    background-color: rgb(49, 60, 219);
-  }
-/*   */
-  
+
+
   .card-header,.card-footer{
     background: white;
     color: black;
   }
-  
+  /* staffDetails */
+  .btnlist {
+      border :1px solid #d5181c;
+      color: #d5181c;
+      background: white;
+      border-radius: 10px;
+      outline: none;
+      padding: 0;
+  }
+  .btnlist:hover{
+    background:#d5181c;
+    color: white;
+  }

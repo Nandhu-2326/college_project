@@ -48,7 +48,7 @@ const Footer = () => {
   ];
 
   const activeColor = `rgb(50, 59, 189)`; // Dark Blue
-
+  const hodColor = " #d5181c"
   return (
     <Paper
       elevation={10}
@@ -76,7 +76,7 @@ const Footer = () => {
             minWidth: 60,
             flex: 1,
             "&.Mui-selected": {
-              color: activeColor,
+              color: value == 0 || value == 3 ? hodColor  : activeColor,
               fontWeight: "bold",
             },
             "&:hover": {

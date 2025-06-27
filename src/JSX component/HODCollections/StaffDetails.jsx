@@ -144,8 +144,8 @@ const StaffDetails = () => {
   return (
     <>
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+        style={{ background: "#d5181c", overflowX: "hidden" }}
+        className="container-fluid  bg-gradient text-light sticky-top p-1 "
       >
         <div className="row ">
           <div className="col-2 text-sm-end">
@@ -162,13 +162,12 @@ const StaffDetails = () => {
             <Stack direction="row" spacing={2}>
               <Chip
                 avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
                     {HODName?.slice(0, 1)}
                   </Avatar>
                 }
                 label={HODName}
+                className="fw-semibold"
                 sx={{
                   width: 100,
                   bgcolor: "#fff", // white chip background
@@ -189,172 +188,159 @@ const StaffDetails = () => {
 
       <div className="container mt-4">
         <div className="d-flex flex-column align-items-center mb-4">
-          <h1
-            className="display-6 fw-bold text-uppercase  mb-2"
-            style={{ letterSpacing: "1px", color: "rgb(29, 51, 208)" }}
+          <h3
+            style={{ color: "#b11518" }}
+            className="text-center text-uppercase fw-semibold"
           >
-            View Staff
-          </h1>
-          <div className="bg-light px-4 py-1 rounded shadow-sm">
-            <h6
-              className="text-uppercase text-center text-dark fw-semibold mb-0"
-              style={{ letterSpacing: "1px" }}
-            >
-              With Assigned Subject Alerts
-            </h6>
-          </div>
-        </div>
-
-        <div className="container py-4">
-          <div className="row gy-3">
-            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button
-                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
-                onClick={AddStfun}
-              >
-                <img
-                  src="/addstaff.png"
-                  alt=""
-                  className="img img-fluid me-3"
-                  style={{ width: "30px" }}
-                />
-                <span className="fw-semibold">Add Staff</span>
-              </button>
-            </div>
-            {/* Students */}
-            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button
-                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
-                onClick={() => {
-                  nav("/HODLayout/StudentList");
-                }}
-              >
-                <img
-                  src="/check-list.png"
-                  alt=""
-                  className="img img-fluid me-3"
-                  width={30}
-                />
-                <span className="fw-semibold"> Students</span>
-              </button>
-            </div>
-            {/* Multiple Students */}
-            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button
-                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
-                onClick={() => {
-                  nav("/HODLayout/StudentCSV");
-                }}
-              >
-                <img
-                  src="/college.png"
-                  alt=""
-                  className="img img-fluid me-3"
-                  width={30}
-                />
-                <span className="fw-semibold">Multiple Students</span>
-              </button>
-            </div>
-            {/* Single Student */}
-            <div className="col-md-3 col-sm-6 d-flex justify-content-center">
-              <button
-                className="btn btn-outline-primary w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
-                onClick={() => {
-                  nav("/HODLayout/SingleStudentdata");
-                }}
-              >
-                <img
-                  src="/student.png"
-                  alt=""
-                  className="img img-fluid me-2"
-                  width={30}
-                />
-                <span className="fw-semibold">single Student</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
-          <table className="table  table-hover table-striped table-bordered mb-5">
-            <thead className=" text-uppercase table-primary text-center">
-              <tr>
-                <th>S.No</th>
-                <th>Name</th>
-                <th>Subject</th>
-                <th>Edit Staff</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-
-            <tbody className="text-center align-middle">
-              {staffData.length > 0 ? (
-                staffData.map((value, index) => (
-                  <tr key={value.id}>
-                    <td>{index + 1}</td>
-                    <td className="fw-semibold">{value.staffName}</td>
-                    <td>
-                      <div className="d-flex justify-content-center ">
-                        <button
-                          style={{ color: "rgb(29, 51, 208)" }}
-                          className="btn btn-sm border-0 text-uppercase"
-                          onClick={() => fetchSubject(value)}
-                        >
-                          Subject
-                          {/* <img
-                          width={20}
-                          src="/share.png"
-                          alt=""
-                          className="img img-fluid"
-                          /> */}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="">
-                      <button
-                        className="btn  border-0"
-                        onClick={() => fetchEdit(value)}
-                        title="Edit Staff"
-                      >
-                        <img
-                          src="/noteEdit.png"
-                          alt=""
-                          className="img img-fluid"
-                          width={30}
-                        />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn border-0"
-                        onClick={() =>
-                          DeletStaffAlert(value.id, value.staffName)
-                        }
-                        title="Delete Staff"
-                      >
-                        <img
-                          src="/deletes.png"
-                          alt=""
-                          className="img img-fluid"
-                          width={30}
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5}>
-                    <div className="py-4 text-danger fw-bold text-uppercase">
-                      No staff records found.
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+            {" "}
+            HOD Staff Assigned to Subjects{" "}
+          </h3>
         </div>
       </div>
+
+      <div className="container py-4">
+        <div className="row gy-3">
+          <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+            <button
+              className=" btnlist w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
+              onClick={AddStfun}
+            >
+              <img
+                src="/addstaff.png"
+                alt=""
+                className="img img-fluid me-3"
+                style={{ width: "30px" }}
+              />
+              <span className="fw-semibold">Add Staff</span>
+            </button>
+          </div>
+          {/* Students */}
+          <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+            <button
+              className=" btnlist w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
+              onClick={() => {
+                nav("/HODLayout/StudentList");
+              }}
+            >
+              <img
+                src="/check-list.png"
+                alt=""
+                className="img img-fluid me-3"
+                width={30}
+              />
+              <span className="fw-semibold"> Students</span>
+            </button>
+          </div>
+          {/* Multiple Students */}
+          <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+            <button
+              className=" btnlist w-100 text-uppercase d-flex align-items-center justify-content-center  py-2"
+              onClick={() => {
+                nav("/HODLayout/StudentCSV");
+              }}
+            >
+              <img
+                src="/college.png"
+                alt=""
+                className="img img-fluid me-3"
+                width={30}
+              />
+              <span className="fw-semibold">Multiple Students</span>
+            </button>
+          </div>
+          {/* Single Student */}
+          <div className="col-md-3 col-sm-6 d-flex justify-content-center">
+            <button
+              className=" btnlist w-100 text-uppercase d-flex align-items-center justify-content-center gap-2 py-2"
+              onClick={() => {
+                nav("/HODLayout/SingleStudentdata");
+              }}
+            >
+              <img
+                src="/student.png"
+                alt=""
+                className="img img-fluid me-2"
+                width={30}
+              />
+              <span className="fw-semibold">single Student</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="table-responsive mt-4 mb-5 shadow-sm container rounded">
+        <table className="table table-light  table-hover table-striped table-bordered mb-5">
+          <thead className=" text-uppercase  text-center">
+            <tr>
+              <th>S.No</th>
+              <th>Staff Name</th>
+              <th>Subject</th>
+              <th>Edit Staff</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+
+          <tbody className="text-center align-middle">
+            {staffData.length > 0 ? (
+              staffData.map((value, index) => (
+                <tr key={value.id}>
+                  <td>{index + 1}</td>
+                  <td className="fw-semibold">{value.staffName}</td>
+                  <td>
+                    <div className="d-flex justify-content-center ">
+                      <button
+                        style={{ color: "rgb(29, 51, 208)" }}
+                        className="btn btn-sm border-0 text-uppercase"
+                        onClick={() => fetchSubject(value)}
+                      >
+                        Subject
+                      </button>
+                    </div>
+                  </td>
+                  <td className="">
+                    <button
+                      className="btn  border-0"
+                      onClick={() => fetchEdit(value)}
+                      title="Edit Staff"
+                    >
+                      <img
+                        src="/noteEdit.png"
+                        alt=""
+                        className="img img-fluid"
+                        width={30}
+                      />
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="btn border-0"
+                      onClick={() => DeletStaffAlert(value.id, value.staffName)}
+                      title="Delete Staff"
+                    >
+                      <img
+                        src="/deletes.png"
+                        alt=""
+                        className="img img-fluid"
+                        width={30}
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  <div className="py-4 text-danger fw-bold text-uppercase">
+                    No staff records found.
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* </div> */}
     </>
   );
 };

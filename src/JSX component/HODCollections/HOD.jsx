@@ -6,7 +6,7 @@ import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
-import "../Style Component/HOD.css";
+// import "../Style Component/HOD.css"; 
 
 const HOD = () => {
   const nav = useNavigate();
@@ -52,7 +52,7 @@ const HOD = () => {
           <div className="cards card">
             <div className="card-header border-0 text-center">
               <h4
-                className="fw-bold lable h5 text-uppercase"
+                className="fw-bold h5 text-uppercase"
                 style={{ letterSpacing: "1.5px" }}
               >
                 HOD Login
@@ -61,7 +61,7 @@ const HOD = () => {
 
             <div className="card-body d-flex flex-column gap-3">
               {/* Username */}
-              <label htmlFor="" className="label">
+              <label htmlFor="" className="labelhod">
                 Username
               </label>
               <div className="">
@@ -74,7 +74,7 @@ const HOD = () => {
               </div>
 
               {/* Password */}
-              <label htmlFor="" className="label">
+              <label htmlFor="" className="labelhod">
                 Password
               </label>
               <div className="input-group">
@@ -97,7 +97,7 @@ const HOD = () => {
 
             <div className="card-footer  border-0 text-center">
               <button
-                className="rounded logbtn text-uppercase fw-bold w-100 py-2"
+                className="rounded hodbtn text-uppercase fw-bold w-100 py-2"
                 onClick={login}
               >
                 {isloading ? (

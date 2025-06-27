@@ -160,7 +160,7 @@ const AddStaff = () => {
     <>
       {/* Top Bar */}
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
@@ -178,9 +178,7 @@ const AddStaff = () => {
             <Stack direction="row" spacing={2}>
               <Chip
                 avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
                     {HODName?.slice(0, 1)}
                   </Avatar>
                 }
@@ -205,9 +203,9 @@ const AddStaff = () => {
 
       {/* Main Card */}
       <div style={{ width: "90%" }} className=" mb-5 mt-5 container">
-        <div className="row rounded d-flex justify-content-center  align-items-center">
+        <div className="row rounded d-flex justify-content-center mb-5 align-items-center">
           <div className="col-12 col-md-6 col-lg-5 ">
-            <div className="card border rounded  ">
+            <div className="card border rounded  cards">
               <div
                 className="card-header border-0"
                 style={{ color: "rgb(26, 51, 208)" }}
@@ -237,10 +235,10 @@ const AddStaff = () => {
 
                   return (
                     <div
-                      className="d-flex  justify-content-center align-items-center flex-column"
+                      className="d-flex row  justify-content-center align-items-center flex-column"
                       key={staff}
                     >
-                      <div className="col-12 mb-3">
+                      <div className="col-12 mb-4">
                         <label
                           htmlFor=""
                           style={{
@@ -303,13 +301,13 @@ const AddStaff = () => {
 
               <div className="card-footer border-0  d-flex justify-content-center">
                 <button
-                  className="btn border-0 text-uppercase bg-gradient px-5 py-2 my-3 rounded-pill"
-                  style={{
-                    minWidth: "180px",
-                    fontWeight: "600",
-                    background: "#1A33D0",
-                    color: "white",
-                  }}
+                  className="btnlist text-uppercase bg-gradient px-5 py-2  rounded-pill"
+                  // style={{
+                  //   minWidth: "180px",
+                  //   fontWeight: "600",
+                  //   background: "#1A33D0",
+                  //   color: "white",
+                  // }}
                   onClick={
                     isUpdate
                       ? () => {
@@ -337,6 +335,7 @@ const AddStaff = () => {
           </div>
         </div>
       </div>
+      <div className="container p-5"></div>
     </>
   );
 };

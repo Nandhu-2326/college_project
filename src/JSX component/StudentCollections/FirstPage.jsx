@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-
 import CollegeLogo from "../CollegeLogo";
-import { CiCalendarDate } from "react-icons/ci";
-import { FaRegUserCircle } from "react-icons/fa";
 import Footer from "../Footer";
-import { RiFileList3Line } from "react-icons/ri";
 import { db } from "../Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
-import "../Style Component/firstpage.css";
+// import "../Style Component/firstpage.css";
 import { useNavigate } from "react-router-dom";
 
 const FirstPage = () => {
@@ -82,7 +78,7 @@ const FirstPage = () => {
       <Toaster position="top-center" />
       <CollegeLogo />
       <div className="container mt-3" style={{ width: "90%" }}>
-        <div className="row justify-content-center mt-xm-5 mt-md-0">
+        <div className="row justify-content-center mt-xm-5 mt-md-0 ">
           <div className="col-12 col-md-5 col-lg-4">
             <div className="card cards shadow rounded-4 border-0">
               <div className="card-header bg-white border-0 text-center">
@@ -153,7 +149,7 @@ const FirstPage = () => {
 
                   {/* Button */}
                   <button
-                    className="logbtn rounded fw-bold py-2"
+                    className="logbtn rounded fw-bold py-2 mt-2"
                     onClick={getResult}
                   >
                     View Result
@@ -163,9 +159,8 @@ const FirstPage = () => {
             </div>
           </div>
         </div>
-        <div className="mt-5">
-          <Footer />
-        </div>
+        {/* <div className="mt-5"></div> */}
+        <Footer />
       </div>
     </>
   );
