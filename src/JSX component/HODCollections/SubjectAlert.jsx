@@ -11,7 +11,6 @@ import { ThreeDot } from "react-loading-indicators";
 import { showWarning } from "../SweetAlert";
 import { RiDeleteBin3Fill } from "react-icons/ri";
 import { toast } from "react-hot-toast";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -162,7 +161,7 @@ const SubjectAlert = () => {
   return (
     <>
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
@@ -180,9 +179,7 @@ const SubjectAlert = () => {
             <Stack direction="row" spacing={2}>
               <Chip
                 avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
                     {HODName?.slice(0, 1)}
                   </Avatar>
                 }
@@ -204,13 +201,13 @@ const SubjectAlert = () => {
           </div>
         </div>
       </div>
-      <div className="container ">
+      <div className="container mt-5 " style={{ marginBottom: "200px" }}>
         <div className="row mb-5 justify-content-center">
           <div className="col-lg-8">
-            <div className="card shadow">
+            <div className="card shadow ">
               <div
-                className="card-header  text-light text-center text-uppercase fw-bold fs-6"
-                style={{ background: "rgb(26, 51, 208)", color: "white" }}
+                className="card-header bg-gradient  text-light text-center text-uppercase fw-bold fs-6"
+                style={{ background: "#d5181c", color: "white" }}
               >
                 Subject Alert <br /> for <br />
                 {StaffData.staffName}
@@ -253,9 +250,10 @@ const SubjectAlert = () => {
                         : "Semester";
                     return (
                       <div className="col-md-6 mt-3" key={doc}>
-                        <label className="text-uppercase fw-semibold mb-2"
-        style={{ color: "rgb(26, 51, 208)"}}
-        >
+                        <label
+                          className="text-uppercase fw-semibold mb-2"
+                          style={{ color: "" }}
+                        >
                           {fieldLabel}
                         </label>
 
@@ -349,8 +347,12 @@ const SubjectAlert = () => {
 
               <div className="card-footer d-flex justify-content-center p-3">
                 <button
-                  className="btn text-uppercase mb-3 px-4 py-2"
-                  style={{ letterSpacing: "2px", background:"rgb(29, 51, 208)", color:"white" }}
+                  className="btn hodbtn text-uppercase mb-3 px-4 py-2"
+                  style={{
+                    letterSpacing: "2px",
+                    // background: "#d5181c",
+                    color: "white",
+                  }}
                   onClick={AddStaffData}
                   disabled={isLoading}
                 >

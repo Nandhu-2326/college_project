@@ -61,7 +61,7 @@ const HOD = () => {
 
             <div className="card-body d-flex flex-column gap-3">
               {/* Username */}
-              <label htmlFor="" className="labelhod">
+              <label htmlFor="" className="labelhod fw-semibold">
                 User Name
               </label>
               <div className="">
@@ -74,7 +74,7 @@ const HOD = () => {
               </div>
 
               {/* Password */}
-              <label htmlFor="" className="labelhod">
+              <label htmlFor="" className="labelhod fw-semibold">
                 Password
               </label>
               <div className="input-group">

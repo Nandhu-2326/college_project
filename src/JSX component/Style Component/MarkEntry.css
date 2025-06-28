@@ -12,11 +12,10 @@ box-shadow: 0px 2px 2px 1px rgb(163, 163, 163);
     font-size: 13px;
 }
 .MarkCard{
-    border: none;
-    background: #1A33D0
-    ;
-    color: #faf7f0 !important;
+
+    /* border: 2px solid #1A33D0; */
+    color: #1A33D0 !important;
     border-radius: 10px !important;
     margin: 2px;
-    box-shadow: 0px 1px 1px 1px #2136c0;
+    /* box-shadow: 0px 1px 1px 1px #000000; */
 }

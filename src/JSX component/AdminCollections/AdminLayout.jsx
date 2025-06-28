@@ -3,15 +3,13 @@ import { Outlet } from "react-router-dom";
 import CollegeLogo from "../CollegeLogo";
 import Footer from "../Footer";
 import { Toaster } from "react-hot-toast";
+import { Commet } from "react-loading-indicators";
 
 const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
-  const [zoom, setZoom] = useState(false); // for scale effect
 
   useEffect(() => {
-    // Trigger zoom and set loading timeout
-    setZoom(true);
-    const timer = setTimeout(() => setLoading(false), 1500);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -21,10 +19,14 @@ const AdminLayout = () => {
         className="d-flex justify-content-center flex-column align-items-center"
         style={{ height: "100vh" }}
       >
-        
+        <Commet color="rgb(26,51,208)" size="medium" text="" textColor="" />
         <h1
-          className="h1 text-dark mt-3"
-          style={{ letterSpacing: "3px", fontWeight: "bold" }}
+          className="h1  mt-3"
+          style={{
+            letterSpacing: "3px",
+            fontWeight: "bold",
+            color: "rgb(26,51,208)",
+          }}
         >
           ADMIN PANEL
         </h1>

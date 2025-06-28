@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { db } from "../Database";
 import {
@@ -15,7 +14,6 @@ import CollegeLogo from "../CollegeLogo";
 import toast from "react-hot-toast";
 import html2pdf from "html2pdf.js";
 import { HashLoader } from "react-spinners";
-
 
 const PDFResult = () => {
   const nav = useNavigate();
@@ -44,7 +42,6 @@ const PDFResult = () => {
   useEffect(() => {
     if (selectedSubject) {
       fetchStudentMark();
-      setIsLoading(true)
     }
   }, [selectedSubject]);
 
@@ -93,7 +90,7 @@ const PDFResult = () => {
       );
 
       setStudentDetails(allStudentData);
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (e) {
       toast.error(e.message);
     }
@@ -124,26 +121,21 @@ const PDFResult = () => {
     }, 1);
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2200); // 2s delay
-    return () => clearTimeout(timer);
-  }, []);
-
   const firstStudent = studentDetails[0] || {};
   if (isLoading) {
     return (
       <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ height: "75vh" }}
-    >
-      <HashLoader color="#1e90ff" size={75} />
-    </div>
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "75vh" }}
+      >
+        <HashLoader color="#1e90ff" size={75} />
+      </div>
     );
   }
   return (
     <>
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row d-flex align-items-center justify-content-between">
@@ -157,169 +149,179 @@ const PDFResult = () => {
               <img src="/back.png" width={25} alt="" className="img img-flui" />
             </button>
           </div>
-          <div className="col-6 text-end ">
+          <div className="col-6 justify-content-end d-flex">
             <button
-              className="btn btn-success bg-gradient"
+              className="btn btn-success bg-gradient d-flex align-items-center"
               // style={{ background: "rgb(290,101,20)", color: "white" }}
               onClick={handleDownloadPDF}
             >
-              Download PDF
+              <img
+                src="/download.png"
+                width={20}
+                alt=""
+                className="img img-fluid"
+              />{" "}
+              <span>Download PDF</span>
             </button>
           </div>
         </div>
       </div>
+      <div className="p-2">
+        <div
+          className="container border border-dark border-1 mb-5 mt-5"
+          ref={pdfRef}
+        >
+          {logo && <CollegeLogo />}
 
-      <div className="container border mb-5 mt-5" ref={pdfRef}>
-        {logo && <CollegeLogo />}
+          {/* Header Info */}
+          <div className="row mt-3 g-2">
+            <div className="col-12 text-center">
+              <h4 className="fw-bold text-uppercase">
+                {selectedSubject?.department}
+              </h4>
+            </div>
+            <div className="col-6 text-uppercase fw-semibold">
+              Subject: {selectedSubject?.subject}
+            </div>
+            <div className="col-6 text-uppercase fw-semibold text-end">
+              Year: {selectedSubject?.year}
+            </div>
+            <div className="col-4 text-uppercase fw-semibold">
+              Semester: {selectedSubject?.semester?.slice(9)}
+            </div>
+            <div className="col-4 text-uppercase fw-semibold text-center">
+              Degree: {firstStudent.ugorpg || "-"}
+            </div>
+            <div className="col-4 text-uppercase fw-semibold text-end">
+              R/S: {firstStudent.rs || "-"}
+            </div>
+            <div
+              className="col-12 text-end fw-semibold"
+              style={{ letterSpacing: "1.5px" }}
+            >
+              Date: {times}
+            </div>
+          </div>
 
-        {/* Header Info */}
-        <div className="row mt-3 g-2">
-          <div className="col-12 text-center">
-            <h4 className="fw-bold text-uppercase">
-              {selectedSubject?.department}
-            </h4>
-          </div>
-          <div className="col-6 text-uppercase fw-semibold">
-            Subject: {selectedSubject?.subject}
-          </div>
-          <div className="col-6 text-uppercase fw-semibold text-end">
-            Year: {selectedSubject?.year}
-          </div>
-          <div className="col-4 text-uppercase fw-semibold">
-            Semester: {selectedSubject?.semester?.slice(9)}
-          </div>
-          <div className="col-4 text-uppercase fw-semibold text-center">
-            Degree: {firstStudent.ugorpg || "-"}
-          </div>
-          <div className="col-4 text-uppercase fw-semibold text-end">
-            R/S: {firstStudent.rs || "-"}
-          </div>
-          <div
-            className="col-12 text-end fw-semibold"
-            style={{ letterSpacing: "1.5px" }}
-          >
-            Date: {times}
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="table-responsive mt-4">
-          <table className="table table-bordered table-hover text-center align-middle">
-            <thead className="table-dark text-uppercase border border-2 border-dark">
-              <tr className="border border-2 border-dark">
-                <th>S.No</th>
-                <th>Name</th>
-                <th>Roll No</th>
-                <th>Internal - 1</th>
-                <th>Internal - 2</th>
-                <th>Average</th>
-                {selectedSubject?.TorL == "Lab" ? (
-                  <th> LabRecord </th>
-                ) : (
-                  <th> Assignment </th>
-                )}
-                {selectedSubject?.TorL == "Lab" ? (
-                  <th> Observation </th>
-                ) : (
-                  <th> Seminar </th>
-                )}
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentDetails.map((student, index) => (
-                <tr key={student.id} className="border border-2 border-dark">
-                  <td>{index + 1}</td>
-                  <td>{student.Name}</td>
-                  <td>{student.rollno.toUpperCase()}</td>
-
-                  <td>
-                    {selectedSubject?.TorL != "Lab"
-                      ? student.markDetails?.Internal_1Og == null
-                        ? "Absent"
-                        : student.markDetails?.Internal_1Og
-                      : selectedSubject?.TorL == "Lab"
-                      ? student.markDetails.Internal_1Og == null
-                        ? "Absent"
-                        : student.markDetails.Internal_1Og
-                      : " - "}
-                  </td>
-                  <td>
-                    {selectedSubject?.TorL != "Lab"
-                      ? student.markDetails?.Internal_2Og == null
-                        ? "Absent"
-                        : student.markDetails?.Internal_2Og
-                      : selectedSubject?.TorL == "Lab"
-                      ? student.markDetails.Internal_2Og == null
-                        ? "Absent"
-                        : student.markDetails.Internal_2Og
-                      : " -"}
-                  </td>
-
-                  {selectedSubject?.TorL != "Lab" ? (
-                    <td>
-                      {student.markDetails?.TotalInternal == null
-                        ? "Absent"
-                        : student.markDetails?.TotalInternal}
-                    </td>
+          {/* Table */}
+          <div className="table-responsive mt-4">
+            <table className="table table-bordered table-hover text-center align-middle">
+              <thead className="table-dark text-uppercase border border-2 border-dark">
+                <tr className="border border-2 border-dark">
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Roll No</th>
+                  <th>Internal - 1</th>
+                  <th>Internal - 2</th>
+                  <th>Average</th>
+                  {selectedSubject?.TorL == "Lab" ? (
+                    <th> LabRecord </th>
                   ) : (
-                    <td>
-                      {student.markDetails?.AverageMark == null
-                        ? "Absent"
-                        : student.markDetails?.AverageMark}
-                    </td>
+                    <th> Assignment </th>
                   )}
-
-                  {selectedSubject?.TorL != "Lab" ? (
-                    <td>
-                      {student.markDetails?.Assignment == null
-                        ? "Absent"
-                        : student.markDetails?.Assignment}
-                    </td>
+                  {selectedSubject?.TorL == "Lab" ? (
+                    <th> Observation </th>
                   ) : (
-                    <td>
-                      {student.markDetails?.LabRecord == null
-                        ? "Absent"
-                        : student.markDetails?.LabRecord}
-                    </td>
+                    <th> Seminar </th>
                   )}
-                  {selectedSubject?.TorL != "Lab" ? (
-                    <td>
-                      {student.markDetails?.Seminar == null
-                        ? "Absent"
-                        : student.markDetails?.Seminar}
-                    </td>
-                  ) : (
-                    <td>
-                      {student.markDetails?.Observation == null
-                        ? "Absent"
-                        : student.markDetails?.Observation}
-                    </td>
-                  )}
-                  {selectedSubject?.TorL != "Lab" ? (
-                    <td>
-                      {student.markDetails?.NeetMark == null
-                        ? "Absent"
-                        : student.markDetails?.NeetMark}
-                    </td>
-                  ) : (
-                    <td>
-                      {student.markDetails?.Totalmark == null
-                        ? "Absent"
-                        : student.markDetails?.Totalmark}
-                    </td>
-                  )}
+                  <th>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {studentDetails.map((student, index) => (
+                  <tr key={student.id} className="border border-2 border-dark">
+                    <td>{index + 1}</td>
+                    <td>{student.Name}</td>
+                    <td>{student.rollno.toUpperCase()}</td>
 
-        <div className="mt-5 py-3">
-          <div className="row">
-            <div className="col-4 text-end">STAFF</div>
-            <div className="col-4 text-center">HOD </div>
-            <div className="col-4">PRINCIPAL</div>
+                    <td>
+                      {selectedSubject?.TorL != "Lab" 
+                        ? student.markDetails?.Internal_1Og == null
+                          ? "Absent"
+                          : student.markDetails?.Internal_1Og
+                        : selectedSubject?.TorL == "Lab"
+                        ? student.markDetails.Internal_1Og == null
+                          ? "Absent"
+                          : student.markDetails.Internal_1Og
+                        : " - "}
+                    </td>
+                    <td>
+                      {selectedSubject?.TorL != "Lab"
+                        ? student.markDetails?.Internal_2Og == null
+                          ? "Absent"
+                          : student.markDetails?.Internal_2Og
+                        : selectedSubject?.TorL == "Lab"
+                        ? student.markDetails.Internal_2Og == null
+                          ? "Absent"
+                          : student.markDetails.Internal_2Og
+                        : " -"}
+                    </td>
+
+                    {selectedSubject?.TorL != "Lab" ? (
+                      <td>
+                        {student.markDetails?.TotalInternal == null
+                          ? "Absent"
+                          : student.markDetails?.TotalInternal}
+                      </td>
+                    ) : (
+                      <td>
+                        {student.markDetails?.AverageMark == null
+                          ? "Absent"
+                          : student.markDetails?.AverageMark}
+                      </td>
+                    )}
+
+                    {selectedSubject?.TorL != "Lab" ? (
+                      <td>
+                        {student.markDetails?.Assignment == null
+                          ? "Absent"
+                          : student.markDetails?.Assignment}
+                      </td>
+                    ) : (
+                      <td>
+                        {student.markDetails?.LabRecord == null
+                          ? "Absent"
+                          : student.markDetails?.LabRecord}
+                      </td>
+                    )}
+                    {selectedSubject?.TorL != "Lab" ? (
+                      <td>
+                        {student.markDetails?.Seminar == null
+                          ? "Absent"
+                          : student.markDetails?.Seminar}
+                      </td>
+                    ) : (
+                      <td>
+                        {student.markDetails?.Observation == null
+                          ? "Absent"
+                          : student.markDetails?.Observation}
+                      </td>
+                    )}
+                    {selectedSubject?.TorL != "Lab" ? (
+                      <td>
+                        {student.markDetails?.NeetMark == null
+                          ? "Absent"
+                          : student.markDetails?.NeetMark}
+                      </td>
+                    ) : (
+                      <td>
+                        {student.markDetails?.Totalmark == null
+                          ? "Absent"
+                          : student.markDetails?.Totalmark}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-5 py-3">
+            <div className="row">
+              <div className="col-4 text-end">STAFF</div>
+              <div className="col-4 text-center">HOD </div>
+              <div className="col-4">PRINCIPAL</div>
+            </div>
           </div>
         </div>
       </div>

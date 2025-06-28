@@ -171,21 +171,21 @@ const SecondPage = () => {
               </div>
               <div>
                 <button
-                  className="btn text-uppercase"
+                  className="btn text-uppercase d-flex align-items-center px-3 gap-2"
                   style={{
                     letterSpacing: "2px",
-                    background: "black",
+                    background: "rgb(29, 56, 208)",
                     color: "white",
                   }}
                   onClick={handleDownloadPDF}
                 >
                   <img
-                    src="/pdf.png"
+                    src="/download.png"
                     width={20}
                     alt=""
                     className="img img-fluid"
                   />
-                  PDF
+                  <span>PDF</span>
                 </button>
               </div>
             </div>

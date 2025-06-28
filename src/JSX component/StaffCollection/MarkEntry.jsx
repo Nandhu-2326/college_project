@@ -1120,8 +1120,11 @@ const MarkEntry = () => {
           <div className="container mb-5 ">
             <div className="row d-flex justify-content-center ">
               <div className="col-12 col-sm-4 col-md-5 d-flex justify-content-center">
-                <div className="card  p-sm-2 p-1 MarkCard">
-                  <div className="card-header MarkCard">
+                <div className="card shadow p-sm-2 p-1 MarkCard border-3">
+                  <div
+                    className="card-header border-bottom border-3"
+                    style={{ color: "#1A33D0 " }}
+                  >
                     <h6 className="text-uppercase text-center mb-2">
                       {selectedSubject?.department || "Department"}
                     </h6>
@@ -1130,7 +1133,7 @@ const MarkEntry = () => {
                   <div className="card-body">
                     <div>
                       <p className="mb-1 fw-semibold text-uppercase">
-                        Subject: {selectedSubject?.subject || "Subject"}
+                        Subject: {selectedSubject?.subject || "--"}
                       </p>
                       <p className="mb-1 fw-semibold text-uppercase">
                         Semester: {selectedSubject?.semester?.slice(9) || "--"}
@@ -1147,7 +1150,10 @@ const MarkEntry = () => {
                     </div>
                   </div>
 
-                  <div className="card-footer MarkCard d-flex justify-content-between align-items-center">
+                  <div
+                    className="card-footer border-top border-3 d-flex justify-content-between align-items-center"
+                    style={{ color: "#1A33D0 " }}
+                  >
                     <p className="mb-0 fw-semibold text-uppercase me-3">
                       Year: {selectedSubject?.year || "-"}
                     </p>
@@ -1200,18 +1206,20 @@ const MarkEntry = () => {
 
           {/* Student List */}
           <div className="container mt-5">
-            <h3
-              className="text-center text-uppercase mb-4 mt-sm-3"
-              style={{ color: "	#1D33D0" }}
-            >
-              Student List
-            </h3>
-            <span
-              className="text-center mb-3 text-uppercase"
-              style={{ color: "	#1D33D0" }}
-            >
-              Total Student {students.length}
-            </span>
+            <div className="text-center mb-5">
+              <h3
+                className="text-center text-uppercase mb-4 mt-sm-3"
+                style={{ color: "	#1D33D0" }}
+              >
+                Student List
+              </h3>
+              <span
+                className="text-center h4 mb-3 text-uppercase"
+                style={{ color: "	#1D33D0" }}
+              >
+                Total Students - {students.length}
+              </span>
+            </div>
             <div className="row g-4">
               {students.length > 0 ? (
                 students
@@ -1225,8 +1233,8 @@ const MarkEntry = () => {
                       <div
                         className={
                           student.active
-                            ? "card shadow-sm border-0 "
-                            : "card shadow-sm border-2 non-active border-danger opacity-50 "
+                            ? "card shadow  border-3 "
+                            : "card shadow border-3 non-active border-danger opacity-50 "
                         }
                       >
                         <div className="card-header Mcardhead d-flex justify-content-center align-items-center border-bottom">

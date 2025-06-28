@@ -17,9 +17,11 @@ import {
 } from "firebase/firestore";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const AdminUserDetails = () => {
   // State's
+  const [isloading, setisLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
@@ -64,15 +66,6 @@ const AdminUserDetails = () => {
     });
   };
 
-  const UserAdd = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Added",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  };
-
   const delSuccess = () => {
     Swal.fire({
       icon: "success",
@@ -106,19 +99,20 @@ const AdminUserDetails = () => {
   // Add User
   const AddUser = async () => {
     if (!userName || !password) {
-      InformationError();
+      toast.error("Please Fill All Requirement");
     } else {
       try {
-        loading();
+        setisLoading(true);
         await addDoc(collection(db, "Admin"), {
           username: userName,
           password: password,
         });
         setUserName("");
         setPassword("");
-        UserAdd();
+        setisLoading(false);
         getUser();
       } catch (e) {
+        setisLoading(false);
         alert("Error: ", e.message);
       }
     }
@@ -130,7 +124,7 @@ const AdminUserDetails = () => {
     if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, "Admin", id));
-        delSuccess();
+        toast.success("Admin Deleted");
         getUser();
       } catch (e) {
         alert("Error: ", e.message);
@@ -150,10 +144,10 @@ const AdminUserDetails = () => {
 
   const UpdateUser = async () => {
     if (!userName || !password) {
-      InformationError();
+      toast.error("Please Fill All Requirement");
     } else {
       try {
-        loading();
+        setisLoading(true);
         await updateDoc(doc(db, "Admin", currentId), {
           username: userName,
           password: password,
@@ -162,9 +156,11 @@ const AdminUserDetails = () => {
         setPassword("");
         setBtn(true);
         setCurrentId(null);
-        Update();
+        toast.success("Update Admin");
+        setisLoading(false);
         getUser();
       } catch (e) {
+        setisLoading(false);
         console.log(e.message);
       }
     }
@@ -177,15 +173,15 @@ const AdminUserDetails = () => {
 
   return (
     <>
-      <div className="container d-flex justify-content-center mt-4">
+      <div className="container d-flex  justify-content-center mt-4">
         <div className="row d-flex justify-content-center">
           <div className="col-12 text-primary d-flex h1 justify-content-center align-items-center">
             Admin Details - <FaUserTie />
           </div>
+
           <div className="col-12 text-secondary text-center h6 mt-3">
             Search Admin or Add New Admin, Delete or Edit Admin
           </div>
-
           <div className="col-12 col-sm-5 mt-3">
             <div className="input-group">
               <input
@@ -207,62 +203,74 @@ const AdminUserDetails = () => {
         </div>
       </div>
 
-      {/* User Form */}
-      <div className="container my-4">
-        <span className="text-primary h1 ">Total Admin - {user} </span>
-        <div className="row justify-content-center mt-5">
-          <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4 bg-light rounded">
-            <div className="d-flex flex-column gap-4">
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUserTie />
-                </span>
+      <div className="container mt-5" style={{ width: "90%" }}>
+        <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
+          <div className="col-12 col-md-6 col-lg-5 mt-4 mt-md-0">
+            <div className="cards card shadow-sm rounded-4 border-0">
+              <div className="card-header border-0 text-center bg-transparent">
+                <h4
+                  className="fw-bold h5 text-uppercase"
+                  style={{ letterSpacing: "1.5px" }}
+                >
+                  Admin Panel
+                </h4>
+              </div>
+
+              <div className="card-body d-flex flex-column gap-3">
+                {/* Admin Name */}
+                <label className="">Admin Name</label>
                 <input
                   type="text"
-                  className="form-control border border-primary"
-                  placeholder="Admin Name"
+                  className="form-control"
+                  placeholder="Enter Admin Name"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                 />
+
+                {/* Password */}
+                <label className="">Password</label>
+                <div className="input-group">
+                  <input
+                    type={PasswordEye ? "password" : "text"}
+                    className="form-control"
+                    placeholder="Enter Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text icons rounded-end"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => SetPasswordEye(!PasswordEye)}
+                  >
+                    {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
+                  </span>
+                </div>
               </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <RiLockPasswordFill />
-                </span>
-                <input
-                  type={PasswordEye ? "password" : "text"}
-                  className="form-control border border-primary"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <span className="input-group-text bg-primary text-light">
-                  {PasswordEye ? (
-                    <FaEyeSlash
-                      onClick={() => {
-                        SetPasswordEye(false);
-                      }}
-                    />
+              <div className="card-footer border-0 text-center">
+                <button
+                  className="rounded hodbtn text-uppercase fw-bold w-100 py-2"
+                  onClick={btn ? AddUser : UpdateUser}
+                >
+                  {isloading ? (
+                    <ThreeDot color="#ffffff" size="medium" text="" />
+                  ) : btn ? (
+                    "Add User"
                   ) : (
-                    <FaRegEye
-                      onClick={() => {
-                        SetPasswordEye(true);
-                      }}
-                    />
+                    "Update User"
                   )}
-                </span>
+                </button>
               </div>
-
-              <button
-                className="btn btn-primary fw-bold py-1"
-                onClick={btn ? AddUser : UpdateUser}
-              >
-                {btn ? "Add User" : "Update Data"}
-              </button>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="card-footer"></div>
+
+      {/* User Form */}
+      <div className="container my-4">
+        <span className="text-primary h1 ">Total Admin - {user} </span>
       </div>
 
       {/* User Table */}

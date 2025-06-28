@@ -65,7 +65,7 @@ const StudentCSV = () => {
   return (
     <>
       <div
-        style={{ backgroundColor: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ backgroundColor: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
@@ -81,12 +81,12 @@ const StudentCSV = () => {
           </div>
         </div>
       </div>
-      
-      <div className="container mt-5" style={{ width: "90%" }}>
+
+      <div className="container " style={{ width: "90%" }}>
         <div className="row d-flex justify-content-center align-items-center mt-3">
-          <div className="col-12 col-md-5 col-lg-4">
+          <div className="col-12 col-md-5 col-lg-4 ">
             <div
-              className="card p-4 shadow-lg rounded-4 w-100"
+              className="card p-4 border border-2 rounded-4 w-100"
               style={{ maxWidth: "500px" }}
             >
               <div className="d-flex align-items-center justify-content-center text-uppercase fw-bold mb-4">

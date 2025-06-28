@@ -21,7 +21,6 @@ const AdminLogin = () => {
       showWarning("Please Fill All requirement");
     } else {
       setisLoading(true);
-      const toastId = toast.loading("Please Wait");
       try {
         const q = query(
           collection(db, "Admin"),
@@ -32,14 +31,14 @@ const AdminLogin = () => {
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          toast.success("Login Success", { id: toastId });
+          toast.success("Login Success");
           nav("/AdminLayout/AdminUserPage");
         } else {
-          toast.error("Invalid Username or Password", { id: toastId });
+          toast.error("Invalid Username or Password");
           setisLoading(false);
         }
       } catch (e) {
-        toast.error(e.message, { id: toastId });
+        toast.error(e.message);
       }
     }
   };
@@ -65,8 +64,8 @@ const AdminLogin = () => {
 
               <div className="card-body d-flex flex-column gap-3">
                 {/* Username */}
-                <label htmlFor="" className="label">
-                  Username
+                <label htmlFor="" className="">
+                  User Name
                 </label>
                 <div className="input-group">
                   <input
@@ -78,7 +77,7 @@ const AdminLogin = () => {
                 </div>
 
                 {/* Password */}
-                <label htmlFor="" className="label">
+                <label htmlFor="" className="">
                   Password
                 </label>
                 <div className="input-group">

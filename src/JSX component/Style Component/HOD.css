@@ -10,7 +10,7 @@
   .cards {
    margin-top: 50px;
    gap: 15px;
-  padding: 5px;
+   padding: 5px;
    margin-bottom: 100px;
    box-shadow: 1px 0px 3px 3px rgb(184, 184, 184);
   }
@@ -22,8 +22,7 @@
   .labelhod
   {
     color: rgb(0, 0, 0);
-    font-weight: bold;
-    /* letter-spacing: 2px; */
+    
   }
   .hodbtn{
         background-color: #d5181c;

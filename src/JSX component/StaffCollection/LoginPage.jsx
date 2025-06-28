@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
-// import "../Style Component/HOD.css";
+import "../Style Component/staff.css";
 
 const LoginPage = () => {
   const nav = useNavigate();
@@ -21,7 +21,6 @@ const LoginPage = () => {
       showWarning("Please Fill All requirement");
     } else {
       setisLoading(true);
-      const toastId = toast.loading("Please Wait");
       try {
         const q = query(
           collection(db, "Allstaffs"),
@@ -34,15 +33,16 @@ const LoginPage = () => {
         if (!querySnapshot.empty) {
           const docSnap = querySnapshot.docs[0];
           const userDoc = { id: docSnap.id, ...docSnap.data() };
-          toast.success("Login Success", { id: toastId });
+          toast.success("Login Success");
           sessionStorage.setItem("staff_Data", JSON.stringify(userDoc));
           nav("/StaffLayout/StaffSubjects");
         } else {
-          toast.error("Invalid Username or Password", { id: toastId });
+          toast.error("Invalid Username or Password");
           setisLoading(false);
         }
       } catch (e) {
-        toast.error(e.message, { id: toastId });
+        setisLoading(false);
+        toast.error(e.message);
       }
     }
   };
@@ -68,8 +68,8 @@ const LoginPage = () => {
 
               <div className="card-body d-flex flex-column gap-3">
                 {/* Username */}
-                <label htmlFor="" className="label">
-                  Username
+                <label htmlFor="" className="label fw-semibold">
+                  User Name
                 </label>
 
                 <input
@@ -80,7 +80,7 @@ const LoginPage = () => {
                 />
 
                 {/* Password */}
-                <label htmlFor="" className="label">
+                <label htmlFor="" className="label fw-semibold">
                   Password
                 </label>
                 <div className="input-group">
@@ -102,7 +102,7 @@ const LoginPage = () => {
 
               <div className="card-footer mt-2  border-0 text-center">
                 <button
-                  className="rounded logbtn text-uppercase fw-bold w-100 py-2"
+                  className="rounded hodbtn text-uppercase fw-bold w-100 py-2"
                   onClick={login}
                 >
                   {isloading ? (

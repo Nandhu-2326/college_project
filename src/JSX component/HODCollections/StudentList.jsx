@@ -503,7 +503,7 @@ const StudentList = () => {
   return (
     <>
       <div
-        style={{ background: "rgb(26, 51, 208)", overflowX: "hidden" }}
+        style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid  bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
@@ -521,9 +521,7 @@ const StudentList = () => {
             <Stack direction="row" spacing={2}>
               <Chip
                 avatar={
-                  <Avatar
-                    style={{ color: "white", background: "rgb(26, 51, 208)" }}
-                  >
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
                     {HODName?.slice(0, 1)}
                   </Avatar>
                 }
@@ -546,50 +544,48 @@ const StudentList = () => {
         </div>
       </div>
 
-      <div className="container mt-2" style={{ width: "90%" }}>
+      <div className="container mt-4" style={{ width: "90%" }}>
         <div className="row d-flex justify-content-center">
           <div className="col-12 col-sm-5 col-lg-4">
-            <div className="card bg-light">
+            <div className="card Scard">
               <div
-                className="card-header text-center fs-3 text-uppercase"
-                style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
+                className="card-header text-center fw-bold fs-3 text-uppercase"
+                style={{ color: "rgb(26, 51, 208)", letterSpacing: "1px" }}
               >
                 Student Details
               </div>
               <div className="card-body d-flex justify-content-center">
-                <div className="row g-2 text-dark text-uppercase fw-semibold text-center">
-                  <div
-                    className="col-4 border py-3 "
-                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-                  >
-                    <span style={{ fontSize: "13px" }}>1-Year</span>
-                    <div className="fw-bold fs-3 ">
-                      {studentState.filter((s) => s.year == 1).length -
-                        inactiveCounts[1]}
+                <div className="row g-3 w-100 text-center">
+                  {[1, 2, 3].map((year) => (
+                    <div key={year} className="col-12 col-md-4">
+                      <div
+                        className="border rounded-4 shadow-sm py-4 px-2 h-100"
+                        style={{
+                          backgroundColor: "#f8f9ff",
+                          color: "rgb(26, 51, 208)",
+                          letterSpacing: "1px",
+                          transition: "transform 0.3s ease",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.03)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                      >
+                        <div style={{ fontSize: "13px", fontWeight: "600" }}>
+                          {year}-Year
+                        </div>
+                        <div className="fs-2 fw-bold mt-2">
+                          {studentState.filter((s) => s.year === year).length -
+                            inactiveCounts[year]}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    className="col-4 border py-3"
-                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-                  >
-                    <span style={{ fontSize: "13px" }}>2-Year</span>
-                    <div className="fs-3">
-                      {studentState.filter((s) => s.year == 2).length -
-                        inactiveCounts[2]}
-                    </div>
-                  </div>
-                  <div
-                    className="col-4 border py-3"
-                    style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
-                  >
-                    <span style={{ fontSize: "13px" }}>3-Year</span>
-                    <div className="fs-3">
-                      {studentState.filter((s) => s.year == 3).length -
-                        inactiveCounts[3]}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
+
               <div
                 className="card-footer text-center fw-semibold text-uppercase"
                 style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
@@ -601,7 +597,7 @@ const StudentList = () => {
         </div>
       </div>
 
-      <div className="container  mb-5 ">
+      <div className="container  mb-5 mt-5 ">
         <h5
           className="text-center mb-4 text-uppercase"
           style={{ color: "rgb(26, 51, 208)", letterSpacing: "2px" }}
@@ -616,7 +612,7 @@ const StudentList = () => {
               <div className="col-12 col-sm-4 d-grid">
                 <button
                   style={{ background: "rgb(26, 51, 208)", color: "white" }}
-                  className="btn border-0 bg-gradient shadow fw-semibold"
+                  className="btn border-0 bg-gradient  fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -631,7 +627,7 @@ const StudentList = () => {
               <div className="col-12 col-sm-4 d-grid">
                 <button
                   style={{ background: "rgb(26, 51, 208)", color: "white" }}
-                  className="btn border-0 bg-gradient shadow fw-semibold"
+                  className="btn border-0 bg-gradient  fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}
@@ -645,8 +641,8 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  style={{ background: "red", color: "white" }}
-                  className="btn border-0 bg-gradient shadow fw-semibold"
+                  style={{ background: "#d5181c", color: "white" }}
+                  className="btn border-0 bg-gradient fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(3);
                   }}
@@ -670,7 +666,7 @@ const StudentList = () => {
               <div className="col-12 col-sm-4 d-grid">
                 <button
                   style={{ background: "rgb(26, 51, 208)", color: "white" }}
-                  className="btn border-0 bg-gradient shadow fw-semibold"
+                  className="btn border-0 bg-gradient  fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(1);
                   }}
@@ -684,8 +680,8 @@ const StudentList = () => {
 
               <div className="col-12 col-sm-4 d-grid">
                 <button
-                  style={{ background: "red", color: "white" }}
-                  className="btn border-0 bg-gradient shadow fw-semibold"
+                  style={{ background: "#d5181c", color: "white" }}
+                  className="btn border-0 bg-gradient fw-semibold"
                   onClick={() => {
                     ChangeDeleteThirdYear(2);
                   }}

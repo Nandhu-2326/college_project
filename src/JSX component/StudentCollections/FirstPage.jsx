@@ -4,7 +4,7 @@ import Footer from "../Footer";
 import { db } from "../Database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
-// import "../Style Component/firstpage.css";
+import "../Style Component/firstpage.css";
 import { useNavigate } from "react-router-dom";
 
 const FirstPage = () => {

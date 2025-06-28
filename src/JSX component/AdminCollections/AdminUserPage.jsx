@@ -57,11 +57,6 @@ const AdminUserPage = () => {
           {/* Content Area */}
           <div className="col-12 text-center ">
             <div className="bg-light p-2 rounded  pt-4 pb-5">
-              <h4 className="mt-3 ms-2">Welcome, Admin</h4>
-              <p className="text-muted ms-4">
-                Use the menu to manage student, user, and admin data.
-              </p>
-              <div></div>
               <Outlet />
             </div>
           </div>
