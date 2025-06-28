@@ -1,8 +1,6 @@
 import { LuUserRoundSearch } from "react-icons/lu";
 import { BiSolidEdit } from "react-icons/bi";
-import { FaUserTie } from "react-icons/fa6";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { RiLockPasswordFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { db } from "../Database.js";
@@ -18,6 +16,7 @@ import {
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { ThreeDot } from "react-loading-indicators";
 
 const AdminUserDetails = () => {
   // State's
@@ -47,34 +46,6 @@ const AdminUserDetails = () => {
     getUser();
   }, []);
 
-  // SweetAlerts
-  const InformationError = () => {
-    Swal.fire({
-      html: "Please Fill Information",
-      timer: 1000,
-      icon: "warning",
-      showConfirmButton: false,
-    });
-  };
-
-  const loading = () => {
-    Swal.fire({
-      html: "Loading...",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
-
-  const delSuccess = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Deleted",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  };
-
   const confirmDelete = () => {
     return Swal.fire({
       title: "Are you sure?",
@@ -84,15 +55,6 @@ const AdminUserDetails = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    });
-  };
-
-  const Update = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Updated",
-      timer: 1500,
-      showConfirmButton: false,
     });
   };
 
@@ -173,16 +135,11 @@ const AdminUserDetails = () => {
 
   return (
     <>
-      <div className="container d-flex  justify-content-center mt-4">
-        <div className="row d-flex justify-content-center">
-          <div className="col-12 text-primary d-flex h1 justify-content-center align-items-center">
-            Admin Details - <FaUserTie />
-          </div>
-
-          <div className="col-12 text-secondary text-center h6 mt-3">
-            Search Admin or Add New Admin, Delete or Edit Admin
-          </div>
-          <div className="col-12 col-sm-5 mt-3">
+      <div className="container">
+        <div className="row d-flex justify-content-center flex-column flex-md-row">
+          
+          <div className="col-12 col-md-6">
+            <h4 className="fw-semibold text-uppercase">Admin Panel</h4>
             <div className="input-group">
               <input
                 type="text"
@@ -200,71 +157,75 @@ const AdminUserDetails = () => {
               </span>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="container mt-5" style={{ width: "90%" }}>
-        <div className="row justify-content-center d-flex mt-xm-5 mt-md-0">
-          <div className="col-12 col-md-6 col-lg-5 mt-4 mt-md-0">
-            <div className="cards card shadow-sm rounded-4 border-0">
-              <div className="card-header border-0 text-center bg-transparent">
-                <h4
-                  className="fw-bold h5 text-uppercase"
-                  style={{ letterSpacing: "1.5px" }}
-                >
-                  Admin Panel
-                </h4>
-              </div>
+          <div className="col-12 col-md-5 ">
+            <div className="row justify-content-center d-flex mt-xm-5 ">
+              <div className="col-12 col-md-10 mt-4 mt-md-0">
+                <div className="cards card rounded-4 border-0">
+                  <div className="card-header border-0 text-center bg-transparent">
+                    <h4
+                      className="fw-bold h5 text-uppercase"
+                      style={{ letterSpacing: "1.5px" }}
+                    >
+                      Admin Panel
+                    </h4>
+                  </div>
 
-              <div className="card-body d-flex flex-column gap-3">
-                {/* Admin Name */}
-                <label className="">Admin Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter Admin Name"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                />
+                  <div className="card-body text-start gap-3 d-flex flex-column">
+                    <label htmlFor="" className="">
+                      Admin User Name
+                    </label>
+                    <div>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Admin Name"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                      />
+                    </div>
 
-                {/* Password */}
-                <label className="">Password</label>
-                <div className="input-group">
-                  <input
-                    type={PasswordEye ? "password" : "text"}
-                    className="form-control"
-                    placeholder="Enter Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <span
-                    className="input-group-text icons rounded-end"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => SetPasswordEye(!PasswordEye)}
-                  >
-                    {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
-                  </span>
+                    <label className="">Password</label>
+                    <div className="input-group">
+                      <input
+                        type={PasswordEye ? "password" : "text"}
+                        className="form-control"
+                        placeholder="Enter Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <span
+                        className="input-group-text icons rounded-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => SetPasswordEye(!PasswordEye)}
+                      >
+                        {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="card-footer border-0 text-center">
+                    <button
+                      className="rounded text-uppercase fw-bold w-100 py-2"
+                      onClick={btn ? AddUser : UpdateUser}
+                    >
+                      {isloading ? (
+                        <ThreeDot color="#ffffff" size="medium" text="" />
+                      ) : btn ? (
+                        "Add User"
+                      ) : (
+                        "Update User"
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <div className="card-footer border-0 text-center">
-                <button
-                  className="rounded hodbtn text-uppercase fw-bold w-100 py-2"
-                  onClick={btn ? AddUser : UpdateUser}
-                >
-                  {isloading ? (
-                    <ThreeDot color="#ffffff" size="medium" text="" />
-                  ) : btn ? (
-                    "Add User"
-                  ) : (
-                    "Update User"
-                  )}
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div className="container mt-5" style={{ width: "90%" }}></div>
 
       <div className="card-footer"></div>
 

@@ -1046,16 +1046,31 @@ const MarkEntry = () => {
   const nav = useNavigate();
   return (
     <>
-      <div className="position-fixed bottom-0 start-50 translate-middle-x z-3 mb-5">
-        <img
-          src="/up-arrow.png"
-          width={45}
-          alt="Scroll to top"
-          className="img-fluid mb-2"
-          style={{ cursor: "pointer" }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        />
-      </div>
+      <>
+        {/* Visible on small screens only */}
+        <div className="d-md-none position-fixed bottom-0 start-50 translate-middle-x z-3 mb-5">
+          <img
+            src="/up-arrow.png"
+            width={45}
+            alt="Scroll to top"
+            className="img-fluid mb-2"
+            style={{ cursor: "pointer" }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          />
+        </div>
+
+        {/* Visible on md and up only */}
+        <div className="d-none d-md-block position-fixed bottom-0 end-0 z-3 mb-5 me-3">
+          <img
+            src="/up-arrow.png"
+            width={45}
+            alt="Scroll to top"
+            className="img-fluid mb-2"
+            style={{ cursor: "pointer" }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          />
+        </div>
+      </>
 
       <div className="">
         <div className="">

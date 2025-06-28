@@ -22,7 +22,7 @@ const AdminUserPage = () => {
           <span
             onClick={handleShow}
             style={{ fontSize: "25px", cursor: "pointer" }}
-            className=" d-sm-none "
+            className=" d-md-none "
           >
             <GiHamburgerMenu className="text-light" />
           </span>
@@ -45,18 +45,17 @@ const AdminUserPage = () => {
       </Offcanvas>
 
       {/* Main Layout */}
-      <div className="container ">
-        <div className="row  ">
-          {/* Sidebar for larger screens */}
-          <div className="col-12  d-none d-sm-block">
-            <div className="bg-primary opacity-75 pb-3 rounded text-light">
+      <div className="container-fluid ">
+        <div className="row">
+          <div className="col-12 d-none d-md-block">
+            <div className=" ">
               <MenuItems />
             </div>
           </div>
 
           {/* Content Area */}
           <div className="col-12 text-center ">
-            <div className="bg-light p-2 rounded  pt-4 pb-5">
+            <div className="p-2 rounded  pt-4 pb-5">
               <Outlet />
             </div>
           </div>
@@ -71,35 +70,6 @@ const MenuItems = ({ handleClose }) => {
   return (
     <>
       <div className="container d-sm-flex justify-content-around mb-5 align-items-center">
-        <Dropdown className=" d-flex w-25 mt-sm-3">
-          <Dropdown.Toggle
-            variant="light"
-            className=" text-start d-flex align-items-center"
-          >
-            <FaUserGraduate className="me-2" />
-            Student Details
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="">
-            <Dropdown.Item
-              href=""
-              onClick={() => {
-                nav("/AdminLayout/AdminUserPage/SingleStudent");
-                handleClose();
-              }}
-            >
-              Single Student
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                nav("/AdminLayout/AdminUserPage/MultipleStudentCSV"),
-                  handleClose();
-              }}
-            >
-              Multiple Student
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
         <Dropdown className="mt-3  w-25">
           <Dropdown.Toggle
             variant="light"

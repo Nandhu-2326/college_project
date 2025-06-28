@@ -4,6 +4,7 @@ import CollegeLogo from "../CollegeLogo";
 import Footer from "../Footer";
 import { Toaster } from "react-hot-toast";
 import { Commet } from "react-loading-indicators";
+import Header from "../Header";
 
 const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
@@ -37,8 +38,13 @@ const AdminLayout = () => {
   return (
     <>
       <CollegeLogo />
+      <div className="d-md-block d-none">
+        <Header />
+      </div>
       <Outlet />
-      <Footer />
+      <div className="d-md-none">
+        <Footer />
+      </div>
       <Toaster position="top-center" reverseOrder={false} />
     </>
   );

@@ -6,6 +6,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
 import "../Style Component/firstpage.css";
 import { useNavigate } from "react-router-dom";
+import Header from "../Header";
 
 const FirstPage = () => {
   const [dob, setDob] = useState("");
@@ -77,6 +78,9 @@ const FirstPage = () => {
     <>
       <Toaster position="top-center" />
       <CollegeLogo />
+      <div className="d-md-block d-none">
+        <Header />
+      </div>
       <div className="container mt-3" style={{ width: "90%" }}>
         <div className="row justify-content-center mt-xm-5 mt-md-0 ">
           <div className="col-12 col-md-5 col-lg-4">
@@ -149,7 +153,7 @@ const FirstPage = () => {
 
                   {/* Button */}
                   <button
-                    className="logbtn rounded fw-bold py-2 mt-2"
+                    className="logbtn rounded fw-bold py-2 mt-4"
                     onClick={getResult}
                   >
                     View Result
@@ -159,8 +163,9 @@ const FirstPage = () => {
             </div>
           </div>
         </div>
-        {/* <div className="mt-5"></div> */}
-        <Footer />
+        <div className="d-md-none">
+          <Footer />
+        </div>
       </div>
     </>
   );

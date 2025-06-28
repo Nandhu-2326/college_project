@@ -68,7 +68,7 @@ const LoginPage = () => {
 
               <div className="card-body d-flex flex-column gap-3">
                 {/* Username */}
-                <label htmlFor="" className="label fw-semibold">
+                <label htmlFor="" className="">
                   User Name
                 </label>
 
@@ -80,7 +80,7 @@ const LoginPage = () => {
                 />
 
                 {/* Password */}
-                <label htmlFor="" className="label fw-semibold">
+                <label htmlFor="" className="">
                   Password
                 </label>
                 <div className="input-group">

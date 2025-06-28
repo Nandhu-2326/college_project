@@ -61,19 +61,21 @@ const AddStaff = () => {
     const States = sessionStorage.getItem("state");
     const boolenState = JSON.parse(States) === true;
     setisUpdate(boolenState);
+    console.log(boolenState);
   };
 
   const fetchStaffDetails = async (staffId) => {
     const getStaffDetails = doc(db, "Allstaffs", staffId);
     const AfterFetch = await getDoc(getStaffDetails);
     const AllData = AfterFetch.data();
-
+    console.log(AllData);
     if (isUpdate && AllData) {
       for (let staffField in initialState) {
         dispatch({ field: staffField, value: AllData[staffField] || "" });
       }
     }
   };
+  console.log(state);
 
   useEffect(() => {
     fetchData();
@@ -221,6 +223,12 @@ const AddStaff = () => {
                 {[1, 2, 3].map((staff) => {
                   const fieldName =
                     staff === 1
+                      ? "staffName"
+                      : staff === 2
+                      ? "UserName"
+                      : "Password";
+                  const LabelName =
+                    staff === 1
                       ? "Staff Name"
                       : staff === 2
                       ? "User Name"
@@ -246,7 +254,7 @@ const AddStaff = () => {
                           }}
                           className="form-label  fw-semibold"
                         >
-                          {fieldName}
+                          {LabelName}
                         </label>
                         <div className="input-group">
                           <input
