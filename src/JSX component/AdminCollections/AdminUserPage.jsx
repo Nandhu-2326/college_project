@@ -17,8 +17,11 @@ const AdminUserPage = () => {
   return (
     <>
       {/* Mobile Nav */}
-      <div className="container my-3 d-sm-none">
-        <div className="bg-primary  d-flex justify-content-sm-between justify-content-between align-items-center  p-2 rounded">
+      <div className=" w-100  d-md-none">
+        <div
+          style={{ background: "rgb(26, 51, 208)" }}
+          className="  d-flex justify-content-sm-between justify-content-between align-items-center  px-2"
+        >
           <span
             onClick={handleShow}
             style={{ fontSize: "25px", cursor: "pointer" }}
@@ -69,8 +72,8 @@ const MenuItems = ({ handleClose }) => {
   let nav = useNavigate();
   return (
     <>
-      <div className="container d-sm-flex justify-content-around mb-5 align-items-center">
-        <Dropdown className="mt-3  w-25">
+      <div className="container d-sm-flex justify-content-around mb-5 align-items-center flex-column flex-md-row">
+        <Dropdown className="mt-3 w-25">
           <Dropdown.Toggle
             variant="light"
             className=" text-start d-flex align-items-center"

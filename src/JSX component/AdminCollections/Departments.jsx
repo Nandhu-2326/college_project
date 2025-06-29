@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../Database.js"; 
+import { db } from "../Database.js";
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
-  const [rs, setRs] = useState(""); 
-  const [deps, setDeps] = useState(""); 
+  const [rs, setRs] = useState("");
+  const [deps, setDeps] = useState("");
 
   useEffect(() => {
     const getDep = async () => {
@@ -15,7 +15,6 @@ const Departments = () => {
         id: doc.id,
         ...doc.data(),
       }));
-
     };
     getDep();
   }, []);
@@ -60,41 +59,44 @@ const Departments = () => {
   };
 
   return (
-    <div className="container mt-5 mb-3">
-      <div className="row g-3 d-flex justify-content-center align-items-center flex-column">
-        <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary">
-            Select UG or PG / Regular or Self
-          </label>
-          <select
-            className="form-select mt-3"
-            value={rs}
-            onChange={(e) => setRs(e.target.value)}
-          >
-            <option value="">-- Select Category --</option>
-            {field.map((value, index) => (
-              <option key={index} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary">Enter Department Name</label>
-          <input
-            type="text"
-            value={deps}
-            placeholder="Enter Department"
-            className="form-control"
-            onChange={(e) => setDeps(e.target.value)}
-          />
-        </div>
-
-        <div className="col-12 col-sm-4 text-center">
-          <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
-            Submit
-          </button>
+    <div className="container">
+      <div className="row  d-flex justify-content-center align-items-center flex-column">
+        <div className="col-12 col-sm-5">
+          <div className="card cards ">
+            <div className="card-header ">Upload Department</div>
+            <div className="card-body text-start">
+              <div>
+                <label className="">Select Degree</label>
+                <select
+                  className="form-select mt-3"
+                  value={rs}
+                  onChange={(e) => setRs(e.target.value)}
+                >
+                  <option value="">-- Select Category --</option>
+                  {field.map((value, index) => (
+                    <option key={index} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mt-3">
+                <label className="mb-3">Enter Department Name</label>
+                <input
+                  type="text"
+                  value={deps}
+                  placeholder="Enter Department"
+                  className="form-control"
+                  onChange={(e) => setDeps(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="card-footer">
+              <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
