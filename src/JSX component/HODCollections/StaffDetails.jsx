@@ -196,7 +196,7 @@ const StaffDetails = () => {
               }}
             >
               <img
-                src="/left-chevron.png"
+                src="/arrow-left.png"
                 width={25}
                 alt=""
                 className="img img-flui"

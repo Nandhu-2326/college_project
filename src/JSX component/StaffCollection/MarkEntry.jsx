@@ -15,7 +15,6 @@ import Modal from "react-bootstrap/Modal";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
-import { RiUserSearchLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 import Chip from "@mui/material/Chip";
@@ -1075,8 +1074,8 @@ const MarkEntry = () => {
       <div className="">
         <div className="">
           <div
-            style={{ background: "#d5181c", overflowX: "hidden" }}
-            className="container-fluid  bg-gradient text-light sticky-top p-2 "
+            style={{ backgroundColor: "#d5181c", overflowX: "hidden" }}
+            className="container-fluid d-md-none bg-gradient text-light sticky-top p-2 "
           >
             <div className="row ">
               <div className="col-2 text-sm-end">
@@ -1098,12 +1097,7 @@ const MarkEntry = () => {
                 <Stack direction="row" spacing={2}>
                   <Chip
                     avatar={
-                      <Avatar
-                        style={{
-                          color: "white",
-                          background: "#d5181c",
-                        }}
-                      >
+                      <Avatar style={{ color: "white", background: "#d5181c" }}>
                         {staffData?.staffName?.slice(0, 1) || ""}
                       </Avatar>
                     }
@@ -1120,6 +1114,56 @@ const MarkEntry = () => {
               </div>
               <div className="col-6  d-flex justify-content-center align-items-center ">
                 <p className="fw-semibold m-0 text-center">
+                  D-Code {staffData?.DepartmentCode || ""}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{ overflowX: "hidden" }}
+            className="container-fluid d-none d-md-block bg-light bg-gradient text-light sticky-top p-2 "
+          >
+            <div className="row ">
+              <div className="col-2 text-sm-end">
+                <button
+                  className="btn text-white border-0 fs-3"
+                  onClick={() => {
+                    nav("/StaffLayout/StaffSubjects");
+                  }}
+                >
+                  <img
+                    src="/arrow-left.png"
+                    width={25}
+                    alt=""
+                    className="img img-flui"
+                  />
+                </button>
+              </div>
+              <div className="col-4 d-flex justify-content-start align-items-center">
+                <Stack direction="row" spacing={2}>
+                  <Chip
+                    avatar={
+                      <Avatar style={{ color: "white", background: "#d5181c" }}>
+                        {staffData?.staffName?.slice(0, 1) || ""}
+                      </Avatar>
+                    }
+                    label={staffData?.staffName}
+                    sx={{
+                      width: 100,
+                      bgcolor: "#fff", // white chip background
+                      color: "#000", // black text
+                      border: "1px solid #ccc", // optional subtle border
+                      fontWeight: 500, // optional: stronger text
+                    }}
+                  />
+                </Stack>
+              </div>
+              <div className="col-6  d-flex justify-content-center align-items-center ">
+                <p
+                  className="fw-semibold  text-center"
+                  style={{ color: "#d5181c" }}
+                >
                   D-Code {staffData?.DepartmentCode || ""}
                 </p>
               </div>

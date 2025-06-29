@@ -3,6 +3,7 @@ import html2pdf from "html2pdf.js";
 import CollegeLogo from "../CollegeLogo";
 import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
+import Header from "../Header";
 
 const SecondPage = () => {
   const pdfRef = useRef();
@@ -44,6 +45,9 @@ const SecondPage = () => {
   return (
     <>
       <CollegeLogo />
+      <div className="d-md-block d-none">
+        <Header />
+      </div>
 
       <div className="container mb-5" style={{ width: "100%" }}>
         {result.length > 0 && student && (
@@ -193,7 +197,9 @@ const SecondPage = () => {
         )}
       </div>
 
-      <Footer />
+      <div className="d-md-none">
+        <Footer />
+      </div>
     </>
   );
 };

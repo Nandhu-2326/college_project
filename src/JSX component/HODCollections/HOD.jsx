@@ -20,7 +20,6 @@ const HOD = () => {
       showWarning("Please Fill All requirement");
     } else {
       setisLoading(true);
-      const toastId = toast.loading("Please Wait");
       try {
         const q = query(
           collection(db, "HOD"),
@@ -32,15 +31,16 @@ const HOD = () => {
 
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0].data();
-          toast.success("Login Success", { id: toastId });
+          toast.success("Login Success");
           sessionStorage.setItem("HOD_Data", JSON.stringify(userDoc));
           nav("/HODLayout/StaffDetails");
         } else {
-          toast.error("Invalid Username or Password", { id: toastId });
+          toast.error("Invalid Username or Password");
           setisLoading(false);
         }
       } catch (e) {
-        toast.error(e.message, { id: toastId });
+        setisLoading(false);
+        toast.error(e.message);
       }
     }
   };

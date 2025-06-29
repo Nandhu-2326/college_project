@@ -136,7 +136,7 @@ const PDFResult = () => {
     <>
       <div
         style={{ background: "#d5181c", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+        className="container-fluid d-md-none bg-gradient text-light sticky-top p-2 "
       >
         <div className="row d-flex align-items-center justify-content-between">
           <div className="col-2 ">
@@ -166,6 +166,44 @@ const PDFResult = () => {
           </div>
         </div>
       </div>
+      <div
+        style={{ overflowX: "hidden" }}
+        className="container-fluid d-none bg-light d-md-block bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row d-flex align-items-center justify-content-between">
+          <div className="col-2 ">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/StaffLayout/MarkEntry");
+              }}
+            >
+              <img
+                src="/arrow-left.png"
+                width={25}
+                alt=""
+                className="img img-flui"
+              />
+            </button>
+          </div>
+          <div className="col-6 justify-content-end d-flex">
+            <button
+              className="btn btn-success bg-gradient d-flex align-items-center"
+              // style={{ background: "rgb(290,101,20)", color: "white" }}
+              onClick={handleDownloadPDF}
+            >
+              <img
+                src="/download.png"
+                width={20}
+                alt=""
+                className="img img-fluid"
+              />{" "}
+              <span>Download PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="p-2">
         <div
           className="container border border-dark border-1 mb-5 mt-5"
@@ -235,7 +273,7 @@ const PDFResult = () => {
                     <td>{student.rollno.toUpperCase()}</td>
 
                     <td>
-                      {selectedSubject?.TorL != "Lab" 
+                      {selectedSubject?.TorL != "Lab"
                         ? student.markDetails?.Internal_1Og == null
                           ? "Absent"
                           : student.markDetails?.Internal_1Og

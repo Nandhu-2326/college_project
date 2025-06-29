@@ -79,8 +79,8 @@ const SingleStudentdata = () => {
   return (
     <>
       <div
-        style={{ backgroundColor: "#d5181c", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+        style={{ background: "#d5181c", overflowX: "hidden" }}
+        className="container-fluid d-md-none bg-gradient text-light sticky-top p-1 "
       >
         <div className="row ">
           <div className="col-2 text-sm-end">
@@ -91,6 +91,26 @@ const SingleStudentdata = () => {
               }}
             >
               <img src="/back.png" width={25} alt="" className="img img-flui" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container d-none d-md-block">
+        <div className="row  d-flex align-items-center">
+          <div className="col-2">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img
+                src="/arrow-left.png"
+                width={25}
+                alt=""
+                className="img img-flui"
+              />
             </button>
           </div>
         </div>

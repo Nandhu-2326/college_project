@@ -163,7 +163,7 @@ const AddStaff = () => {
       {/* Top Bar */}
       <div
         style={{ background: "#d5181c", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+        className="container-fluid d-md-none bg-gradient text-light sticky-top p-1 "
       >
         <div className="row ">
           <div className="col-2 text-sm-end">
@@ -185,6 +185,7 @@ const AddStaff = () => {
                   </Avatar>
                 }
                 label={HODName}
+                className="fw-semibold"
                 sx={{
                   width: 100,
                   bgcolor: "#fff", // white chip background
@@ -199,6 +200,49 @@ const AddStaff = () => {
             <p className="fw-semibold m-0 text-center">
               {Department?.slice(14)}
             </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="container d-none d-md-block">
+        <div className="row  d-flex align-items-center">
+          <div className="col-2">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/HODLayout/StaffDetails");
+              }}
+            >
+              <img
+                src="/arrow-left.png"
+                width={25}
+                alt=""
+                className="img img-flui"
+              />
+            </button>
+          </div>
+          <div className="col-2 d-flex justify-content-start ">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
+                    {HODName?.slice(0, 1)}
+                  </Avatar>
+                }
+                label={HODName}
+                className="fw-semibold"
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-8 fw-semibold d-flex justify-content-end align-items-center ">
+            {Department?.slice(14)}
           </div>
         </div>
       </div>

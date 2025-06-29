@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import "../JSX component/Style Component/header.css";
 const Header = () => {
   const nav = useNavigate();
   return (

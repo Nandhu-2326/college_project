@@ -64,7 +64,7 @@ const StaffSubjects = () => {
     <>
       <div
         style={{ backgroundColor: "#d5181c", overflowX: "hidden" }}
-        className="container-fluid  bg-gradient text-light sticky-top p-2 "
+        className="container-fluid d-md-none bg-gradient text-light sticky-top p-2 "
       >
         <div className="row ">
           <div className="col-2 text-sm-end">
@@ -98,6 +98,56 @@ const StaffSubjects = () => {
           </div>
           <div className="col-6  d-flex justify-content-center align-items-center ">
             <p className="fw-semibold m-0 text-center">
+              D-Code {StaffData?.DepartmentCode || ""}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{ overflowX: "hidden" }}
+        className="container-fluid d-none d-md-block bg-light bg-gradient text-light sticky-top p-2 "
+      >
+        <div className="row ">
+          <div className="col-2 text-sm-end">
+            <button
+              className="btn text-white border-0 fs-3"
+              onClick={() => {
+                nav("/StaffLayout");
+              }}
+            >
+              <img
+                src="/arrow-left.png"
+                width={25}
+                alt=""
+                className="img img-flui"
+              />
+            </button>
+          </div>
+          <div className="col-4 d-flex justify-content-start align-items-center">
+            <Stack direction="row" spacing={2}>
+              <Chip
+                avatar={
+                  <Avatar style={{ color: "white", background: "#d5181c" }}>
+                    {StaffData?.staffName?.slice(0, 1) || ""}
+                  </Avatar>
+                }
+                label={StaffData?.staffName}
+                sx={{
+                  width: 100,
+                  bgcolor: "#fff", // white chip background
+                  color: "#000", // black text
+                  border: "1px solid #ccc", // optional subtle border
+                  fontWeight: 500, // optional: stronger text
+                }}
+              />
+            </Stack>
+          </div>
+          <div className="col-6  d-flex justify-content-center align-items-center ">
+            <p
+              className="fw-semibold  text-center"
+              style={{ color: "#d5181c" }}
+            >
               D-Code {StaffData?.DepartmentCode || ""}
             </p>
           </div>
