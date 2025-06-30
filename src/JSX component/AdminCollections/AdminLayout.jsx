@@ -38,7 +38,7 @@ const AdminLayout = () => {
   return (
     <>
       <CollegeLogo />
-      <div className="d-md-block d-none">
+      <div className="d-md-block d-none sticky-top ">
         <Header />
       </div>
       <Outlet />

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../Database.js";
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
-import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+import "../Style Component/Admin.css";
 
 const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
@@ -19,30 +20,12 @@ const Departments = () => {
     getDep();
   }, []);
 
-  const showError = () => {
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Please Fill Information",
-      showConfirmButton: false,
-      timer: 1000,
-    });
-  };
-
-  const showSuccess = () => {
-    Swal.fire({
-      icon: "success",
-      title: "Department Added!",
-      showConfirmButton: false,
-      timer: 1000,
-    });
-  };
-
   const addDep = async () => {
     if (!rs || !deps) {
-      showError();
+      toast.error("Please Fill All Requirement");
     } else {
       try {
+        toast.loading("Please Wait");
         await setDoc(
           doc(db, "Departments", rs),
           {
@@ -50,10 +33,12 @@ const Departments = () => {
           },
           { merge: true } // Merge with existing fields
         );
-        showSuccess();
+        toast.dismiss();
+        toast.success("Department Uploaded");
         setDeps(""); // Clear input
       } catch (error) {
-        console.error("Error adding department:", error.message);
+        toast.dismiss();
+        toast.error(error.message);
       }
     }
   };
@@ -63,7 +48,7 @@ const Departments = () => {
       <div className="row  d-flex justify-content-center align-items-center flex-column">
         <div className="col-12 col-sm-5">
           <div className="card cards ">
-            <div className="card-header ">Upload Department</div>
+            <div className="card-header fw-semibold ">Upload Department</div>
             <div className="card-body text-start">
               <div>
                 <label className="">Select Degree</label>
@@ -92,7 +77,10 @@ const Departments = () => {
               </div>
             </div>
             <div className="card-footer">
-              <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
+              <button
+                className="submit px-5 mt-3 py-2 border-0 rounded"
+                onClick={addDep}
+              >
                 Submit
               </button>
             </div>

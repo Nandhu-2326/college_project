@@ -1,0 +1,21 @@
+
+.submit{
+    background-color: rgb(26, 51, 208);
+    color: white;
+    border:none;
+    outline: none;
+    
+  }
+.submit:hover{
+    color: white;
+    border:none;
+    background-color:rgb(15, 45, 240);
+}
+.subjectCard{
+    margin-top: 20px;
+    gap: 5px;
+    padding: 5px;
+    margin-bottom: 15px;
+    box-shadow: 1px 0px 3px 3px rgb(184, 184, 184);
+ 
+}

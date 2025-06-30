@@ -273,81 +273,80 @@ const PDFResult = () => {
                     <td>{student.rollno.toUpperCase()}</td>
 
                     <td>
-                      {selectedSubject?.TorL != "Lab"
-                        ? student.markDetails?.Internal_1Og == null
-                          ? "Absent"
-                          : student.markDetails?.Internal_1Og
-                        : selectedSubject?.TorL == "Lab"
-                        ? student.markDetails.Internal_1Og == null
-                          ? "Absent"
-                          : student.markDetails.Internal_1Og
-                        : " - "}
+                      {(() => {
+                        const isLab = selectedSubject?.TorL === "Lab";
+                        const mark = student.markDetails?.Internal_1Og;
+
+                        if (isLab || selectedSubject?.TorL !== "Lab") {
+                          if (mark === null) return "Absent";
+                          if (mark !== undefined) return mark;
+                          return "No Mark";
+                        }
+
+                        return "";
+                      })()}
                     </td>
                     <td>
-                      {selectedSubject?.TorL != "Lab"
-                        ? student.markDetails?.Internal_2Og == null
-                          ? "Absent"
-                          : student.markDetails?.Internal_2Og
-                        : selectedSubject?.TorL == "Lab"
-                        ? student.markDetails.Internal_2Og == null
-                          ? "Absent"
-                          : student.markDetails.Internal_2Og
-                        : " -"}
+                      {(() => {
+                        const isLab = selectedSubject?.TorL === "Lab";
+                        const mark = student.markDetails?.Internal_2Og;
+
+                        if (isLab || !isLab) {
+                          if (mark === null) return "Absent";
+                          if (mark !== undefined) return mark;
+                          return "No Mark";
+                        }
+
+                        return "-";
+                      })()}
                     </td>
 
-                    {selectedSubject?.TorL != "Lab" ? (
-                      <td>
-                        {student.markDetails?.TotalInternal == null
-                          ? "Absent"
-                          : student.markDetails?.TotalInternal}
-                      </td>
-                    ) : (
-                      <td>
-                        {student.markDetails?.AverageMark == null
-                          ? "Absent"
-                          : student.markDetails?.AverageMark}
-                      </td>
-                    )}
+                    <td>
+                      {(() => {
+                        const mark =
+                          selectedSubject?.TorL !== "Lab"
+                            ? student.markDetails?.TotalInternal
+                            : student.markDetails?.AverageMark;
+                        if (mark === null) return "Absent";
+                        if (mark !== undefined) return mark;
+                        return "No Mark";
+                      })()}
+                    </td>
+                    <td>
+                      {(() => {
+                        const mark =
+                          selectedSubject?.TorL !== "Lab"
+                            ? student.markDetails?.Assignment
+                            : student.markDetails?.LabRecord;
+                        if (mark === null) return "Absent";
+                        if (mark !== undefined) return mark;
+                        return "No Mark";
+                      })()}
+                    </td>
 
-                    {selectedSubject?.TorL != "Lab" ? (
-                      <td>
-                        {student.markDetails?.Assignment == null
-                          ? "Absent"
-                          : student.markDetails?.Assignment}
-                      </td>
-                    ) : (
-                      <td>
-                        {student.markDetails?.LabRecord == null
-                          ? "Absent"
-                          : student.markDetails?.LabRecord}
-                      </td>
-                    )}
-                    {selectedSubject?.TorL != "Lab" ? (
-                      <td>
-                        {student.markDetails?.Seminar == null
-                          ? "Absent"
-                          : student.markDetails?.Seminar}
-                      </td>
-                    ) : (
-                      <td>
-                        {student.markDetails?.Observation == null
-                          ? "Absent"
-                          : student.markDetails?.Observation}
-                      </td>
-                    )}
-                    {selectedSubject?.TorL != "Lab" ? (
-                      <td>
-                        {student.markDetails?.NeetMark == null
-                          ? "Absent"
-                          : student.markDetails?.NeetMark}
-                      </td>
-                    ) : (
-                      <td>
-                        {student.markDetails?.Totalmark == null
-                          ? "Absent"
-                          : student.markDetails?.Totalmark}
-                      </td>
-                    )}
+                    <td>
+                      {(() => {
+                        const mark =
+                          selectedSubject?.TorL !== "Lab"
+                            ? student.markDetails?.Seminar
+                            : student.markDetails?.Observation;
+                        if (mark === null) return "Absent";
+                        if (mark !== undefined) return mark;
+                        return "No Mark";
+                      })()}
+                    </td>
+
+                    <td>
+                      {(() => {
+                        const mark =
+                          selectedSubject?.TorL !== "Lab"
+                            ? student.markDetails?.NeetMark
+                            : student.markDetails?.Totalmark;
+                        if (mark === null) return "Absent";
+                        if (mark !== undefined) return mark;
+                        return "No Mark";
+                      })()}
+                    </td>
                   </tr>
                 ))}
               </tbody>

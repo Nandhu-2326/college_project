@@ -160,7 +160,7 @@ const SubjectAlert = () => {
 
   return (
     <>
-       <div
+      <div
         style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid d-md-none bg-gradient text-light sticky-top p-1 "
       >
@@ -391,7 +391,7 @@ const SubjectAlert = () => {
 
               <div className="card-footer d-flex justify-content-center p-3">
                 <button
-                  className="btn hodbtn text-uppercase mb-3 px-4 py-2"
+                  className=" border-0 rounded hodbtn text-uppercase mb-3 px-4 py-2"
                   style={{
                     letterSpacing: "2px",
                     // background: "#d5181c",

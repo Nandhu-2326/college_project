@@ -627,7 +627,7 @@ const MarkEntry = () => {
 
       if (!MarkList) {
         toast.dismiss();
-        toast.error("Please set Mark After viewing the result.");
+        toast.error("Please Enter Mark After view result.");
         return;
       }
       if (selectedSubject.TorL != "Lab") {
@@ -733,9 +733,17 @@ const MarkEntry = () => {
               <tr><td><b>Internal - II:</b></td><td>${
                 MarkList.mark2 ?? "Absent"
               }</td></tr>
-              <tr><td><b>Internal - III:</b></td><td>${
-                StudentDetails.ugorpg == "pg" && MarkList.mark3
-              }</td></tr>
+             ${
+               StudentDetails.ugorpg == "pg" && (
+                 <tr>
+                   <td>
+                     <b>Internal - III:</b>
+                   </td>
+                   <td>${MarkList.mark3}</td>
+                 </tr>
+               )
+             }
+              
               <tr><td><b>Assignment:</b></td><td>${
                 MarkList.Assignment
               }</td></tr>
@@ -1179,7 +1187,7 @@ const MarkEntry = () => {
           <div className="container mb-5 ">
             <div className="row d-flex justify-content-center ">
               <div className="col-12 col-sm-4 col-md-5 d-flex justify-content-center">
-                <div className="card shadow p-sm-2 p-1 MarkCard border-3">
+                <div className="card shadow-sm p-sm-2 p-1 MarkCard border-3">
                   <div
                     className="card-header border-bottom border-3"
                     style={{ color: "#1A33D0 " }}
@@ -1203,7 +1211,7 @@ const MarkEntry = () => {
                       <p className="mb-1 fw-bold text-uppercase ">
                         Type: {selectedSubject?.TorL || "Theory/Lab"}
                       </p>
-                      <p className="mb-0 fw-semibold text-uppercase">
+                      <p className="mb-1 ms-2 fw-semibold text-uppercase">
                         Class: {selectedSubject?.class || "-"}
                       </p>
                     </div>
@@ -1292,7 +1300,7 @@ const MarkEntry = () => {
                       <div
                         className={
                           student.active
-                            ? "card shadow  border-3 "
+                            ? "card shadow  border-2 "
                             : "card shadow border-3 non-active border-danger opacity-50 "
                         }
                       >
@@ -1706,7 +1714,7 @@ const MarkEntry = () => {
                   </div>
                 </>
               ) : (
-                <p>Please set Mark After Edit</p>
+                <p>Please Enter Mark After Edit</p>
               )}
             </Modal.Body>
             <Modal.Footer></Modal.Footer>

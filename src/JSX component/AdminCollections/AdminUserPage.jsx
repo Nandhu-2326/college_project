@@ -17,10 +17,10 @@ const AdminUserPage = () => {
   return (
     <>
       {/* Mobile Nav */}
-      <div className=" w-100  d-md-none">
+      <div className=" w-100 sticky-top d-md-none ">
         <div
           style={{ background: "rgb(26, 51, 208)" }}
-          className="  d-flex justify-content-sm-between justify-content-between align-items-center  px-2"
+          className="  d-flex justify-content-sm-between justify-content-between align-items-center  px-2 py-2"
         >
           <span
             onClick={handleShow}
@@ -48,7 +48,7 @@ const AdminUserPage = () => {
       </Offcanvas>
 
       {/* Main Layout */}
-      <div className="container-fluid ">
+      <div className="container-fluid  ">
         <div className="row">
           <div className="col-12 d-none d-md-block">
             <div className=" ">
@@ -58,7 +58,7 @@ const AdminUserPage = () => {
 
           {/* Content Area */}
           <div className="col-12 text-center ">
-            <div className="p-2 rounded  pt-4 pb-5">
+            <div className=" rounded  ">
               <Outlet />
             </div>
           </div>
@@ -119,7 +119,7 @@ const MenuItems = ({ handleClose }) => {
             className=" text-start d-flex align-items-center"
           >
             <FaUserShield className="me-2" />
-            Department and Subject
+            Department & Subject
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item

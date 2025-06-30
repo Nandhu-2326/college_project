@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../Database.js"; // Make sure this is your Firebase config
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
-import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+
 
 const Departments = () => {
   const field = ["RegularUG", "RegularPG", "SelfPG", "SelfUG"];
@@ -20,30 +21,15 @@ const Departments = () => {
     getDep();
   }, []);
 
-  const showError = () => {
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Please Fill Information",
-      showConfirmButton: false,
-      timer: 1000,
-    });
-  };
 
-  const showSuccess = () => {
-    Swal.fire({
-      icon: "success",
-      title: "Subject Added!",
-      showConfirmButton: false,
-      timer: 1000,
-    });
-  };
 
   const addDep = async () => {
     if (!rs || !sub || !subcode) {
-      showError();
+      toast.error("Please Fill All Requirement");
+
     } else {
       try {
+        toast.loading("Please Wait");
         await setDoc(
           doc(db, "Subject", rs),
           {
@@ -51,61 +37,81 @@ const Departments = () => {
           },
           { merge: true }
         );
-        showSuccess();
+        toast.dismiss();
+        toast.success("Subject Uploaded");
         setSub("");
         setSubcode("");
       } catch (error) {
-        console.error("Error adding department:", error.message);
+        toast.dismiss();
+        toast.error(error.message);
       }
     }
   };
 
   return (
-    <div className="container mt-5 mb-3">
-      <div className="row g-3 d-flex justify-content-center align-items-center flex-column">
-        <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary">
-            Select UG or PG / Regular or Self
-          </label>
-          <select
-            className="form-select mt-3"
-            value={rs}
-            onChange={(e) => setRs(e.target.value)}
-          >
-            <option value="">-- Select Category --</option>
-            {field.map((value, index) => (
-              <option key={index} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="container mt-5">
+      <div className="row justify-content-center d-flex">
+        <div className="col-12 col-sm-8 col-md-6 col-lg-5">
+          <div className="card  subjectCard">
+            {/* Header */}
+            <div className="card-header text-center fw-semibold">
+              Upload Subject
+            </div>
 
-        <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary">Subject Name</label>
-          <input
-            type="text"
-            value={sub}
-            placeholder="Subject Name"
-            className="form-control"
-            onChange={(e) => setSub(e.target.value)}
-          />
-        </div>
-        <div className="col-12 col-sm-4 text-start">
-          <label className="fw-bold text-primary"> Subject Code</label>
-          <input
-            type="text"
-            value={subcode}
-            placeholder="Subject Code"
-            className="form-control"
-            onChange={(e) => setSubcode(e.target.value)}
-          />
-        </div>
+            {/* Body */}
+            <div className="card-body text-start">
+              {/* Select Degree */}
+              <div className="mb-3">
+                <label className="form-label">Select Degree</label>
+                <select
+                  className="form-select"
+                  value={rs}
+                  onChange={(e) => setRs(e.target.value)}
+                >
+                  <option value="">-- Select Category --</option>
+                  {field.map((value, index) => (
+                    <option key={index} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div className="col-12 col-sm-4 text-center mb-5">
-          <button className="btn btn-primary px-5 mt-3" onClick={addDep}>
-            Submit
-          </button>
+              {/* Subject Name */}
+              <div className="mb-3">
+                <label className="form-label">Subject Name</label>
+                <input
+                  type="text"
+                  value={sub}
+                  placeholder="Enter Subject Name"
+                  className="form-control"
+                  onChange={(e) => setSub(e.target.value)}
+                />
+              </div>
+
+              {/* Subject Code */}
+              <div className="mb-3">
+                <label className="form-label">Subject Code</label>
+                <input
+                  type="text"
+                  value={subcode}
+                  placeholder="Enter Subject Code"
+                  className="form-control"
+                  onChange={(e) => setSubcode(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="card-footer text-center">
+              <button
+                className="px-4 py-2 submit border-0 rounded"
+                onClick={addDep}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,15 +1,7 @@
-import { LuUserRoundSearch } from "react-icons/lu";
-import { BiSolidEdit } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { FaUserTie } from "react-icons/fa6";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { RiLockPasswordFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { FaHouseMedical } from "react-icons/fa6";
-import { PiUserSwitchFill } from "react-icons/pi";
-import { FcDepartment } from "react-icons/fc";
-import { FaBuildingUser } from "react-icons/fa6";
+
 import Swal from "sweetalert2";
 import { db } from "../Database.js";
 import {
@@ -18,10 +10,11 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  updateDoc,
   setDoc,
+  query,
+  where,
 } from "firebase/firestore";
-import Footer from "../Footer.jsx";
+import toast from "react-hot-toast";
 
 const StaffAddorUpdatePage = () => {
   // State's
@@ -64,43 +57,6 @@ const StaffAddorUpdatePage = () => {
     getUser();
   }, []);
 
-  // SweetAlerts
-  const InformationError = () => {
-    Swal.fire({
-      html: "Please Fill Information",
-      timer: 1000,
-      icon: "warning",
-      showConfirmButton: false,
-    });
-  };
-
-  const loading = () => {
-    Swal.fire({
-      html: "Loading...",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
-
-  const UserAdd = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Added",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  };
-
-  const delSuccess = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Deleted",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  };
-
   const confirmDelete = () => {
     return Swal.fire({
       title: "Are you sure?",
@@ -110,15 +66,6 @@ const StaffAddorUpdatePage = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    });
-  };
-
-  const Update = () => {
-    Swal.fire({
-      icon: "success",
-      title: "User Updated",
-      timer: 1500,
-      showConfirmButton: false,
     });
   };
 
@@ -133,10 +80,48 @@ const StaffAddorUpdatePage = () => {
       !rs ||
       !ugorpg
     ) {
-      InformationError();
+      toast.error("Fill All Requirements");
     } else {
       try {
-        loading();
+        toast.loading("Please Wait");
+        const q = query(
+          collection(db, "HOD"),
+          where("DepartmentCode", "==", DepartmentCode)
+        );
+        const getCode = await getDocs(q);
+
+        const useData = query(
+          collection(db, "HOD"),
+          where("username", "==", userName),
+          where("password", "==", password)
+        );
+
+        const getUserData = await getDocs(useData);
+
+        const useDepartment = query(
+          collection(db, "HOD"),
+          where("Department", "==", selectDepartment)
+        );
+        const getDep = await getDocs(useDepartment);
+
+        if (!getCode.empty) {
+          toast.dismiss();
+          toast.error("Department Code Already Provided");
+          return;
+        }
+
+        if (!getUserData.empty) {
+          toast.dismiss();
+          toast.error("Username & Password Already Provided");
+          return;
+        }
+
+        if (!getDep.empty) {
+          toast.dismiss();
+          toast.error("This Department Already Provided");
+          return;
+        }
+
         const CreateCode = doc(db, "HOD", DepartmentCode);
         await setDoc(CreateCode, {
           username: userName,
@@ -155,11 +140,12 @@ const StaffAddorUpdatePage = () => {
         setUserName("");
         setPassword("");
         if (!currentId) {
-          UserAdd();
+          toast.dismiss();
+          toast.success("HOD Upload");
         }
         getUser();
       } catch (e) {
-        alert("Error: ", e.message);
+        return toast.error(e.message);
       }
     }
   };
@@ -170,10 +156,10 @@ const StaffAddorUpdatePage = () => {
     if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, "HOD", id));
-        delSuccess();
+        toast.success("HOD Delete");
         getUser();
       } catch (e) {
-        alert("Error: ", e.message);
+        return toast.error(e.message);
       }
     }
   };
@@ -184,7 +170,6 @@ const StaffAddorUpdatePage = () => {
     setCurrentId(id);
     const getEdData = await getDoc(doc(db, "HOD", id));
     const EdData = getEdData.data();
-    console.log(EdData);
     setUserName(EdData.username);
     setPassword(EdData.password);
     setDepartmentCode(EdData.DepartmentCode);
@@ -204,12 +189,14 @@ const StaffAddorUpdatePage = () => {
       !rs ||
       !ugorpg
     ) {
-      InformationError();
+      toast.error("Fill All Requirement");
     } else {
       try {
-        loading();
         await deleteDoc(doc(db, "HOD", currentId));
-        AddUser(currentId);
+        AddUser();
+        await getUser();
+        toast.dismiss();
+        toast.success("HOD Update");
         setUserName("");
         setPassword("");
         setDepartmentCode("");
@@ -219,34 +206,33 @@ const StaffAddorUpdatePage = () => {
         setugorpg("");
         setBtn(true);
         setCurrentId(null);
-        Update();
-        getUser();
       } catch (e) {
-        console.log(e.message);
+        toast.dismiss();
+        return toast.error(e.message);
       }
     }
   };
 
   // Filtered data
   const filteredData = data.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    user.HODName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <>
-      <div className="container d-flex justify-content-center mt-4">
-        <div className="row d-flex justify-content-center">
-          <div className="col-12 text-primary d-flex h1 justify-content-center align-items-center">
-            HOD Details - <FaUserTie />
+      <div className="container-fluid mt-3">
+        <div className="row d-flex justify-content-between align-items-center">
+          <div className="col-12 col-sm-6 text-start">
+            <span className=" " style={{ color: "rgb(26, 51, 208)" }}>
+              TOTAL HODS - {user}{" "}
+            </span>
           </div>
-          {/*  */}
-
-          <div className="col-12 col-sm-5 mt-3">
+          <div className="col-12 col-sm-4 mt-3 mt-sm-0">
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search User"
+                placeholder="Search HOD"
                 value={searchTerm}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -254,8 +240,13 @@ const StaffAddorUpdatePage = () => {
                   setSearch(value.trim() !== "");
                 }}
               />
-              <span className="input-group-text bg-primary text-light">
-                <LuUserRoundSearch />
+              <span className="input-group-text bg-white">
+                <img
+                  src="/people.png"
+                  width={20}
+                  alt=""
+                  className="img img-fluid"
+                />
               </span>
             </div>
           </div>
@@ -263,200 +254,199 @@ const StaffAddorUpdatePage = () => {
       </div>
 
       {/* User Form */}
-      <div className="container my-4">
-        <span className="text-primary h1 ">Total HOD - {user} </span>
-        <div className="row justify-content-center mt-5">
-          <div className="col-12 col-md-6 col-lg-5 shadow-sm p-4 bg-light rounded">
-            <div className="d-flex flex-column gap-4">
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaHouseMedical />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border border-primary"
-                  placeholder="Department Code"
-                  value={DepartmentCode}
-                  onChange={(e) =>
-                    setDepartmentCode(e.target.value.toUpperCase())
-                  }
-                />
-              </div>
+      <div className="d-flex row ">
+        <div className="col-sm-6  col-12">
+          <div className="container">
+            <div className="row justify-content-center mt-5">
+              <div className="col-12   p-4 rounded ">
+                <div className="card">
+                  <div className="card-header">
+                    <h5 className="mb-4 text-center fw-semibold">
+                      Add / Update HOD
+                    </h5>
+                  </div>
+                  <div className="card-body text-start">
+                    <div className="mb-3">
+                      <label className="form-label">Department Code</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Department Code"
+                        value={DepartmentCode}
+                        onChange={(e) =>
+                          setDepartmentCode(e.target.value.toUpperCase())
+                        }
+                      />
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <PiUserSwitchFill />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border border-primary"
-                  placeholder="HOD Name"
-                  value={HODName}
-                  onChange={(e) => setHODName(e.target.value)}
-                />
-              </div>
+                    <div className="mb-3">
+                      <label className="form-label">HOD Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="HOD Name"
+                        value={HODName}
+                        onChange={(e) => setHODName(e.target.value)}
+                      />
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary">
-                  <FcDepartment />
-                </span>
-                <select
-                  value={selectDepartment}
-                  name=""
-                  id=""
-                  className="form-select"
-                  onChange={(e) => {
-                    setSelectDepartment(e.target.value);
-                  }}
-                >
-                  <option value="">--select Department--</option>
-                  {departmentData &&
-                    departmentData.flatMap((doc) =>
-                      Object.values(doc).map((dept) => (
-                        <option key={dept} value={dept}>
-                          {dept}
-                        </option>
-                      ))
-                    )}
-                </select>
-              </div>
+                    <div className="mb-3">
+                      <label className="form-label ">Select Department</label>
+                      <select
+                        className="form-select"
+                        value={selectDepartment}
+                        onChange={(e) => setSelectDepartment(e.target.value)}
+                      >
+                        <option value="">-- Select Department --</option>
+                        {departmentData &&
+                          departmentData.flatMap((doc) =>
+                            Object.values(doc).map((dept) => (
+                              <option key={dept} value={dept}>
+                                {dept}
+                              </option>
+                            ))
+                          )}
+                      </select>
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-light">
-                  <FaBuildingUser />
-                </span>
-                <select
-                  name=""
-                  id=""
-                  value={ugorpg}
-                  onChange={(e) => {
-                    setugorpg(e.target.value);
-                  }}
-                  className="form-select"
-                >
-                  <option value="">--select UG or PG</option>
-                  <option value="ug">UG</option>
-                  <option value="pg">PG</option>
-                </select>
-              </div>
+                    <div className="mb-3">
+                      <label className="form-label">UG / PG</label>
+                      <select
+                        className="form-select"
+                        value={ugorpg}
+                        onChange={(e) => setugorpg(e.target.value)}
+                      >
+                        <option value="">-- Select UG or PG --</option>
+                        <option value="ug">UG</option>
+                        <option value="pg">PG</option>
+                      </select>
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text fw-bold text-light bg-primary">
-                  RS
-                </span>
-                <select
-                  name=""
-                  id=""
-                  value={rs}
-                  className="form-select"
-                  onChange={(e) => {
-                    setrs(e.target.value);
-                  }}
-                >
-                  <option value="">--select Regular or Self--</option>
-                  <option value="regular">Regular</option>
-                  <option value="self">Self</option>
-                </select>
-              </div>
+                    <div className="mb-3">
+                      <label className="form-label">Regular / Self</label>
+                      <select
+                        className="form-select"
+                        value={rs}
+                        onChange={(e) => setrs(e.target.value)}
+                      >
+                        <option value="">-- Select Regular or Self --</option>
+                        <option value="regular">Regular</option>
+                        <option value="self">Self</option>
+                      </select>
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <FaUserTie />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border border-primary"
-                  placeholder="New Username"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value.toUpperCase())}
-                />
-              </div>
+                    <div className="mb-3">
+                      <label className="form-label">User Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="New Username"
+                        value={userName}
+                        onChange={(e) =>
+                          setUserName(e.target.value.toUpperCase())
+                        }
+                      />
+                    </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <RiLockPasswordFill />
-                </span>
-                <input
-                  type={PasswordEye ? "password" : "text"}
-                  className="form-control border border-primary"
-                  placeholder="New Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <span className="input-group-text bg-primary text-light">
-                  {PasswordEye ? (
-                    <FaEyeSlash
-                      onClick={() => {
-                        SetPasswordEye(false);
-                      }}
-                    />
+                    <div className="mb-3">
+                      <label className="form-label">Password</label>
+                      <div className="input-group">
+                        <input
+                          type={PasswordEye ? "password" : "text"}
+                          className="form-control"
+                          placeholder="New Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <div className="input-group-text bg-white">
+                          <button
+                            type="button "
+                            onClick={() => SetPasswordEye((prev) => !prev)}
+                            className="btn p-0 border-0"
+                          >
+                            {PasswordEye ? <FaEyeSlash /> : <FaRegEye />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-footer">
+                    <div className="text-center">
+                      <button
+                        className="btn fw-bold px-4 py-2"
+                        style={{ backgroundColor: "#0d6efd", color: "#fff" }}
+                        onClick={btn ? AddUser : UpdateUser}
+                      >
+                        {btn ? "Add User" : "Update Data"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* User Table */}
+        <div className="col-sm-6 col-12">
+          <div className="container mt-sm-5 mb-5">
+            <div className="table-responsive ">
+              <table className="table mt-sm-4 mb-5 table-bordered table-hover table-striped align-middle text-center">
+                <thead className="table-primary">
+                  <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Department Code</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(search ? filteredData : data).length > 0 ? (
+                    (search ? filteredData : data).map((value, index) => (
+                      <tr key={value.id}>
+                        <td>{index + 1}</td>
+                        <td>{value.HODName}</td>
+                        <td>{value.DepartmentCode}</td>
+                        <td>
+                          <button
+                            className="btn border-0"
+                            onClick={() => EditUser(value.id)}
+                          >
+                            <img
+                              src="/edit.png"
+                              width={20}
+                              alt=""
+                              className="img img-fluid"
+                            />
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            className="btn border-0"
+                            onClick={() => deleteUser(value.id)}
+                          >
+                            <img
+                              src="/deletes.png"
+                              width={20}
+                              alt=""
+                              className="img img-fluid"
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
                   ) : (
-                    <FaRegEye
-                      onClick={() => {
-                        SetPasswordEye(true);
-                      }}
-                    />
+                    <tr>
+                      <td colSpan="5">No users found</td>
+                    </tr>
                   )}
-                </span>
-              </div>
-
-              <button
-                className="btn btn-primary fw-bold py-1"
-                onClick={btn ? AddUser : UpdateUser}
-              >
-                {btn ? "Add User" : "Update Data"}
-              </button>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
-
-      {/* User Table */}
-      <div className="container mt-4 mb-5">
-        <div className="table-responsive shadow-sm">
-          <table className="table table-bordered table-hover table-striped align-middle text-center">
-            <thead className="table-primary">
-              <tr>
-                <th>S.No</th>
-                <th>Name</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(search ? filteredData : data).length > 0 ? (
-                (search ? filteredData : data).map((value, index) => (
-                  <tr key={value.id}>
-                    <td>{index + 1}</td>
-                    <td>{value.username}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={() => EditUser(value.id)}
-                      >
-                        <BiSolidEdit />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-outline-success"
-                        onClick={() => deleteUser(value.id)}
-                      >
-                        <MdOutlineDeleteOutline />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4">No users found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <Footer />
     </>
   );
 };

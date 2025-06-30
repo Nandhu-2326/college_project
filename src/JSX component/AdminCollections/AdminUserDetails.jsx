@@ -136,15 +136,16 @@ const AdminUserDetails = () => {
   return (
     <>
       <div className="container">
-        <div className="row d-flex justify-content-center flex-column flex-md-row">
-          
-          <div className="col-12 col-md-6">
-            <h4 className="fw-semibold text-uppercase">Admin Panel</h4>
+        <div className="row mt-3 mt-sm-0 d-flex justify-content-between align-items-center ">
+          <div className=" col-sm-6 col-12 d-flex justify-content-between align-items-center text-center text-sm-start ">
+            <span className=" fw-semibold ">Total Admin - {user} </span>
+          </div>
+          <div className="col-sm-4 col-12">
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search User"
+                placeholder="Search Admin"
                 value={searchTerm}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -152,13 +153,22 @@ const AdminUserDetails = () => {
                   setSearch(value.trim() !== "");
                 }}
               />
-              <span className="input-group-text bg-primary text-light">
-                <LuUserRoundSearch />
+              <span className="input-group-text bg-white">
+                <img
+                  src="/people.png"
+                  width={20}
+                  alt=""
+                  className="img img-fluid"
+                />
               </span>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="col-12 col-md-5 ">
+      <div className="container">
+        <div className="row d-flex justify-content-center flex-column flex-sm-row">
+          <div className="col-12 col-sm-6">
             <div className="row justify-content-center d-flex mt-xm-5 ">
               <div className="col-12 col-md-10 mt-4 mt-md-0">
                 <div className="cards card rounded-4 border-0">
@@ -167,7 +177,7 @@ const AdminUserDetails = () => {
                       className="fw-bold h5 text-uppercase"
                       style={{ letterSpacing: "1.5px" }}
                     >
-                      Admin Panel
+                      Admin
                     </h4>
                   </div>
 
@@ -179,7 +189,7 @@ const AdminUserDetails = () => {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter Admin Name"
+                        placeholder="Enter Admin User Name"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                       />
@@ -206,7 +216,7 @@ const AdminUserDetails = () => {
 
                   <div className="card-footer border-0 text-center">
                     <button
-                      className="rounded text-uppercase fw-bold w-100 py-2"
+                      className="rounded submit text-uppercase fw-bold w-100 py-2"
                       onClick={btn ? AddUser : UpdateUser}
                     >
                       {isloading ? (
@@ -222,6 +232,52 @@ const AdminUserDetails = () => {
               </div>
             </div>
           </div>
+          <div className="col-12 col-sm-6">
+            <div className="container mt-4 mb-5">
+              <div className="table-responsive mt-5 shadow-sm">
+                <table className="table table-bordered table-hover table-striped align-middle text-center">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>S.No</th>
+                      <th>Name</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(search ? filteredData : data).length > 0 ? (
+                      (search ? filteredData : data).map((value, index) => (
+                        <tr key={value.id}>
+                          <td>{index + 1}</td>
+                          <td>{value.username}</td>
+                          <td>
+                            <button
+                              className="btn btn-outline-danger"
+                              onClick={() => EditUser(value.id)}
+                            >
+                              <BiSolidEdit />
+                            </button>
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-outline-success"
+                              onClick={() => deleteUser(value.id)}
+                            >
+                              <MdOutlineDeleteOutline />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4">No Admin found</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -229,56 +285,7 @@ const AdminUserDetails = () => {
 
       <div className="card-footer"></div>
 
-      {/* User Form */}
-      <div className="container my-4">
-        <span className="text-primary h1 ">Total Admin - {user} </span>
-      </div>
-
       {/* User Table */}
-      <div className="container mt-4 mb-5">
-        <div className="table-responsive shadow-sm">
-          <table className="table table-bordered table-hover table-striped align-middle text-center">
-            <thead className="table-primary">
-              <tr>
-                <th>S.No</th>
-                <th>Name</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(search ? filteredData : data).length > 0 ? (
-                (search ? filteredData : data).map((value, index) => (
-                  <tr key={value.id}>
-                    <td>{index + 1}</td>
-                    <td>{value.username}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={() => EditUser(value.id)}
-                      >
-                        <BiSolidEdit />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-outline-success"
-                        onClick={() => deleteUser(value.id)}
-                      >
-                        <MdOutlineDeleteOutline />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4">No Admin found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </>
   );
 };
