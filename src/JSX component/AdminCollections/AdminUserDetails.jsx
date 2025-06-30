@@ -136,9 +136,14 @@ const AdminUserDetails = () => {
   return (
     <>
       <div className="container">
-        <div className="row mt-3 mt-sm-0 d-flex justify-content-between align-items-center ">
-          <div className=" col-sm-6 col-12 d-flex justify-content-between align-items-center text-center text-sm-start ">
-            <span className=" fw-semibold ">Total Admin - {user} </span>
+        <div className="row mt-3  mt-sm-0 d-flex justify-content-between  align-items-center ">
+          <div className="mb-2 col-sm-6 col-12 d-flex justify-content-between align-items-center text-center text-sm-start ">
+            <span
+              className=" fw-semibold "
+              style={{ color: "rgb(26, 51, 208)" }}
+            >
+              Total Admin - {user}{" "}
+            </span>
           </div>
           <div className="col-sm-4 col-12">
             <div className="input-group">

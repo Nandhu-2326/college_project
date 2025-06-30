@@ -27,7 +27,7 @@ const AdminUserPage = () => {
             style={{ fontSize: "25px", cursor: "pointer" }}
             className=" d-md-none "
           >
-            <GiHamburgerMenu className="text-light" />
+            <GiHamburgerMenu className="text-light ms-3" />
           </span>
         </div>
       </div>
