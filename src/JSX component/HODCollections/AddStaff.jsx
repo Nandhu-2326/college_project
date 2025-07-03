@@ -296,7 +296,7 @@ const AddStaff = () => {
                           style={{
                             color: "#000",
                           }}
-                          className="form-label  fw-semibold"
+                          className="form-label  "
                         >
                           {LabelName}
                         </label>

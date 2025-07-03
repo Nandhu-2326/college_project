@@ -414,8 +414,8 @@ const StaffAddorUpdatePage = () => {
                             onClick={() => EditUser(value.id)}
                           >
                             <img
-                              src="/edit.png"
-                              width={20}
+                              src="/noteEdit.png"
+                              width={25}
                               alt=""
                               className="img img-fluid"
                             />

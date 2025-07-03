@@ -23,19 +23,24 @@ const HOD = () => {
       try {
         const q = query(
           collection(db, "HOD"),
-          where("username", "==", userName),
-          where("password", "==", Password)
+          where("username", "==", userName)
         );
 
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0].data();
-          toast.success("Login Success");
-          sessionStorage.setItem("HOD_Data", JSON.stringify(userDoc));
-          nav("/HODLayout/StaffDetails");
+          if (Password === userDoc.password) {
+            toast.success("Login Success");
+            sessionStorage.setItem("HOD_Data", JSON.stringify(userDoc));
+            nav("/HODLayout/StaffDetails");
+            setisLoading(false);
+          } else {
+            setisLoading(false);
+            toast.error("Invalid Password");
+          }
         } else {
-          toast.error("Invalid Username or Password");
+          toast.error("Invalid Username");
           setisLoading(false);
         }
       } catch (e) {

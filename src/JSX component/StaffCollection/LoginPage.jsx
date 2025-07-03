@@ -24,8 +24,7 @@ const LoginPage = () => {
       try {
         const q = query(
           collection(db, "Allstaffs"),
-          where("UserName", "==", userName),
-          where("Password", "==", Password)
+          where("UserName", "==", userName)
         );
 
         const querySnapshot = await getDocs(q);
@@ -33,11 +32,18 @@ const LoginPage = () => {
         if (!querySnapshot.empty) {
           const docSnap = querySnapshot.docs[0];
           const userDoc = { id: docSnap.id, ...docSnap.data() };
-          toast.success("Login Success");
-          sessionStorage.setItem("staff_Data", JSON.stringify(userDoc));
-          nav("/StaffLayout/StaffSubjects");
+         if(userDoc.Password === Password){
+            toast.success("Login Success");
+            sessionStorage.setItem("staff_Data", JSON.stringify(userDoc));
+            nav("/StaffLayout/StaffSubjects");
+            setisLoading(false);
+          }
+          else{
+            setisLoading(false);
+            toast.error("Invalid Password")
+          }
         } else {
-          toast.error("Invalid Username or Password");
+          toast.error("Invalid Username");
           setisLoading(false);
         }
       } catch (e) {

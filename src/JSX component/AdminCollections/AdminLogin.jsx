@@ -24,17 +24,26 @@ const AdminLogin = () => {
       try {
         const q = query(
           collection(db, "Admin"),
-          where("username", "==", userName),
-          where("password", "==", Password)
+          where("username", "==", userName)
         );
 
         const querySnapshot = await getDocs(q);
-
+        
         if (!querySnapshot.empty) {
-          toast.success("Login Success");
-          nav("/AdminLayout/AdminUserPage");
+          const userDoc = querySnapshot.docs[0].data();
+          if(Password === userDoc.password)
+          {
+            toast.success("Login Success");
+            nav("/AdminLayout/AdminUserPage");
+            setisLoading(false)
+          }
+          else{
+            setisLoading(false)
+            toast.error('Invalid Password')
+          }
+
         } else {
-          toast.error("Invalid Username or Password");
+          toast.error("Invalid Username");
           setisLoading(false);
         }
       } catch (e) {

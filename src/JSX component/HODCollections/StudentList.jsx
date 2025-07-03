@@ -502,7 +502,7 @@ const StudentList = () => {
 
   return (
     <>
-     <div
+      <div
         style={{ background: "#d5181c", overflowX: "hidden" }}
         className="container-fluid d-md-none bg-gradient text-light sticky-top p-1 "
       >
@@ -587,7 +587,6 @@ const StudentList = () => {
           </div>
         </div>
       </div>
-
 
       <div className="container mt-4" style={{ width: "90%" }}>
         <div className="row d-flex justify-content-center">
@@ -953,15 +952,15 @@ const StudentList = () => {
             Cancel
           </Button>
           <Button variant="primary" onClick={UpdateAllDetails}>
-            Submit
+            Update
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal show={showModalWhats} onHide={handleCloseModalWhats}>
-        <Modal.Header closeButton className="bg-primary text-light">
+        <Modal.Header closeButton className="bg-success  text-light">
           <Modal.Title className="text-uppercase text-center">
-            <FaWhatsapp /> Internal Mark send Parents
+            Internal Mark send Parents
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1079,11 +1078,11 @@ const StudentList = () => {
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="success"
             onClick={WhatappMessage}
             className="text-uppercase"
           >
-            <FaWhatsapp /> send
+            <FaWhatsapp size={20} /> SEND
           </Button>
         </Modal.Footer>
       </Modal>
