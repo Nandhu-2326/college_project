@@ -347,7 +347,7 @@ const StaffDetails = () => {
                       title="Edit Staff"
                     >
                       <img
-                        src="/noteEdit.png"
+                        src="/edits.png"
                         alt=""
                         className="img img-fluid"
                         width={30}
