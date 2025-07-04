@@ -5,10 +5,10 @@ const Header = () => {
   const nav = useNavigate();
   return (
     <>
-      <nav class="navbar " style={{ background: "rgb(26, 51, 208)" }}>
-        <div class="container-fluid d-flex align-items-center justify-content-center">
+      <nav className="navbar " style={{ background: "rgb(26, 51, 208)" }}>
+        <div className="container-fluid d-flex align-items-center justify-content-center">
           <a
-            class="navbar-brand text-light  me-4"
+            className="navbar-brand text-light  me-4"
             onClick={() => {
               nav("/HODLayout");
             }}
@@ -17,7 +17,7 @@ const Header = () => {
             HOD
           </a>
           <a
-            class="navbar-brand text-light me-4"
+            className="navbar-brand text-light me-4"
             onClick={() => {
               nav("/AdminLayout");
             }}
@@ -26,7 +26,7 @@ const Header = () => {
             ADMIN
           </a>
           <a
-            class="navbar-brand text-light me-4"
+            className="navbar-brand text-light me-4"
             onClick={() => {
               nav("/");
             }}
@@ -35,7 +35,7 @@ const Header = () => {
             STUDENT
           </a>
           <a
-            class="navbar-brand text-light"
+            className="navbar-brand text-light"
             onClick={() => {
               nav("/StaffLayout");
             }}

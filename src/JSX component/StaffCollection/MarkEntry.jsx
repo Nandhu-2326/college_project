@@ -21,6 +21,7 @@ import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import "../Style Component/MarkEntry.css";
+import { Commet } from "react-loading-indicators";
 
 const MarkEntry = () => {
   //
@@ -53,6 +54,9 @@ const MarkEntry = () => {
 
   const [Edits, setEdit] = useState(false);
   const [EditStudent, setEditStudent] = useState(null);
+
+  const [PageLoading, setPageLoading] = useState(true);
+  const [timer, setTimer] = useState(60);
 
   // ReducerObject's
   const initialize = {
@@ -186,6 +190,7 @@ const MarkEntry = () => {
     }
 
     setMarkedStudents(trueMarkStudents);
+    setPageLoading(false);
   };
 
   useEffect(() => {
@@ -676,12 +681,20 @@ const MarkEntry = () => {
       
             <h4>📊 Calculated Marks</h4>
             <table style="width: 100%; line-height: 1.8;">
-              <tr><td><b>Best Internal - I:</b></td><td>${
-                MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
-              }</td></tr>
-              <tr><td><b>Best Internal - II:</b></td><td>${
-                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
-              }</td></tr>
+              <tr><td><b>${
+                StudentDetails.ugorpg == "ug"
+                  ? "Internal - I"
+                  : "Best Inernal - I"
+              } : </b></td><td>${
+              MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
+            }</td></tr>
+              <tr><td><b>${
+                StudentDetails.ugorpg == "ug"
+                  ? "Internal - II"
+                  : "Best Inernal - II"
+              } : </b></td><td>${
+              MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
+            }</td></tr>
               <tr><td><b>Both Internals Avg:</b></td><td>${
                 MarkList.BothInternal
               }</td></tr>
@@ -753,12 +766,20 @@ const MarkEntry = () => {
       
             <h4>📊 Calculated Marks</h4>
             <table style="width: 100%; line-height: 1.8;">
-              <tr><td><b>Best Internal - I:</b></td><td>${
-                MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
-              }</td></tr>
-              <tr><td><b>Best Internal - II:</b></td><td>${
-                MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
-              }</td></tr>
+              <tr><td><b>${
+                StudentDetails.ugorpg == "ug"
+                  ? "Internal - I"
+                  : "Best Inernal - I"
+              } : </b></td><td>${
+              MarkList.Internal_1Og == null ? "Absent" : MarkList.Internal_1Og
+            }</td></tr>
+              <tr><td><b> ${
+                StudentDetails.ugorpg == "ug"
+                  ? "Internal - II"
+                  : "Best Inernal - II"
+              } :</b></td><td>${
+              MarkList.Internal_2Og == null ? "Absent" : MarkList.Internal_2Og
+            }</td></tr>
               <tr><td><b>Both Internals Avg:</b></td><td>${
                 MarkList.BothInternal
               }</td></tr>
@@ -1051,6 +1072,37 @@ const MarkEntry = () => {
     }
   };
   const nav = useNavigate();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prevTimer - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  if (PageLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center flex-column align-items-center"
+        style={{ height: "75vh" }}
+      >
+        <Commet color="#d5181c" size="medium" text="" textColor="" />
+        <h3
+          className="h3 mt-3"
+          style={{ fontWeight: "bold", color: "#d5181c" }}
+        >
+          Searching Students
+        </h3>
+        <h4 className="mt-2 "
+          style={{ fontWeight: "bold", color: "#d5181c" }}
+          >{timer}</h4>
+      </div>
+    );
+  }
   return (
     <>
       <>
