@@ -472,7 +472,7 @@ const StudentList = () => {
       const subjectObj = sendstate[subjectKey];
 
       // Skip validation if the student is absent
-      if (!subjectObj.check) {
+      if (subjectObj.check === false) {
         const mark = Number(subjectObj?.[markKey]);
         if (isNaN(mark) || mark < 0 || mark > 30) {
           return toast.error(`Mark for subject ${i} must be between 0 and 30`);
@@ -512,7 +512,7 @@ const StudentList = () => {
         message += `🔸 ${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
       }
     }
-  
+  console.log( message);
     const encodedMessage = encodeURIComponent(message);
     const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
     const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
