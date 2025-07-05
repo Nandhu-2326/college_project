@@ -464,21 +464,23 @@ const StudentList = () => {
   };
 
   const WhatappMessage = () => {
-    // Validation
+    // ✅ Validation
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
 
       const subjectObj = sendstate[subjectKey];
-      const mark = subjectObj?.check ? null : Number(subjectObj?.[markKey]); // Skip validation if absent
-      if(mark != null)
-      {
-        if ((isNaN(mark) && mark < 0 || mark > 30 )) {
+
+      // Skip validation if the student is absent
+      if (subjectObj.check == false) {
+        const mark = Number(subjectObj?.[markKey]);
+        if (isNaN(mark) || mark < 0 || mark > 30) {
           return toast.error(`Mark for subject ${i} must be between 0 and 30`);
         }
       }
     }
 
+    // ✅ Basic checks
     if (!sendstate.Internal) {
       return toast.error("Please Select Internal");
     }
@@ -491,25 +493,26 @@ const StudentList = () => {
       return toast.error("No Phone Number Please Update Student");
     }
 
-    // Create message
+    // ✅ Create WhatsApp message
     let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
 
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
       const subjectNameKey = `sub${i}`;
-
+    
       const subjectObj = sendstate[subjectKey];
-
+    
       if (subjectObj?.[subjectNameKey]) {
-        const markDisplay = subjectObj.check
-          ? "Absent"
-          : `${subjectObj[markKey]}/30`;
-        // console.log(markDisplay);
+        const markValue = subjectObj[markKey];
+        const isAbsent = subjectObj.check || markValue === "Absent";
+    
+        const markDisplay = isAbsent ? "Absent" : `${markValue}/30`;
+    
         message += `🔸 ${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
       }
     }
-   
+  
     const encodedMessage = encodeURIComponent(message);
     const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
     const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
@@ -1052,7 +1055,9 @@ const StudentList = () => {
             })()}
 
             <div className="d-flex justify-content-between">
-              <label htmlFor="">Absent</label>
+              <label htmlFor="" className="fw-semibold text-danger ">
+                Absent
+              </label>
               <label htmlFor="">Subject</label>
               <label htmlFor="">Mark</label>
             </div>
@@ -1072,10 +1077,10 @@ const StudentList = () => {
               return (
                 <div key={index}>
                   <div className="input-group my-4">
-                    <span className="input-group-text">
+                    <span className="input-group-text bg-white">
                       <input
                         type="checkbox"
-                        className="form-check-input"
+                        className="form-check-input p-2"
                         checked={subject[checkField]}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
@@ -1095,7 +1100,7 @@ const StudentList = () => {
 
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control "
                       placeholder={`Subject - ${index}`}
                       value={subject[subField]}
                       onChange={(e) =>
@@ -1108,7 +1113,7 @@ const StudentList = () => {
                     />
 
                     <span
-                      className="input-group-text"
+                      className="input-group-text bg-white"
                       style={{ width: "90px" }}
                     >
                       <input
