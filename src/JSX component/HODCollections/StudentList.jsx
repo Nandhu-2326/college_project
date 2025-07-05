@@ -493,11 +493,12 @@ const StudentList = () => {
         const subjectKey = `subject${i}`;
         const markKey = `mark${i}`;
         const subjectNameKey = `sub${i}`;
+        // const checks = `check${i}`
   
         const subjectObj = sendstate[subjectKey];
   
         if (subjectObj?.[subjectNameKey]) {
-          message += `🔸 ${subjectObj[subjectNameKey]}: ${subjectObj.check === "Absent" ? "Absent" : `${subjectObj[markKey]}/30`}\n`;
+          message += `🔸 ${subjectObj[subjectNameKey]}: ${subjectObj[markKey] === "Absent" ? "Absent" : `${subjectObj[markKey]}/30`}\n`;
         }
       }
   
