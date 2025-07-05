@@ -470,9 +470,9 @@ const StudentList = () => {
       const markKey = `mark${i}`;
   
       const subjectObj = sendstate[subjectKey];
-      const mark = Number(subjectObj?.[markKey]);
+      const mark = subjectObj?.check ? null : Number(subjectObj?.[markKey]); // Skip validation if absent
   
-      if (isNaN(mark) || mark < 0 || mark > 30) {
+      if (!subjectObj?.check && (isNaN(mark) || mark < 0 || mark > 30)) {
         return toast.error(`Mark for subject ${i} must be between 0 and 30`);
       }
     }
@@ -485,32 +485,33 @@ const StudentList = () => {
       return toast.error("Please Select Semester");
     }
   
-    // Create message
-    if (sendstate.PH) {
-      let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
-  
-      for (let i = 1; i <= 8; i++) {
-        const subjectKey = `subject${i}`;
-        const markKey = `mark${i}`;
-        const subjectNameKey = `sub${i}`;
-        // const checks = `check${i}`
-  
-        const subjectObj = sendstate[subjectKey];
-  
-        if (subjectObj?.[subjectNameKey]) {
-          message += `🔸 ${subjectObj[subjectNameKey]}: ${subjectObj[markKey] === "Absent" ? "Absent" : `${subjectObj[markKey]}/30`}\n`;
-        }
-      }
-  
-      // Encode and redirect to WhatsApp
-      const encodedMessage = encodeURIComponent(message);
-      const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
-      const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
-      window.open(url, "_blank");
-    } else {
-      toast.error("No Phone Number Please Update Student");
+    if (!sendstate.PH) {
+      return toast.error("No Phone Number Please Update Student");
     }
+  
+    // Create message
+    let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
+  
+    for (let i = 1; i <= 8; i++) {
+      const subjectKey = `subject${i}`;
+      const markKey = `mark${i}`;
+      const subjectNameKey = `sub${i}`;
+  
+      const subjectObj = sendstate[subjectKey];
+  
+      if (subjectObj?.[subjectNameKey]) {
+        const markDisplay = subjectObj.check ? "Absent" : `${subjectObj[markKey]}/30`;
+        message += `🔸 ${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
+      }
+    }
+  
+    // Encode and open WhatsApp
+    const encodedMessage = encodeURIComponent(message);
+    const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
+    const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
+    window.open(url, "_blank");
   };
+  
   
 
   return (
