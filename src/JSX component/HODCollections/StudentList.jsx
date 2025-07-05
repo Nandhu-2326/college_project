@@ -139,7 +139,7 @@ const StudentList = () => {
     PH: "",
     Name: "",
     Department: "",
-    subject1: { sub1: "", mark1: "", check1: true },
+    subject1: { sub1: "", mark1: "", check1: "" },
     subject2: { sub2: "", mark2: "", check2: "" },
     subject3: { sub3: "", mark3: "", check3: "" },
     subject4: { sub4: "", mark4: "", check4: "" },
@@ -494,9 +494,7 @@ const StudentList = () => {
         const subjectObj = sendstate[subjectKey];
 
         if (subjectObj?.[`sub${i}`]) {
-          message += `🔸 ${subjectObj[`sub${i}`]}: ${
-            subjectObj[`mark${i}`] || 0
-          }/30\n`;
+          message += `🔸 ${subjectObj[`sub${i}`]}: ${subjectKey[`check${i}`] ? "Absent" : subjectObj[`mark${i}/30`]}\n`;
         }
       }
 
