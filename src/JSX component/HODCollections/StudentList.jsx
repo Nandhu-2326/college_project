@@ -472,7 +472,7 @@ const StudentList = () => {
       const subjectObj = sendstate[subjectKey];
 
       // Skip validation if the student is absent
-      if (subjectObj.check == false) {
+      if (!subjectObj.check) {
         const mark = Number(subjectObj?.[markKey]);
         if (isNaN(mark) || mark < 0 || mark > 30) {
           return toast.error(`Mark for subject ${i} must be between 0 and 30`);
