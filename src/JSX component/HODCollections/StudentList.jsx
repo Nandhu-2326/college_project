@@ -468,36 +468,39 @@ const StudentList = () => {
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
-
+  
       const subjectObj = sendstate[subjectKey];
       const mark = Number(subjectObj?.[markKey]);
-
+  
       if (isNaN(mark) || mark < 0 || mark > 30) {
         return toast.error(`Mark for subject ${i} must be between 0 and 30`);
       }
     }
-
+  
     if (!sendstate.Internal) {
       return toast.error("Please Select Internal");
     }
-
+  
     if (!sendstate.semester) {
       return toast.error("Please Select Semester");
     }
-
+  
     // Create message
     if (sendstate.PH) {
       let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
-
+  
       for (let i = 1; i <= 8; i++) {
         const subjectKey = `subject${i}`;
+        const markKey = `mark${i}`;
+        const subjectNameKey = `sub${i}`;
+  
         const subjectObj = sendstate[subjectKey];
-
-        if (subjectObj?.[`sub${i}`]) {
-          message += `🔸 ${subjectObj[`sub${i}`]}: ${subjectKey[`check${i}`] ? "Absent" : subjectObj[`mark${i}/30`]}\n`;
+  
+        if (subjectObj?.[subjectNameKey]) {
+          message += `🔸 ${subjectObj[subjectNameKey]}: ${subjectObj.check === "Absent" ? "Absent" : `${subjectObj[markKey]}/30`}\n`;
         }
       }
-
+  
       // Encode and redirect to WhatsApp
       const encodedMessage = encodeURIComponent(message);
       const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
@@ -507,6 +510,7 @@ const StudentList = () => {
       toast.error("No Phone Number Please Update Student");
     }
   };
+  
 
   return (
     <>
