@@ -468,51 +468,53 @@ const StudentList = () => {
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
-  
+
       const subjectObj = sendstate[subjectKey];
       const mark = subjectObj?.check ? null : Number(subjectObj?.[markKey]); // Skip validation if absent
-  
-      if (!subjectObj?.check && (isNaN(mark) || mark < 0 || mark > 30)) {
-        return toast.error(`Mark for subject ${i} must be between 0 and 30`);
+      if(mark != null)
+      {
+        if ((isNaN(mark) && mark < 0 || mark > 30 )) {
+          return toast.error(`Mark for subject ${i} must be between 0 and 30`);
+        }
       }
     }
-  
+
     if (!sendstate.Internal) {
       return toast.error("Please Select Internal");
     }
-  
+
     if (!sendstate.semester) {
       return toast.error("Please Select Semester");
     }
-  
+
     if (!sendstate.PH) {
       return toast.error("No Phone Number Please Update Student");
     }
-  
+
     // Create message
     let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
-  
+
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
       const subjectNameKey = `sub${i}`;
-  
+
       const subjectObj = sendstate[subjectKey];
-  
+
       if (subjectObj?.[subjectNameKey]) {
-        const markDisplay = subjectObj.check ? "Absent" : `${subjectObj[markKey]}/30`;
+        const markDisplay = subjectObj.check
+          ? "Absent"
+          : `${subjectObj[markKey]}/30`;
+        // console.log(markDisplay);
         message += `🔸 ${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
       }
     }
-  
-    // Encode and open WhatsApp
+   
     const encodedMessage = encodeURIComponent(message);
     const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
     const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
     window.open(url, "_blank");
   };
-  
-  
 
   return (
     <>
@@ -1059,31 +1061,38 @@ const StudentList = () => {
               const subjectKey = `subject${index}`;
               const subField = `sub${index}`;
               const markField = `mark${index}`;
-              const Absent = `check${index}`;
+              const checkField = `check${index}`;
 
               const subject = sendstate[subjectKey] || {
                 [subField]: "",
                 [markField]: "",
-                [Absent] : "",
+                [checkField]: false,
               };
 
               return (
-                <div>
-                  <div className="input-group my-4" key={index}>
+                <div key={index}>
+                  <div className="input-group my-4">
                     <span className="input-group-text">
                       <input
                         type="checkbox"
                         className="form-check-input"
-                         checked={subject[Absent]}
+                        checked={subject[checkField]}
                         onChange={(e) => {
+                          const isChecked = e.target.checked;
                           sends({
                             field: subjectKey,
-                            nestedField: Absent,
-                            value: e.target.checked,
+                            nestedField: checkField,
+                            value: isChecked,
+                          });
+                          sends({
+                            field: subjectKey,
+                            nestedField: markField,
+                            value: isChecked ? "Absent" : "",
                           });
                         }}
                       />
                     </span>
+
                     <input
                       type="text"
                       className="form-control"
@@ -1097,14 +1106,15 @@ const StudentList = () => {
                         })
                       }
                     />
+
                     <span
                       className="input-group-text"
                       style={{ width: "90px" }}
                     >
                       <input
-                        type={ subject[Absent] ? "text" : "number"}
+                        type="text"
                         className="form-control"
-                        value={ subject[Absent] ? "Absent" : subject[markField]}
+                        value={subject[markField]}
                         onChange={(e) =>
                           sends({
                             field: subjectKey,
@@ -1112,7 +1122,7 @@ const StudentList = () => {
                             value: e.target.value,
                           })
                         }
-                        disabled={subject[Absent]}
+                        disabled={subject[checkField]}
                       />
                     </span>
                   </div>
