@@ -139,14 +139,14 @@ const StudentList = () => {
     PH: "",
     Name: "",
     Department: "",
-    subject1: { sub1: "", mark1: "", check1: "" },
-    subject2: { sub2: "", mark2: "", check2: "" },
-    subject3: { sub3: "", mark3: "", check3: "" },
-    subject4: { sub4: "", mark4: "", check4: "" },
-    subject5: { sub5: "", mark5: "", check5: "" },
-    subject6: { sub6: "", mark6: "", check6: "" },
-    subject7: { sub7: "", mark7: "", check7: "" },
-    subject8: { sub8: "", mark8: "", check8: "" },
+    subject1: { sub1: "", mark1: "", check1: false },
+    subject2: { sub2: "", mark2: "", check2: false },
+    subject3: { sub3: "", mark3: "", check3: false },
+    subject4: { sub4: "", mark4: "", check4: false },
+    subject5: { sub5: "", mark5: "", check5: false },
+    subject6: { sub6: "", mark6: "", check6: false },
+    subject7: { sub7: "", mark7: "", check7: false },
+    subject8: { sub8: "", mark8: "", check8: false },
     Internal: "",
     semester: "",
   };
@@ -468,12 +468,14 @@ const StudentList = () => {
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
+      const checklist = `check${i}`;
 
       const subjectObj = sendstate[subjectKey];
+      console.log(subjectObj[checklist]);
 
       // Skip validation if the student is absent
-      if (subjectObj.check === false) {
-        const mark = Number(subjectObj?.[markKey]);
+      if (!subjectObj[checklist]) {
+        const mark = Number(subjectObj[markKey]);
         if (isNaN(mark) || mark < 0 || mark > 30) {
           return toast.error(`Mark for subject ${i} must be between 0 and 30`);
         }
@@ -494,25 +496,25 @@ const StudentList = () => {
     }
 
     // ✅ Create WhatsApp message
-    let message = `👨‍🎓 *${sendstate.Name}*\n📚 *Department*: ${sendstate.Department}\n *${sendstate.semester}* - *${sendstate.Internal}*\n\n📋 *Marks:*\n`;
+    let message = `${sendstate.Name}\n\nDepartment : ${sendstate.Department}\n\n${sendstate.semester} - ${sendstate.Internal} \n\nMarks\n`;
 
     for (let i = 1; i <= 8; i++) {
       const subjectKey = `subject${i}`;
       const markKey = `mark${i}`;
       const subjectNameKey = `sub${i}`;
-    
+
       const subjectObj = sendstate[subjectKey];
-    
+
       if (subjectObj?.[subjectNameKey]) {
         const markValue = subjectObj[markKey];
         const isAbsent = subjectObj.check || markValue === "Absent";
-    
+
         const markDisplay = isAbsent ? "Absent" : `${markValue}/30`;
-    
-        message += `🔸 ${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
+
+        message += `${i})${subjectObj[subjectNameKey]}: ${markDisplay}\n`;
       }
     }
-  console.log( message);
+    console.log(message);
     const encodedMessage = encodeURIComponent(message);
     const phone = sendstate.PH.replace(/\D/g, ""); // remove non-digits
     const url = `https://wa.me/91${phone}?text=${encodedMessage}`;
