@@ -152,7 +152,7 @@ const StudentList = () => {
   };
 
   const [sendstate, sends] = useReducer(whatsAppMessage, WhatsAppField);
-  console.log(sendstate);
+
   const handleShowModal = async (idSt) => {
     setShowModal(true);
     const STdata = doc(db, "student", idSt);
@@ -339,7 +339,7 @@ const StudentList = () => {
         return Dob;
       };
       const dobChange = formateDOB(state.dobUP);
-      console.log(dobChange);
+
 
       await updateDoc(doc(db, "student", UpDataStid), {
         Name: state.NameUP,
