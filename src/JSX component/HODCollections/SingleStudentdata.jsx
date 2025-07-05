@@ -17,7 +17,7 @@ const SingleStudentdata = () => {
   const [Actives, setActives] = useState(true);
   const [Dob, setDob] = useState();
   const [PNumber, setPNumber] = useState();
-
+  // console.log(Dob);
   useEffect(() => {
     FetchDepartment();
   }, []);
@@ -49,6 +49,12 @@ const SingleStudentdata = () => {
         return toast.error("Phone Number 10 Digite Only");
       }
       toast.loading("Please Wait");
+      const formateDOB = (Dob) => {
+        const [year, month, day] = Dob.split("-");
+        return `${day}-${month}-${year}`;
+      };
+      const dobChange = formateDOB(Dob);
+      console.log(dobChange);
       await addDoc(collection(db, "student"), {
         Department: Departments,
         Name: Name,
@@ -58,7 +64,7 @@ const SingleStudentdata = () => {
         ugorpg: ugorpg,
         year: Number(Year),
         active: Boolean(Actives),
-        dob: Dob,
+        dob: dobChange,
         PH: PNumber,
       });
       toast.dismiss();

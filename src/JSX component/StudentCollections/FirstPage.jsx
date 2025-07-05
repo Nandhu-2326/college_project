@@ -43,7 +43,6 @@ const FirstPage = () => {
       };
 
       const formattedDob = formatDOB(dob);
-
       if (studentData.dob !== formattedDob) {
         toast.dismiss(loading);
         toast.error("Date of Birth does not match");

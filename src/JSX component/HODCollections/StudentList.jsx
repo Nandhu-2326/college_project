@@ -78,7 +78,7 @@ const StudentList = () => {
       const activeStudent = students.filter((stu) => {
         return stu.active == true;
       });
-      console.log(activeStudent);
+      // console.log(activeStudent);
       setActiveStudent(activeStudent);
     }
   };
@@ -139,20 +139,20 @@ const StudentList = () => {
     PH: "",
     Name: "",
     Department: "",
-    subject1: { sub1: "", mark1: "" },
-    subject2: { sub2: "", mark2: "" },
-    subject3: { sub3: "", mark3: "" },
-    subject4: { sub4: "", mark4: "" },
-    subject5: { sub5: "", mark5: "" },
-    subject6: { sub6: "", mark6: "" },
-    subject7: { sub7: "", mark7: "" },
-    subject8: { sub8: "", mark8: "" },
+    subject1: { sub1: "", mark1: "", check1: true },
+    subject2: { sub2: "", mark2: "", check2: "" },
+    subject3: { sub3: "", mark3: "", check3: "" },
+    subject4: { sub4: "", mark4: "", check4: "" },
+    subject5: { sub5: "", mark5: "", check5: "" },
+    subject6: { sub6: "", mark6: "", check6: "" },
+    subject7: { sub7: "", mark7: "", check7: "" },
+    subject8: { sub8: "", mark8: "", check8: "" },
     Internal: "",
     semester: "",
   };
 
   const [sendstate, sends] = useReducer(whatsAppMessage, WhatsAppField);
-
+  console.log(sendstate);
   const handleShowModal = async (idSt) => {
     setShowModal(true);
     const STdata = doc(db, "student", idSt);
@@ -176,11 +176,11 @@ const StudentList = () => {
     return `${year}-${month}-${day}`;
   }
 
-  function formatDateForSaving(dateStr) {
-    if (!dateStr || !dateStr.includes("-")) return "";
-    const [year, month, day] = dateStr.split("-");
-    return `${day}-${month}-${year}`;
-  }
+  // function formatDateForSaving(dateStr) {
+  //   if (!dateStr || !dateStr.includes("-")) return "";
+  //   const [year, month, day] = dateStr.split("-");
+  //   return `${day}-${month}-${year}`;
+  // }
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -331,6 +331,16 @@ const StudentList = () => {
 
     try {
       toast.loading("Updating...");
+      const formateDOB = (Dob) => {
+        const [year, month, day] = Dob.split("-");
+        if (year.length == 4 && month.length == 2 && day.length == 2) {
+          return `${day}-${month}-${year}`;
+        }
+        return Dob;
+      };
+      const dobChange = formateDOB(state.dobUP);
+      console.log(dobChange);
+
       await updateDoc(doc(db, "student", UpDataStid), {
         Name: state.NameUP,
         rollno: state.rollnoUP.toUpperCase(),
@@ -339,7 +349,7 @@ const StudentList = () => {
         year: Number(year),
         class: state.classUP.toUpperCase(),
         rs: state.rsUP.toLowerCase(),
-        dob: state.dobUP,
+        dob: dobChange,
         PH: state.PH,
       });
       fetchStudents();
@@ -401,7 +411,7 @@ const StudentList = () => {
             await deleteDoc(doc(db, "student", docSnap.id));
           }
           toast.dismiss();
-          toast.success("Deleted!", "All 3rd year students removed", "success");
+          toast.success("Deleted!", "All 3rd year students ", "success");
         } else {
           const newYear = nums + 1;
           for (const docSnap of getStudent.docs) {
@@ -932,7 +942,7 @@ const StudentList = () => {
                   let value = e.target.value;
 
                   if (field.name === "dobUP") {
-                    value = formatDateForSaving(value); // save as DD-MM-YYYY
+                    // value = formatDateForSaving(value); // save as DD-MM-YYYY
                   } else if (["rollnoUP", "classUP"].includes(field.name)) {
                     value = value.toUpperCase();
                   } else if (
@@ -989,7 +999,9 @@ const StudentList = () => {
                 />
               </div>
             ))}
-
+            <label htmlFor="" className="text-uppercase">
+              Select Internal
+            </label>
             <select
               name=""
               id=""
@@ -1016,58 +1028,90 @@ const StudentList = () => {
                 );
               }
               return (
-                <select
-                  className="form-select my-4"
-                  onChange={(e) => {
-                    sends({ field: "semester", value: e.target.value });
-                  }}
-                >
-                  <option value="">--select semester</option>
-                  {options}
-                </select>
+                <div>
+                  <label htmlFor="" className="text-uppercase">
+                    Select Semester
+                  </label>
+                  <select
+                    className="form-select my-4"
+                    onChange={(e) => {
+                      sends({ field: "semester", value: e.target.value });
+                    }}
+                  >
+                    <option value="">--select semester</option>
+                    {options}
+                  </select>
+                </div>
               );
             })()}
 
+            <div className="d-flex justify-content-between">
+              <label htmlFor="">Absent</label>
+              <label htmlFor="">Subject</label>
+              <label htmlFor="">Mark</label>
+            </div>
             {Array.from({ length: 8 }, (_, i) => {
               const index = i + 1;
               const subjectKey = `subject${index}`;
               const subField = `sub${index}`;
               const markField = `mark${index}`;
+              const Absent = `check${index}`;
 
               const subject = sendstate[subjectKey] || {
                 [subField]: "",
                 [markField]: "",
+                [Absent] : "",
               };
 
               return (
-                <div className="input-group my-4" key={index}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder={`Subject - ${index}`}
-                    value={subject[subField]}
-                    onChange={(e) =>
-                      sends({
-                        field: subjectKey,
-                        nestedField: subField,
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                  <span className="input-group-text" style={{ width: "90px" }}>
+                <div>
+                  <div className="input-group my-4" key={index}>
+                    <span className="input-group-text">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                         checked={subject[Absent]}
+                        onChange={(e) => {
+                          sends({
+                            field: subjectKey,
+                            nestedField: Absent,
+                            value: e.target.checked,
+                          });
+                        }}
+                      />
+                    </span>
                     <input
-                      type="number"
+                      type="text"
                       className="form-control"
-                      value={subject[markField]}
+                      placeholder={`Subject - ${index}`}
+                      value={subject[subField]}
                       onChange={(e) =>
                         sends({
                           field: subjectKey,
-                          nestedField: markField,
+                          nestedField: subField,
                           value: e.target.value,
                         })
                       }
                     />
-                  </span>
+                    <span
+                      className="input-group-text"
+                      style={{ width: "90px" }}
+                    >
+                      <input
+                        type={ subject[Absent] ? "text" : "number"}
+                        className="form-control"
+                        value={ subject[Absent] ? "Absent" : subject[markField]}
+                        onChange={(e) =>
+                          sends({
+                            field: subjectKey,
+                            nestedField: markField,
+                            value: e.target.value,
+                          })
+                        }
+                        disabled={subject[Absent]}
+                      />
+                    </span>
+                  </div>
                 </div>
               );
             })}
