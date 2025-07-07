@@ -1,4 +1,3 @@
-import { LuUserRoundSearch } from "react-icons/lu";
 import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
@@ -7,11 +6,11 @@ import { db } from "../Database.js";
 import {
   collection,
   addDoc,
-  getDocs,
   deleteDoc,
   doc,
   getDoc,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
@@ -28,22 +27,28 @@ const AdminUserDetails = () => {
   const [currentId, setCurrentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [search, setSearch] = useState(false);
-  const [user, setUser] = useState();
+  const [TotalAdmin, setTotalAdmin] = useState();
   const [PasswordEye, SetPasswordEye] = useState(true);
 
-  // Get Users
-  const getUser = async () => {
-    const getData = await getDocs(collection(db, "Admin"));
-    const allData = getData.docs.map((val) => ({
-      id: val.id,
-      ...val.data(),
-    }));
-    setUser(allData.length);
-    setData(allData);
+  //  fetch Admin
+  const fetchAdmin = () => {
+    const RealTimeFetchData = onSnapshot(
+      collection(db, "Admin"),
+      (RealData) => {
+        const AllData = RealData.docs.map((val) => ({
+          id: val.id,
+          ...val.data(),
+        }));
+        setTotalAdmin(AllData.length);
+        setData(AllData);
+      }
+    );
+    return RealTimeFetchData;
   };
 
   useEffect(() => {
-    getUser();
+    const RealtimeFalse = fetchAdmin();
+    return () => RealtimeFalse();
   }, []);
 
   const confirmDelete = () => {
@@ -71,11 +76,11 @@ const AdminUserDetails = () => {
         });
         setUserName("");
         setPassword("");
-        setisLoading(false);
-        getUser();
+        toast.success("Admin Uploaded");
       } catch (e) {
+        alert(`Error: , ${e.message}`);
+      } finally {
         setisLoading(false);
-        alert("Error: ", e.message);
       }
     }
   };
@@ -87,7 +92,6 @@ const AdminUserDetails = () => {
       try {
         await deleteDoc(doc(db, "Admin", id));
         toast.success("Admin Deleted");
-        getUser();
       } catch (e) {
         alert("Error: ", e.message);
       }
@@ -116,14 +120,13 @@ const AdminUserDetails = () => {
         });
         setUserName("");
         setPassword("");
-        setBtn(true);
         setCurrentId(null);
-        toast.success("Update Admin");
-        setisLoading(false);
-        getUser();
+        toast.success("Admin Update");
       } catch (e) {
-        setisLoading(false);
         console.log(e.message);
+      } finally {
+        setBtn(true);
+        setisLoading(false);
       }
     }
   };
@@ -142,7 +145,7 @@ const AdminUserDetails = () => {
               className=" fw-semibold "
               style={{ color: "rgb(26, 51, 208)" }}
             >
-              Total Admin - {user}{" "}
+              Total Admin - {TotalAdmin}{" "}
             </span>
           </div>
           <div className="col-sm-4 col-12">
