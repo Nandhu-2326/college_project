@@ -13,6 +13,7 @@ import {
   setDoc,
   query,
   where,
+  onSnapshot,
 } from "firebase/firestore";
 import toast from "react-hot-toast";
 
@@ -38,20 +39,27 @@ const StaffAddorUpdatePage = () => {
   console.log(DepartmentCode);
   // Get Users
   const getUser = async () => {
-    const getData = await getDocs(collection(db, "HOD"));
-    const allData = getData.docs.map((val) => ({
-      id: val.id,
-      ...val.data(),
-    }));
-    setUser(allData.length);
-    setData(allData);
-    // const depDoc = doc(db, "Departments");
     const depGetData = await getDocs(collection(db, "Departments"));
     const depAllData = depGetData.docs.map((val) => ({
       ...val.data(),
     }));
     setDepartmentData(depAllData);
   };
+  const fetchDataFB = () =>{
+    const RealTimeData = onSnapshot(collection(db,"HOD"), (data)=>{
+      const AllData = data.docs.map((doc)=>({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      setTotalHod(AllData.length)
+      setData(AllData)
+    })
+    return RealTimeData
+  }
+  useEffect(() => {
+    const RealtimeFalse = fetchDataFB();
+    return () => RealtimeFalse();
+  }, []);
 
   useEffect(() => {
     getUser();

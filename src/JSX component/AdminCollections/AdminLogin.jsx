@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import React, { useState } from "react";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
@@ -18,37 +19,36 @@ const AdminLogin = () => {
 
   const login = async () => {
     if (!userName || !Password) {
-      showWarning("Please Fill All requirement");
-    } else {
-      setisLoading(true);
-      try {
-        const q = query(
-          collection(db, "Admin"),
-          where("username", "==", userName)
-        );
+      return showWarning("Please Fill All requirement");
+    }
+    setisLoading(true);
+    try {
+      const q = query(
+        collection(db, "Admin"),
+        where("username", "==", userName)
+      );
+      const querySnapshot = await getDocs(q);
 
-        const querySnapshot = await getDocs(q);
-        
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0].data();
-          if(Password === userDoc.password)
-          {
-            toast.success("Login Success");
-            nav("/AdminLayout/AdminUserPage");
-            setisLoading(false)
-          }
-          else{
-            setisLoading(false)
-            toast.error('Invalid Password')
-          }
-
-        } else {
-          toast.error("Invalid Username");
-          setisLoading(false);
-        }
-      } catch (e) {
-        toast.error(e.message);
+      if (querySnapshot.empty) {
+        toast.error("Invalid Username");
+        return;
       }
+
+      const userDoc = querySnapshot.docs[0].data();
+      const storedHashedPassword = userDoc.password;
+
+      // 2. Compare password
+      const isMatch = await bcrypt.compare(Password, storedHashedPassword);
+      if (isMatch) {
+        toast.success("Login Success");
+        nav("/AdminLayout/AdminUserPage");
+      } else {
+        toast.error("Invalid Password");
+      }
+    } catch (e) {
+      toast.error(e.message);
+    } finally {
+      setisLoading(false);
     }
   };
 

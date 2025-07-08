@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
@@ -11,6 +12,9 @@ import {
   getDoc,
   updateDoc,
   onSnapshot,
+  query,
+  getDocs,
+  where,
 } from "firebase/firestore";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
@@ -66,22 +70,33 @@ const AdminUserDetails = () => {
   // Add User
   const AddUser = async () => {
     if (!userName || !password) {
-      toast.error("Please Fill All Requirement");
-    } else {
-      try {
-        setisLoading(true);
-        await addDoc(collection(db, "Admin"), {
-          username: userName,
-          password: password,
-        });
-        setUserName("");
-        setPassword("");
-        toast.success("Admin Uploaded");
-      } catch (e) {
-        alert(`Error: , ${e.message}`);
-      } finally {
-        setisLoading(false);
-      }
+      return toast.error("Please Fill All Requirement");
+    }
+    setisLoading(true);
+    const checkuser = query(
+      collection(db, "Admin"),
+      where("username", "==", userName)
+    );
+    const duplicateuser = await getDocs(checkuser);
+    if (!duplicateuser.empty) {
+      toast.error("username Already taken");
+      setisLoading(false);
+      return;
+    }
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await addDoc(collection(db, "Admin"), {
+        username: userName,
+        password: hashedPassword,
+        OrgPassword: password,
+      });
+      setUserName("");
+      setPassword("");
+      toast.success("Admin Uploaded");
+    } catch (e) {
+      alert(`Error: , ${e.message}`);
+    } finally {
+      setisLoading(false);
     }
   };
 
@@ -105,29 +120,51 @@ const AdminUserDetails = () => {
     const getEdData = await getDoc(doc(db, "Admin", id));
     const EdData = getEdData.data();
     setUserName(EdData.username);
-    setPassword(EdData.password);
+    setPassword(EdData.OrgPassword);
   };
 
   const UpdateUser = async () => {
     if (!userName || !password) {
-      toast.error("Please Fill All Requirement");
-    } else {
-      try {
-        setisLoading(true);
-        await updateDoc(doc(db, "Admin", currentId), {
-          username: userName,
-          password: password,
-        });
-        setUserName("");
-        setPassword("");
-        setCurrentId(null);
-        toast.success("Admin Update");
-      } catch (e) {
-        console.log(e.message);
-      } finally {
-        setBtn(true);
-        setisLoading(false);
+      return toast.error("Please Fill All Requirement");
+    }
+
+    try {
+      setisLoading(true);
+      console.log(currentId);
+
+      const checkuser = query(
+        collection(db, "Admin"),
+        where("username", "==", userName)
+      );
+      const fetchuser = await getDocs(checkuser);
+
+      if (!fetchuser.empty) {
+        const datacheck = fetchuser.docs.map((doc) => ({
+          id: doc.id,
+        }));
+
+        if (datacheck[0].id !== currentId) {
+          toast.error("Username already taken");
+          return;
+        }
       }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await updateDoc(doc(db, "Admin", currentId), {
+        username: userName,
+        password: hashedPassword,
+        OrgPassword: password,
+      });
+      setUserName("");
+      setPassword("");
+      setCurrentId(null);
+      toast.success("Admin Updated");
+      setBtn(true);
+    } catch (e) {
+      toast.error(e.message);
+    } finally {
+      setisLoading(false);
     }
   };
 
@@ -270,6 +307,7 @@ const AdminUserDetails = () => {
                             <button
                               className="btn btn-outline-success"
                               onClick={() => deleteUser(value.id)}
+                              disabled={!btn}
                             >
                               <MdOutlineDeleteOutline />
                             </button>
