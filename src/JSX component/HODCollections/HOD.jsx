@@ -6,6 +6,9 @@ import { showWarning } from "../SweetAlert.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
+import { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
+
 // import "../Style Component/HOD.css";
 
 const HOD = () => {
@@ -30,7 +33,12 @@ const HOD = () => {
 
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0].data();
-          if (Password === userDoc.password) {
+          const storedHashedPassword = userDoc.password;
+          const hashedpassword = await bcrypt.compare(
+            Password,
+            storedHashedPassword
+          );
+          if (hashedpassword) {
             toast.success("Login Success");
             sessionStorage.setItem("HOD_Data", JSON.stringify(userDoc));
             nav("/HODLayout/StaffDetails");

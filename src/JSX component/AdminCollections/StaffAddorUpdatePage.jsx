@@ -1,7 +1,7 @@
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
-
+import bcrypt from "bcryptjs";
 import Swal from "sweetalert2";
 import { db } from "../Database.js";
 import {
@@ -24,7 +24,7 @@ const StaffAddorUpdatePage = () => {
   const [currentId, setCurrentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [search, setSearch] = useState(false);
-  const [user, setUser] = useState();
+  const [TotalHod, setTotalHod] = useState();
   const [PasswordEye, SetPasswordEye] = useState(true);
   const [departmentData, setDepartmentData] = useState();
 
@@ -45,17 +45,20 @@ const StaffAddorUpdatePage = () => {
     }));
     setDepartmentData(depAllData);
   };
-  const fetchDataFB = () =>{
-    const RealTimeData = onSnapshot(collection(db,"HOD"), (data)=>{
-      const AllData = data.docs.map((doc)=>({
+
+  const fetchDataFB = () => {
+    const RealTimeData = onSnapshot(collection(db, "HOD"), (data) => {
+      const AllData = data.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }))
-      setTotalHod(AllData.length)
-      setData(AllData)
-    })
-    return RealTimeData
-  }
+      }));
+      console.log(AllData);
+      setTotalHod(AllData.length);
+      setData(AllData);
+    });
+    return RealTimeData;
+  };
+
   useEffect(() => {
     const RealtimeFalse = fetchDataFB();
     return () => RealtimeFalse();
@@ -88,7 +91,7 @@ const StaffAddorUpdatePage = () => {
       !rs ||
       !ugorpg
     ) {
-      toast.error("Fill All Requirements");
+      return toast.error("Fill All Requirements");
     } else {
       try {
         toast.loading("Please Wait");
@@ -129,11 +132,12 @@ const StaffAddorUpdatePage = () => {
           toast.error("This Department Already Provided");
           return;
         }
-
+        const PasswordHashed = await bcrypt.hash(password, 10);
         const CreateCode = doc(db, "HOD", DepartmentCode);
         await setDoc(CreateCode, {
           username: userName,
-          password: password,
+          password: PasswordHashed,
+          Orgpassword: password,
           HODName: HODName,
           DepartmentCode: DepartmentCode,
           Department: selectDepartment,
@@ -151,7 +155,6 @@ const StaffAddorUpdatePage = () => {
           toast.dismiss();
           toast.success("HOD Upload");
         }
-        getUser();
       } catch (e) {
         return toast.error(e.message);
       }
@@ -165,7 +168,6 @@ const StaffAddorUpdatePage = () => {
       try {
         await deleteDoc(doc(db, "HOD", id));
         toast.success("HOD Delete");
-        getUser();
       } catch (e) {
         return toast.error(e.message);
       }
@@ -179,7 +181,7 @@ const StaffAddorUpdatePage = () => {
     const getEdData = await getDoc(doc(db, "HOD", id));
     const EdData = getEdData.data();
     setUserName(EdData.username);
-    setPassword(EdData.password);
+    setPassword(EdData.Orgpassword);
     setDepartmentCode(EdData.DepartmentCode);
     setSelectDepartment(EdData.Department);
     setHODName(EdData.HODName);
@@ -198,26 +200,58 @@ const StaffAddorUpdatePage = () => {
       !ugorpg
     ) {
       toast.error("Fill All Requirement");
-    } else {
-      try {
-        await deleteDoc(doc(db, "HOD", currentId));
-        AddUser();
-        await getUser();
-        toast.dismiss();
-        toast.success("HOD Update");
-        setUserName("");
-        setPassword("");
-        setDepartmentCode("");
-        setHODName("");
-        setSelectDepartment("");
-        setrs("");
-        setugorpg("");
-        setBtn(true);
-        setCurrentId(null);
-      } catch (e) {
-        toast.dismiss();
-        return toast.error(e.message);
-      }
+      return;
+    }
+
+    try {
+      console.log("ok");
+
+      const querySnapshot = await getDocs(collection(db, "HOD"));
+      const allUsers = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const otherUsers = allUsers.filter((user) => user.id !== currentId);
+      console.log(otherUsers);
+      const departmentTaken = otherUsers.find(
+        (user) => user.Department === selectDepartment
+      );
+      const departmentCodeTaken = otherUsers.find(
+        (user) => user.DepartmentCode === DepartmentCode
+      );
+      const passwordTaken = otherUsers.find(
+        (user) => user.Orgpassword === password
+      );
+      const usernameTaken = otherUsers.find(
+        (user) => user.username === userName
+      );
+
+      if (departmentTaken) return toast.error("Department already taken");
+      if (departmentCodeTaken)
+        return toast.error("Department code already taken");
+      if (passwordTaken) return toast.error("Password already taken");
+      if (usernameTaken) return toast.error("Username already taken");
+
+      // No duplicates found — proceed with update
+      await deleteDoc(doc(db, "HOD", currentId));
+      await AddUser();
+      await getUser();
+      toast.dismiss();
+      toast.success("HOD Updated");
+
+      setUserName("");
+      setPassword("");
+      setDepartmentCode("");
+      setHODName("");
+      setSelectDepartment("");
+      setrs("");
+      setugorpg("");
+      setBtn(true);
+      setCurrentId(null);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -232,7 +266,7 @@ const StaffAddorUpdatePage = () => {
         <div className="row d-flex justify-content-between align-items-center">
           <div className="col-12 col-sm-6 text-start">
             <span className=" " style={{ color: "rgb(26, 51, 208)" }}>
-              TOTAL HODS - {user}{" "}
+              TOTAL HODS - {TotalHod}{" "}
             </span>
           </div>
           <div className="col-12 col-sm-4 mt-3 mt-sm-0">
@@ -385,7 +419,7 @@ const StaffAddorUpdatePage = () => {
                         style={{ backgroundColor: "#0d6efd", color: "#fff" }}
                         onClick={btn ? AddUser : UpdateUser}
                       >
-                        {btn ? "Add User" : "Update Data"}
+                        {btn ? "Create HOD" : "Update HOD"}
                       </button>
                     </div>
                   </div>
@@ -425,7 +459,7 @@ const StaffAddorUpdatePage = () => {
                               src="/noteEdit.png"
                               width={25}
                               alt=""
-                              className="img img-fluid"
+                              className="img "
                             />
                           </button>
                         </td>
@@ -433,6 +467,7 @@ const StaffAddorUpdatePage = () => {
                           <button
                             className="btn border-0"
                             onClick={() => deleteUser(value.id)}
+                            disabled={!btn}
                           >
                             <img
                               src="/deletes.png"

@@ -267,9 +267,9 @@ const AdminUserDetails = () => {
                       {isloading ? (
                         <ThreeDot color="#ffffff" size="medium" text="" />
                       ) : btn ? (
-                        "Add User"
+                        "Add Admin"
                       ) : (
-                        "Update User"
+                        "Update Admin"
                       )}
                     </button>
                   </div>
