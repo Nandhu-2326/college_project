@@ -23,7 +23,9 @@ import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Swal from "sweetalert2";
-
+// MUI Components
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 const initialStudentState = [];
 const studentReducer = (state, action) => {
   switch (action.type) {
@@ -42,6 +44,8 @@ const StudentList = () => {
   const [activeStudent, setActiveStudent] = useState([]);
   const [hodData, setHOD] = useState({});
   const [UpDataStid, setUpStudentid] = useState();
+  const [SubjectData, setSubjectData] = useState([]);
+
   const [studentState, dispatch] = useReducer(
     studentReducer,
     initialStudentState
@@ -49,12 +53,21 @@ const StudentList = () => {
 
   const { Department, HODName, ugorpg } = hodData;
 
+  const fetchSubjectData = async () => {
+    const getSub = await getDocs(collection(db, "Subject"));
+    const getData = getSub.docs.flatMap((doc) => Object.values(doc.data()));
+    setSubjectData(getData.filter((d) => typeof d === "string")); // ensure it's strings
+  };
+
   useEffect(() => {
     const data = sessionStorage.getItem("HOD_Data");
     if (data) {
       const HODdata = JSON.parse(data);
       setHOD(HODdata);
     }
+  }, []);
+  useEffect(() => {
+    fetchSubjectData();
   }, []);
 
   const fetchStudents = async () => {
@@ -339,7 +352,6 @@ const StudentList = () => {
         return Dob;
       };
       const dobChange = formateDOB(state.dobUP);
-
 
       await updateDoc(doc(db, "student", UpDataStid), {
         Name: state.NameUP,
@@ -1078,61 +1090,79 @@ const StudentList = () => {
 
               return (
                 <div key={index}>
-                  <div className="input-group my-4">
-                    <span className="input-group-text bg-white">
-                      <input
-                        type="checkbox"
-                        className="form-check-input p-2"
-                        checked={subject[checkField]}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          sends({
-                            field: subjectKey,
-                            nestedField: checkField,
-                            value: isChecked,
-                          });
-                          sends({
-                            field: subjectKey,
-                            nestedField: markField,
-                            value: isChecked ? "Absent" : "",
-                          });
-                        }}
-                      />
-                    </span>
+                 <div className="input-group my-3" style={{ alignItems: "stretch" }}>
+  {/* Checkbox small */}
+  <span className="input-group-text bg-white p-1" style={{ width: "50px" }}>
+    <input
+      type="checkbox"
+      className="form-check-input m-0"
+      checked={subject[checkField]}
+      onChange={(e) => {
+        const isChecked = e.target.checked;
+        sends({
+          field: subjectKey,
+          nestedField: checkField,
+          value: isChecked,
+        });
+        sends({
+          field: subjectKey,
+          nestedField: markField,
+          value: isChecked ? "Absent" : "",
+        });
+      }}
+    />
+  </span>
 
-                    <input
-                      type="text"
-                      className="form-control "
-                      placeholder={`Subject - ${index}`}
-                      value={subject[subField]}
-                      onChange={(e) =>
-                        sends({
-                          field: subjectKey,
-                          nestedField: subField,
-                          value: e.target.value,
-                        })
-                      }
-                    />
+  {/* Large subject field */}
+  <div className="flex-grow-1 d-flex">
+    <Autocomplete
+      size="small"
+      options={SubjectData}
+      value={subject[subField] || ""}
+      onChange={(e, newValue) =>
+        sends({
+          field: subjectKey,
+          nestedField: subField,
+          value: newValue || "",
+        })
+      }
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={`Subject - ${index}`}
+          variant="outlined"
+          fullWidth
+          sx={{
+            "& .MuiInputBase-root": {
+              height: "100%", // match parent height
+            },
+          }}
+        />
+      )}
+      fullWidth
+      disableClearable
+    />
+  </div>
 
-                    <span
-                      className="input-group-text bg-white"
-                      style={{ width: "90px" }}
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={subject[markField]}
-                        onChange={(e) =>
-                          sends({
-                            field: subjectKey,
-                            nestedField: markField,
-                            value: e.target.value,
-                          })
-                        }
-                        disabled={subject[checkField]}
-                      />
-                    </span>
-                  </div>
+  {/* Small marks field */}
+  <span className="input-group-text bg-white p-1" style={{ width: "90px" }}>
+    <input
+      type="text"
+      className="form-control border-0"
+      style={{ height: "100%" }}
+      value={subject[markField]}
+      onChange={(e) =>
+        sends({
+          field: subjectKey,
+          nestedField: markField,
+          value: e.target.value,
+        })
+      }
+      disabled={subject[checkField]}
+    />
+  </span>
+</div>
+
                 </div>
               );
             })}
