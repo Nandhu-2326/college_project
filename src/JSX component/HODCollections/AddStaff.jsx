@@ -1,3 +1,4 @@
+import bcrypt, { hash } from "bcryptjs";
 import React, { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { showWarning } from "../SweetAlert";
@@ -8,9 +9,11 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
@@ -21,18 +24,23 @@ import { IoMdEye } from "react-icons/io";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-
+import Swal from "sweetalert2";
 const AddStaff = () => {
   const nav = useNavigate();
 
   const [hodData, setHOD] = useState("");
-  const [StaffData, setStaffData] = useState("");
+  //   const [StaffData, setStaffData] = useState("");
   const [isloading, setisloading] = useState(false);
   const [isUpdate, setisUpdate] = useState(false);
   const [eyeNumber, seteyeNumber] = useState(1);
+  const [tableData, settableData] = useState([]);
+
+  const [currentId, setCurrentId] = useState("");
+
   const initialState = {
     staffName: "",
     UserName: "",
+    OrgPassword: "",
     Password: "",
   };
 
@@ -44,118 +52,233 @@ const AddStaff = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  // console.log(state);
   let { Department, HODName, DepartmentCode } = hodData;
-
-  const staffId = StaffData?.id;
+  // console.log(hodData);
+  // const staffId = StaffData?.id;
+  // console.log(staffId);
 
   const fetchData = () => {
     const data = sessionStorage.getItem("HOD_Data");
     const HODdata = JSON.parse(data);
     setHOD(HODdata);
 
-    const StaffDetails = sessionStorage.getItem("staff");
-    const StaffDatas = JSON.parse(StaffDetails);
-    setStaffData(StaffDatas);
+    // const StaffDetails = sessionStorage.getItem("staff");
+    // const StaffDatas = JSON.parse(StaffDetails);
+    // setStaffData(StaffDatas);
 
-    const States = sessionStorage.getItem("state");
-    const boolenState = JSON.parse(States) === true;
-    setisUpdate(boolenState);
-    console.log(boolenState);
+    // const States = sessionStorage.getItem("state");
+    // const boolenState = JSON.parse(States) === true;
+    // setisUpdate(boolenState);
+    // console.log(boolenState);
   };
 
-  const fetchStaffDetails = async (staffId) => {
-    const getStaffDetails = doc(db, "Allstaffs", staffId);
-    const AfterFetch = await getDoc(getStaffDetails);
-    const AllData = AfterFetch.data();
-    console.log(AllData);
-    if (isUpdate && AllData) {
-      for (let staffField in initialState) {
-        dispatch({ field: staffField, value: AllData[staffField] || "" });
+  //   const fetchStaffDetails = async (staffId) => {
+  //     const getStaffDetails = doc(db, "Allstaffs", staffId);
+  //     const AfterFetch = await getDoc(getStaffDetails);
+  //     const AllData = AfterFetch.data();
+  //     console.log(AllData);
+  //     if (isUpdate && AllData) {
+  //       for (let staffField in initialState) {
+  //         dispatch({ field: staffField, value: AllData[staffField] || "" });
+  //       }
+  //     }
+  //   };
+
+  const fetchDataFB = () => {
+    try {
+      // Prevent invalid query
+      if (!DepartmentCode) {
+        console.warn("DepartmentCode is missing");
+        return () => {}; // Return a dummy cleanup function
       }
+
+      const querys = query(
+        collection(db, "Allstaffs"),
+        where("DepartmentCode", "==", DepartmentCode)
+      );
+
+      const unsubscribe = onSnapshot(querys, (data) => {
+        const AllData = data.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log(AllData);
+        settableData(AllData);
+        // setTotalHod(AllData.length);
+        // setData(AllData);
+      });
+
+      return unsubscribe; // Always return a cleanup function
+    } catch (e) {
+      console.log(e.message);
+      return () => {}; // Safe fallback
     }
   };
-  console.log(state);
+
+  useEffect(() => {
+    const unsubscribe = fetchDataFB();
+    return () => unsubscribe(); // Cleanup is always safe
+  }, [DepartmentCode]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (isUpdate && staffId) {
-      fetchStaffDetails(staffId);
-    }
-  }, [isUpdate, staffId]);
+  // useEffect(() => {
+  //   if (isUpdate && staffId) {
+  //     fetchStaffDetails(staffId);
+  //   }
+  // }, [isUpdate, staffId]);
 
   const AddStaff = async () => {
     if (!state.staffName || !state.UserName || !state.Password) {
       showWarning("Please Fill All Fields");
-    } else {
-      try {
-        const AnalysisData = query(
-          collection(db, "Allstaffs"),
-          where("Password", "==", state.Password),
-          where("UserName", "==", state.UserName)
-        );
+      return;
+    }
 
-        const dataFetch = await getDocs(AnalysisData);
+    try {
+      const AnalysisData = query(
+        collection(db, "Allstaffs"),
+        where("OrgPassword", "==", state.Password), // compare with original password
+        where("UserName", "==", state.UserName)
+      );
 
-        if (dataFetch.empty) {
-          // No duplicate found, safe to add
-          setisloading(true);
-          await addDoc(collection(db, "Allstaffs"), {
-            staffName: state.staffName,
-            UserName: state.UserName,
-            Password: state.Password,
-            DepartmentCode: DepartmentCode,
-          });
-          toast.success("Staff Saved");
-          setisloading(false);
-          nav("/HODLayout/StaffDetails");
-        } else {
-          // Duplicate found
-          toast.error("Username and Password Already Provided");
-        }
-      } catch (error) {
+      const dataFetch = await getDocs(AnalysisData);
+
+      if (dataFetch.empty) {
+        // ✅ No duplicate found — proceed to add
+        const hashPassword = await bcrypt.hash(state.Password, 10);
+
+        setisloading(true);
+        await addDoc(collection(db, "Allstaffs"), {
+          staffName: state.staffName,
+          UserName: state.UserName,
+          Password: hashPassword,
+          OrgPassword: state.Password,
+          DepartmentCode: DepartmentCode,
+        });
+
+        toast.success("Staff Added");
         setisloading(false);
-        toast.error("Error adding staff");
-        console.error(error);
+        nav("/HODLayout/StaffDetails");
+        sessionStorage.removeItem("staff");
+      } else {
+        // ❌ Duplicate found
+        toast.error("Username and Password Already Provided");
       }
+    } catch (error) {
+      setisloading(false);
+      toast.error("Error adding staff");
+      console.error(error);
     }
   };
 
-  const UpdateStaff = async (staffId) => {
+  const UpdateStaff = async () => {
     if (!state.staffName || !state.UserName || !state.Password) {
       showWarning("Please Fill All Fields");
-    } else {
-      try {
-        const AnalysisDataUP = query(
-          collection(db, "Allstaffs"),
-          where("Password", "==", state.Password),
-          where("UserName", "==", state.UserName)
-        );
-
-        const dataFetchUP = await getDocs(AnalysisDataUP);
-        if (dataFetchUP.empty) {
-          setisloading(true);
-          await updateDoc(doc(db, "Allstaffs", staffId), {
-            staffName: state.staffName,
-            UserName: state.UserName,
-            Password: state.Password,
-            DepartmentCode: DepartmentCode,
-          });
-          toast.success("Staff Updated");
-          setisloading(false);
-          nav("/HODLayout/StaffDetails");
-        } else {
-          toast.error("Username and Password Already Provided");
-        }
-      } catch (error) {
-        setisloading(false);
-        toast.error("Error updating staff");
-        console.error(error);
-      }
+      return;
     }
+
+    try {
+      // Find users with same username & password
+      const q = query(
+        collection(db, "Allstaffs"),
+        where("UserName", "==", state.UserName),
+        where("OrgPassword", "==", state.Password) // compare with original password field
+      );
+
+      const snapshot = await getDocs(q);
+
+      // Remove the current record from duplicate check
+      console.log(currentId);
+      const duplicates = snapshot.docs.filter((doc) => doc.id !== currentId);
+
+      if (duplicates.length > 0) {
+        toast.error("Username and Password Already Provided to another staff");
+      } else {
+        // No duplicates except possibly the current record
+        const hashPassword = await bcrypt.hash(state.Password, 10);
+
+        setisloading(true);
+
+        await updateDoc(doc(db, "Allstaffs", currentId), {
+          staffName: state.staffName,
+          UserName: state.UserName,
+          Password: hashPassword,
+          OrgPassword: state.Password,
+          DepartmentCode: DepartmentCode,
+        });
+
+        toast.success("Staff Updated");
+        setisloading(false);
+        setisUpdate(false);
+
+        // sessionStorage.removeItem("staff");
+        for (let i in initialState) {
+          dispatch({ field: i, value: "" });
+        }
+      }
+    } catch (error) {
+      setisloading(false);
+      toast.error(error.message);
+    }
+  };
+
+  const ChangestaffDetails = async (id) => {
+    console.log(id);
+    setCurrentId(id);
+    setisUpdate(true);
+    const getStaffData = await getDoc(doc(db, "Allstaffs", id));
+    const staffdetails = getStaffData.data();
+    dispatch({ field: "staffName", value: staffdetails.staffName });
+    dispatch({ field: "UserName", value: staffdetails.UserName });
+    dispatch({ field: "Password", value: staffdetails.OrgPassword });
+  };
+
+  const deleteStaff = async (id, stName) => {
+    Swal.fire({
+      title: "Delete Staff?",
+      html: `<div style="font-size: 1.1rem">
+               Are you sure you want to remove <strong>${stName}</strong>?
+             </div>`,
+      iconHtml: "🗑️",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "No, Cancel",
+      confirmButtonColor: "#e74c3c",
+      cancelButtonColor: "#3498db",
+      background: "#fefefe",
+      backdrop: `
+        rgba(0,0,0,0.4)
+        left top
+        no-repeat
+      `,
+      customClass: {
+        popup: "animated fadeInDown faster",
+        title: "text-danger fw-bold",
+        confirmButton: "px-4 py-2",
+        cancelButton: "px-4 py-2",
+      },
+      reverseButtons: true,
+      focusCancel: true,
+      showClass: {
+        popup: "swal2-show animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "swal2-hide animate__animated animate__fadeOutUp",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteDoc(doc(db, "Allstaffs", id));
+          toast.success(`Staff "${stName}" deleted successfully`);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
   };
 
   return (
@@ -271,6 +394,7 @@ const AddStaff = () => {
                       : staff === 2
                       ? "UserName"
                       : "Password";
+
                   const LabelName =
                     staff === 1
                       ? "Staff Name"
@@ -362,7 +486,7 @@ const AddStaff = () => {
                   onClick={
                     isUpdate
                       ? () => {
-                          UpdateStaff(staffId);
+                          UpdateStaff();
                         }
                       : AddStaff
                   }
@@ -386,7 +510,55 @@ const AddStaff = () => {
           </div>
         </div>
       </div>
-      <div className="container p-5"></div>
+      <div className="container ">
+        <div className="table-responsive">
+          <table
+            className="table table-bordered align-middle text-center"
+            style={{
+              border: "2px solid #ccc", // outer border
+              borderCollapse: "collapse",
+            }}
+          >
+            <thead className="table-light">
+              <tr>
+                <th style={{ padding: "14px", fontWeight: "600" }}>S.No</th>
+                <th style={{ padding: "14px", fontWeight: "600" }}>Name</th>
+                <th style={{ padding: "14px", fontWeight: "600" }}>Edit</th>
+                <th style={{ padding: "14px", fontWeight: "600" }}>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((doc, index) => (
+                <tr key={doc.id}>
+                  <td style={{ padding: "14px" }}>{index + 1}</td>
+                  <td style={{ padding: "14px", fontWeight: "500" }}>
+                    {doc.staffName}
+                  </td>
+                  <td style={{ padding: "14px" }}>
+                    <img
+                      src="/edit.png"
+                      width={32}
+                      alt="Edit"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => ChangestaffDetails(doc.id)}
+                    />
+                  </td>
+                  <td style={{ padding: "14px" }}>
+                    <img
+                      src="/deletes.png"
+                      width={32}
+                      alt="Delete"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => deleteStaff(doc.id, doc.staffName)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="container mt-5"></div>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import bcrypt, { hash } from "bcryptjs";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { db } from "../Database.js";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -32,15 +33,20 @@ const LoginPage = () => {
         if (!querySnapshot.empty) {
           const docSnap = querySnapshot.docs[0];
           const userDoc = { id: docSnap.id, ...docSnap.data() };
-         if(userDoc.Password === Password){
+          const storedHashedPassword = userDoc.Password;
+          const compareHash = await bcrypt.compare(
+            Password,
+            storedHashedPassword
+          );
+          console.log(compareHash);
+          if (compareHash) {
             toast.success("Login Success");
             sessionStorage.setItem("staff_Data", JSON.stringify(userDoc));
             nav("/StaffLayout/StaffSubjects");
             setisLoading(false);
-          }
-          else{
+          } else {
             setisLoading(false);
-            toast.error("Invalid Password")
+            toast.error("Invalid Password");
           }
         } else {
           toast.error("Invalid Username");

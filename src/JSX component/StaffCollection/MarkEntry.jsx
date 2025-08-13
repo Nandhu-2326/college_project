@@ -1084,6 +1084,15 @@ const MarkEntry = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+  const arrowMove = document.querySelector(".TopArrow")
+  if(window.scrollY > 350 )
+  {
+    arrowMove.style.display = "block"
+  }
+  else
+  {
+    arrowMove.style.display = "none"
+  }
   if (PageLoading) {
     return (
       <div
@@ -1112,7 +1121,7 @@ const MarkEntry = () => {
             src="/up-arrow.png"
             width={45}
             alt="Scroll to top"
-            className="img-fluid mb-2"
+            className="img-fluid mb-2 TopArrow"
             style={{ cursor: "pointer" }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           />
@@ -1124,7 +1133,7 @@ const MarkEntry = () => {
             src="/up-arrow.png"
             width={45}
             alt="Scroll to top"
-            className="img-fluid mb-2"
+            className="img-fluid mb-2 TopArrow"
             style={{ cursor: "pointer" }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           />

@@ -113,7 +113,7 @@ const StaffDetails = () => {
   };
 
   const AddStfun = () => {
-    sessionStorage.setItem("state", JSON.stringify(false));
+    // sessionStorage.setItem("state", JSON.stringify(false));
     nav("/HODLayout/AddStaff");
   };
 
@@ -254,7 +254,7 @@ const StaffDetails = () => {
                 className="img img-fluid me-3"
                 style={{ width: "30px" }}
               />
-              <span className="fw-semibold">Add Staff</span>
+              <span className="fw-semibold">Add & Update Staff</span>
             </button>
           </div>
           {/* Students */}
@@ -318,8 +318,6 @@ const StaffDetails = () => {
               <th>S.No</th>
               <th>Staff Name</th>
               <th>Subject</th>
-              <th>Edit Staff</th>
-              <th>Delete</th>
             </tr>
           </thead>
 
@@ -336,37 +334,9 @@ const StaffDetails = () => {
                         className="btn btn-sm border-0 text-uppercase"
                         onClick={() => fetchSubject(value)}
                       >
-                        Subject
+                        Alert Subjects
                       </button>
                     </div>
-                  </td>
-                  <td className="">
-                    <button
-                      className="btn  border-0"
-                      onClick={() => fetchEdit(value)}
-                      title="Edit Staff"
-                    >
-                      <img
-                        src="/edits.png"
-                        alt=""
-                        className="img img-fluid"
-                        width={30}
-                      />
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn border-0"
-                      onClick={() => DeletStaffAlert(value.id, value.staffName)}
-                      title="Delete Staff"
-                    >
-                      <img
-                        src="/deletes.png"
-                        alt=""
-                        className="img img-fluid"
-                        width={30}
-                      />
-                    </button>
                   </td>
                 </tr>
               ))

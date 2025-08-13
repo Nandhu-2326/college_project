@@ -47,7 +47,6 @@ const Rmain = () => {
         <Route path="/SecondPage" element={<SecondPage />} />
         <Route path="/Header" element={<Header />} />
 
-
         {/* === Staff Section === */}
         <Route path="/StaffLayout" element={<StaffLayout />}>
           <Route index element={<LoginPage />} />
