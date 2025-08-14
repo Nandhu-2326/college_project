@@ -633,33 +633,44 @@ const StudentList = () => {
               </div>
               <div className="card-body d-flex justify-content-center">
                 <div className="row g-3 w-100 text-center">
-                  {[1, 2, 3].map((year) => (
-                    <div key={year} className="col-12 col-md-4">
-                      <div
-                        className="border rounded-4 shadow-sm py-4 px-2 h-100"
-                        style={{
-                          backgroundColor: "#f8f9ff",
-                          color: "rgb(26, 51, 208)",
-                          letterSpacing: "1px",
-                          transition: "transform 0.3s ease",
-                        }}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.transform = "scale(1.03)")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.transform = "scale(1)")
-                        }
-                      >
-                        <div style={{ fontSize: "13px", fontWeight: "600" }}>
-                          {year}-Year
+                  {ugorpg == "ug"
+                    ? [1, 2, 3]
+                    : [1, 2].map((year) => (
+                        <div
+                          key={year}
+                          className={
+                            ugorpg == "ug"
+                              ? "col-12 col-md-4"
+                              : "col-12 col-md-6"
+                          }
+                        >
+                          <div
+                            className="border rounded-4 shadow-sm py-4 px-2 h-100"
+                            style={{
+                              backgroundColor: "#f8f9ff",
+                              color: "rgb(26, 51, 208)",
+                              letterSpacing: "1px",
+                              transition: "transform 0.3s ease",
+                            }}
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.transform = "scale(1.03)")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.transform = "scale(1)")
+                            }
+                          >
+                            <div
+                              style={{ fontSize: "13px", fontWeight: "600" }}
+                            >
+                              {year}-Year
+                            </div>
+                            <div className="fs-2 fw-bold mt-2">
+                              {studentState.filter((s) => s.year === year)
+                                .length - inactiveCounts[year]}
+                            </div>
+                          </div>
                         </div>
-                        <div className="fs-2 fw-bold mt-2">
-                          {studentState.filter((s) => s.year === year).length -
-                            inactiveCounts[year]}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                      ))}
                 </div>
               </div>
 
@@ -1090,79 +1101,87 @@ const StudentList = () => {
 
               return (
                 <div key={index}>
-                 <div className="input-group my-3" style={{ alignItems: "stretch" }}>
-  {/* Checkbox small */}
-  <span className="input-group-text bg-white p-1" style={{ width: "50px" }}>
-    <input
-      type="checkbox"
-      className="form-check-input m-0"
-      checked={subject[checkField]}
-      onChange={(e) => {
-        const isChecked = e.target.checked;
-        sends({
-          field: subjectKey,
-          nestedField: checkField,
-          value: isChecked,
-        });
-        sends({
-          field: subjectKey,
-          nestedField: markField,
-          value: isChecked ? "Absent" : "",
-        });
-      }}
-    />
-  </span>
+                  <div
+                    className="input-group my-3"
+                    style={{ alignItems: "stretch" }}
+                  >
+                    {/* Checkbox small */}
+                    <span
+                      className="input-group-text bg-white p-1 d-flex justify-content-center"
+                      style={{ width: "50px" }}
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-check-input m-0"
+                        checked={subject[checkField]}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          sends({
+                            field: subjectKey,
+                            nestedField: checkField,
+                            value: isChecked,
+                          });
+                          sends({
+                            field: subjectKey,
+                            nestedField: markField,
+                            value: isChecked ? "Absent" : "",
+                          });
+                        }}
+                      />
+                    </span>
 
-  {/* Large subject field */}
-  <div className="flex-grow-1 d-flex">
-    <Autocomplete
-      size="small"
-      options={SubjectData}
-      value={subject[subField] || ""}
-      onChange={(e, newValue) =>
-        sends({
-          field: subjectKey,
-          nestedField: subField,
-          value: newValue || "",
-        })
-      }
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={`Subject - ${index}`}
-          variant="outlined"
-          fullWidth
-          sx={{
-            "& .MuiInputBase-root": {
-              height: "100%", // match parent height
-            },
-          }}
-        />
-      )}
-      fullWidth
-      disableClearable
-    />
-  </div>
+                    {/* Large subject field */}
+                    <div className="flex-grow-1 d-flex">
+                      <Autocomplete
+                        size="small"
+                        options={SubjectData}
+                        value={subject[subField] || ""}
+                        onChange={(e, newValue) =>
+                          sends({
+                            field: subjectKey,
+                            nestedField: subField,
+                            value: newValue || "",
+                          })
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={`Subject - ${index}`}
+                            variant="outlined"
+                            fullWidth
+                            sx={{
+                              "& .MuiInputBase-root": {
+                                height: "100%", // match parent height
+                              },
+                            }}
+                          />
+                        )}
+                        fullWidth
+                        disableClearable
+                      />
+                    </div>
 
-  {/* Small marks field */}
-  <span className="input-group-text bg-white p-1" style={{ width: "90px" }}>
-    <input
-      type="text"
-      className="form-control border-0"
-      style={{ height: "100%" }}
-      value={subject[markField]}
-      onChange={(e) =>
-        sends({
-          field: subjectKey,
-          nestedField: markField,
-          value: e.target.value,
-        })
-      }
-      disabled={subject[checkField]}
-    />
-  </span>
-</div>
-
+                    {/* Small marks field */}
+                    <span
+                      className="input-group-text bg-white p-1"
+                      style={{ width: "90px" }}
+                    >
+                      <input
+                        type={subject[checkField] ? "text" : "number"}
+                        className="form-control border-0"
+                        style={{ height: "100%" }}
+                        value={subject[markField]}
+                        onChange={(e) =>
+                          sends({
+                            field: subjectKey,
+                            nestedField: markField,
+                            value: e.target.value,
+                          })
+                        }
+                        disabled={subject[checkField]}
+                      />
+                    </span>
+                  </div>
                 </div>
               );
             })}
