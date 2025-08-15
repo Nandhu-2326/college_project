@@ -632,46 +632,36 @@ const StudentList = () => {
                 Student Details
               </div>
               <div className="card-body d-flex justify-content-center">
-                <div className="row g-3 w-100 text-center">
-                  {ugorpg == "ug"
-                    ? [1, 2, 3]
-                    : [1, 2].map((year) => (
-                        <div
-                          key={year}
-                          className={
-                            ugorpg == "ug"
-                              ? "col-12 col-md-4"
-                              : "col-12 col-md-6"
-                          }
-                        >
-                          <div
-                            className="border rounded-4 shadow-sm py-4 px-2 h-100"
-                            style={{
-                              backgroundColor: "#f8f9ff",
-                              color: "rgb(26, 51, 208)",
-                              letterSpacing: "1px",
-                              transition: "transform 0.3s ease",
-                            }}
-                            onMouseOver={(e) =>
-                              (e.currentTarget.style.transform = "scale(1.03)")
-                            }
-                            onMouseOut={(e) =>
-                              (e.currentTarget.style.transform = "scale(1)")
-                            }
-                          >
-                            <div
-                              style={{ fontSize: "13px", fontWeight: "600" }}
-                            >
-                              {year}-Year
-                            </div>
-                            <div className="fs-2 fw-bold mt-2">
-                              {studentState.filter((s) => s.year === year)
-                                .length - inactiveCounts[year]}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                </div>
+              <div className="row g-3 w-100 text-center">
+  {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => (
+    <div
+      key={year}
+      className={ugorpg === "ug" ? "col-12 col-md-4" : "col-12 col-md-6"}
+    >
+      <div
+        className="border rounded-4 shadow-sm py-4 px-2 h-100"
+        style={{
+          backgroundColor: "#f8f9ff",
+          color: "rgb(26, 51, 208)",
+          letterSpacing: "1px",
+          transition: "transform 0.3s ease",
+          cursor: "pointer",
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+        onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      >
+        <div style={{ fontSize: "13px", fontWeight: "600" }}>
+          {year}-Year
+        </div>
+        <div className="fs-2 fw-bold mt-2">
+          {studentState.filter((s) => s.year === year).length -
+            (inactiveCounts[year] || 0)}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
               </div>
 
               <div
@@ -795,7 +785,7 @@ const StudentList = () => {
           style={{ color: "#1a33d0" }}
           justify
         >
-          {(ugorpg === "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
+          {(ugorpg == "ug" ? [1, 2, 3] : [1, 2]).map((year) => {
             const studentsOfYear = studentState.filter(
               (std) => Number(std.year) === year
             );
