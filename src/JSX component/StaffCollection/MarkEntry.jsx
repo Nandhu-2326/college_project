@@ -1084,15 +1084,15 @@ const MarkEntry = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-  const arrowMove = document.querySelector(".TopArrow")
-  if(window.scrollY > 350 )
-  {
-    arrowMove.style.display = "block"
-  }
-  else
-  {
-    arrowMove.style.display = "none"
-  }
+  // const arrowMove = document.querySelector(".TopArrow")
+  // if(window.scrollY > 350 )
+  // {
+  //   arrowMove.style.display = "block"
+  // }
+  // else
+  // {
+  //   arrowMove.style.display = "none"
+  // }
   if (PageLoading) {
     return (
       <div
@@ -1106,9 +1106,9 @@ const MarkEntry = () => {
         >
           Searching Students
         </h3>
-        <h4 className="mt-2 "
-          style={{ fontWeight: "bold", color: "#d5181c" }}
-          >{timer}</h4>
+        <h4 className="mt-2 " style={{ fontWeight: "bold", color: "#d5181c" }}>
+          {timer}
+        </h4>
       </div>
     );
   }
