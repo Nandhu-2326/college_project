@@ -91,6 +91,9 @@ const Footer = () => {
       >
         {navItems.map((item, idx) => (
           <BottomNavigationAction
+          style={{
+            fontFamily: "'Inter', sans-serif"
+          }}
             key={item.label}
             label={item.label}
             icon={
